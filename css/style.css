@@ -1,0 +1,308 @@
+
+body {
+    font-family: 'Lora', 'Noto Serif SC', serif;
+    font-size: 16px;
+    color: #404040;
+}
+
+main {
+    width: 780px;
+    min-width: 320px;
+    margin: 0 auto;
+    overflow-wrap: break-word;
+}
+
+main article {
+    margin: 15px;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+
+h2 {
+    margin-top: 1em;
+    font-size: 2em;
+}
+
+h3 {
+    font-size: 1.5em;
+}
+
+h4 {
+    font-size: 1.2em;
+}
+
+h5 {
+    font-size: 1em;
+}
+
+p {
+    line-height: 1.8;
+    margin: 20px 0;
+    font-size: 16px;
+}
+
+a {
+    text-decoration: underline;
+}
+
+blockquote {
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    background-color: #fafafa;
+    border-radius: .2em;
+}
+
+img {
+    margin: 0 auto;
+    max-width: 100%;
+    display: block;
+}
+
+code {
+    tab-size: 4;
+    background: #fafafa;
+    border: 1px solid #e6e6e6;
+    border-radius: .1em;
+    font-size: .85em;
+    padding: .1em;
+    font-family: mononoki, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+pre code {
+    line-height: 1.5;
+    border-radius: .2em;
+    display: block;
+    overflow-x: auto;
+    padding: 0.5em;
+    color: #333;
+    background: #fefefe;
+    font-family: mononoki, monospace;
+    overflow-wrap: normal;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    max-width: 100%;
+    font-size: .9em;
+    display: table;
+    overflow-x: auto;
+}
+
+table thead tr:nth-child(1) {
+    background-color: #f3f3f3;
+    font-weight: bold;
+}
+
+table th {
+    padding: 5px;
+    min-width: 20px;
+}
+
+table td, table th {
+    padding: 5px;
+    vertical-align: text-top;
+    border: 1px solid #e6e6e6;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    height: 0;
+    box-sizing: content-box;
+    margin-top: 3em;
+    margin-bottom: 2em;
+}
+
+.post-tags {
+    text-align: right;
+    font-size: 0.8em;
+    user-select: none;
+}
+
+.post-date {
+    text-align: left;
+    font-size: 0.8em;
+    user-select: none;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.post-tags a {
+    text-decoration: none;
+    float: left;
+    margin-right: 1em;
+    display: block;
+    padding: 0 8px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+    line-height: 24px;
+    font-size: .85em;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.6);
+    user-select: none;
+}
+
+.post-author {
+    font-size: 1.4em;
+    color: #ccc;
+    text-align: center;
+    font-family: "Caveat";
+    padding-top: 4em;
+    padding-bottom: 1em;
+    clear: both;
+    user-select: none;
+}
+
+.post-author a {
+    text-decoration: none;
+    margin: 10px auto;
+    color: #ddd;
+}
+
+.post-author a:hover {
+    color: #404040;
+}
+
+footer {
+    width: 780px;
+    min-width: 320px;
+    margin: 0 auto;
+}
+
+.beian {
+    margin: 0 auto;
+    text-align: center;
+    font-family: monospace;
+    font-size: .7em;
+    clear: both;
+    user-select: none;
+    opacity: 0.2;
+}
+
+.beian:hover {
+    color: grey;
+    opacity: .8;
+}
+
+.beian img {
+    width: 1.2em;
+    display: inline-block;
+    margin-bottom: -2px;
+}
+
+.foot-nav {
+    text-align: center;
+    font-size: .9em;
+}
+
+.content, .archive-content {
+    margin: 2em;
+}
+
+.archive-list {
+    padding: 0 0 1em 2em;
+    line-height: 1.4;
+    display: list-item;
+    list-style-type: none;
+}
+
+.archive-list span {
+    float: left;
+    width: 20%;
+    color: grey;
+}
+
+.archive-list a {
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-decoration: none;
+    max-width: 80%
+}
+
+.title {
+    text-align: center;
+    user-select: none;
+}
+
+.sub-title {
+    text-align: center;
+    user-select: none;
+}
+
+.sub-title a {
+    color: #000;
+    text-decoration: none;
+}
+
+.index-list {
+    padding-top: 1.5em;
+    line-height: 1.4;
+    display: list-item;
+    list-style-type: none;
+}
+
+.index-list span {
+    float: left;
+    width: 30%;
+    color: grey;
+}
+
+.index-list a {
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-decoration: none;
+    max-width: 70%
+}
+
+@media screen and (max-width: 800px) {
+    main, footer {
+        width: 100%;
+    }
+
+    .index-list span {
+        display: none;
+    }
+
+    .index-list a {
+        max-width: 100%;
+    }
+
+    .post-title {
+        text-align: center;
+    }
+
+    .archive-list {
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
+
+    .archive-list span {
+        display: none;
+    }
+
+    .archive-list a {
+        max-width: 100%;
+    }
+
+    .archive-content, article {
+        padding: 0;
+        margin: 1em;
+    }
+
+    main article {
+        padding: 0;
+        margin: 0;
+    }
+
+}

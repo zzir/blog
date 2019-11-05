@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zzir">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet" type="text/css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.js"></script>
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/contrib/auto-render.min.js"></script>
+    
+    <link rel="stylesheet" href="../css/github.css">
+    <script src="../js/highlight.pack.js"></script>
+    <title>Golang 排序算法实现 - zzir</title>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false}
+                ]
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <main>
+        <article>
+            <h1 class="post-title">Golang 排序算法实现</h1>
+            <div class="post-info">
+                <p class="post-date">Mar 24, 2019</p>
+            </div>
+            <div class="post-content">
+                
+
+
+  
+  
+  
+
+
+
+<p><strong>O(N^2) 基于比较的排序算法</strong></p>
+
+<ul>
+<li>冒泡排序 BUB</li>
+<li>选择排序 SEL</li>
+<li>插入排序 INS</li>
+</ul>
+
+<p>基于比较的排序算法比较数组的元素并决定是否交换它们。这三种排序算法最容易实现，但不是最高效的，因为它们的时间复杂度是O(N^2)。</p>
+
+<p><strong>O(NlogN) 基于比较的排序算法</strong></p>
+
+<ul>
+<li>堆排序</li>
+<li>希尔排序 SHE</li>
+<li>并归排序 MER</li>
+<li>快速排序 QUI
+
+<ul>
+<li>随机快速排序 R-Q</li>
+</ul></li>
+</ul>
+
+<p>这些排序算法通常以递归方式实现，使用分而治之的思想解决问题。</p>
+
+<p><strong>O(N) 不基于比较的排序算法</strong></p>
+
+<ul>
+<li>计数排序 COU</li>
+<li>桶排序 BUC</li>
+<li>基数排序 RAD</li>
+</ul>
+
+<p><strong>复杂度和稳定性</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>时间复杂度(平均)</th>
+<th>时间复杂度(最坏)</th>
+<th>时间复杂度(最好)</th>
+<th>空间复杂度复</th>
+<th align="right">稳定性</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>冒泡排序</td>
+<td>$$O(n^2)$$</td>
+<td>$$O(n^2)$$</td>
+<td>$$O(n)$$</td>
+<td>$$O(1)$$</td>
+<td align="right">稳定</td>
+</tr>
+
+<tr>
+<td>选择排序</td>
+<td>$$O(n^2)$$</td>
+<td>$$O(n^2)$$</td>
+<td>$$O(n^2)$$</td>
+<td>$$O(1)$$</td>
+<td align="right">不稳定</td>
+</tr>
+
+<tr>
+<td>插入排序</td>
+<td>$$O(n^2)$$</td>
+<td>$$O(n^2)$$</td>
+<td>$$O(n)$$</td>
+<td>$$O(1)$$</td>
+<td align="right">稳定</td>
+</tr>
+
+<tr>
+<td>堆排序</td>
+<td>$$O(nlog_{2}n)$$</td>
+<td>$$O(nlog_{2}n)$$</td>
+<td>$$O(nlog_{2}n)$$</td>
+<td>$$O(1)$$</td>
+<td align="right">不稳定</td>
+</tr>
+
+<tr>
+<td>希尔排序</td>
+<td>$$O(n^{1.3})$$</td>
+<td>$$O(n^2)$$</td>
+<td>$$O(n)$$</td>
+<td>$$O(1)$$</td>
+<td align="right">不稳定</td>
+</tr>
+
+<tr>
+<td>并归排序</td>
+<td>$$O(nlog_{2}n)$$</td>
+<td>$$O(nlog_{2}n)$$</td>
+<td>$$O(nlog_{2}n)$$</td>
+<td>$$O(1)$$</td>
+<td align="right">稳定</td>
+</tr>
+
+<tr>
+<td>快速排序</td>
+<td>$$O(nlog_{2}n)$$</td>
+<td>$$O(n^2)$$</td>
+<td>$$O(nlog_{2}n)$$</td>
+<td>$$O(nlog_{2}n)$$</td>
+<td align="right">不稳定</td>
+</tr>
+
+<tr>
+<td>计数排序</td>
+<td>$$O(n+k)$$</td>
+<td>$$O(n+k)$$</td>
+<td>$$O(n+k)$$</td>
+<td>$$O(n+k)$$</td>
+<td align="right">稳定</td>
+</tr>
+
+<tr>
+<td>桶排序</td>
+<td>$$O(n+k)$$</td>
+<td>$$O(n^2)$$</td>
+<td>$$O(n)$$</td>
+<td>$$O(n+k)$$</td>
+<td align="right">稳定</td>
+</tr>
+
+<tr>
+<td>基数排序</td>
+<td>$$O(n*k)$$</td>
+<td>$$O(n*k)$$</td>
+<td>$$O(n*k)$$</td>
+<td>$$O(n+k)$$</td>
+<td align="right">稳定</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="冒泡排序-bubble-sort">冒泡排序 Bubble Sort</h2>
+
+<p>算法的核心在于每次通过两两比较交换位置，选出剩余无序序列里最大(小)的数据元素放到队尾。</p>
+
+<pre><code class="language-golang">func BubbleSort(data []int) {
+	for i := 0; i &lt; len(data); i++ {
+		for j := 1; j &lt; len(data)-i; j++ {
+			if data[j] &lt; data[j-1] {
+				data[j], data[j-1] = data[j-1], data[j]
+			}
+		}
+	}
+}
+</code></pre>
+
+<h2 id="选择排序-selection-sort">选择排序 Selection Sort</h2>
+
+<p>算法核心在于线性搜索数列并找到最大(小)值，并将最大(小)值替换为列中左端的数字并进行排序。</p>
+
+<pre><code class="language-golang">func SelectionSort(data []int) {
+	length := len(data)
+	for i := 0; i &lt; length; i++ {
+		maxIndex := 0
+		for j := 1; j &lt; length-i; j++ {
+			if data[j] &gt; data[maxIndex] {
+				maxIndex = j
+			}
+		}
+		data[length-i-1], data[maxIndex] = data[maxIndex], data[length-i-1]
+	}
+}
+</code></pre>
+
+<h2 id="堆排序-heap-sort">堆排序 Heap Sort</h2>
+
+<p>堆排序是指利用堆这种数据结构所设计的一种排序算法。</p>
+
+<pre><code class="language-golang">func HeapSort(data []int) []int {
+	heapify(data)
+	for i := len(data) - 1; i &gt; 0; i-- {
+		data[0], data[i] = data[i], data[0]
+		siftDown(data, 0, i)
+	}
+	return data
+}
+
+func heapify(data []int) {
+	for i := (len(data) - 1) / 2; i &gt;= 0; i-- {
+		siftDown(data, i, len(data))
+	}
+}
+
+func siftDown(heap []int, lo, hi int) {
+	root := lo
+	for {
+		child := root*2 + 1
+		if child &gt;= hi {
+			break
+		}
+		if child+1 &lt; hi &amp;&amp; heap[child] &lt; heap[child+1] {
+			child++
+		}
+		if heap[root] &lt; heap[child] {
+			heap[root], heap[child] = heap[child], heap[root]
+			root = child
+		} else {
+			break
+		}
+
+	}
+}
+</code></pre>
+
+<h2 id="插入排序-insertion-sort">插入排序 Insertion Sort</h2>
+
+<p>插入排序的原理是，从第二个数开始向右侧遍历，每次均把该位置的元素移动至左侧，放在放在一个正确的位置(比左侧大，比右侧小)。</p>
+
+<pre><code class="language-golang">func InsertionSort(data []int) {
+	for i := 1; i &lt; len(data); i++ {
+		if data[i] &lt; data[i-1] {
+			j := i - 1
+			temp := data[i]
+			for j &gt;= 0 &amp;&amp; data[j] &gt; temp {
+				data[j+1] = data[j]
+				j--
+			}
+			data[j+1] = temp
+		}
+	}
+}
+</code></pre>
+
+<h2 id="希尔排序-shell-sort">希尔排序 Shell Sort</h2>
+
+<p>1959 年 Shell 发明，第一个突破 O(n^2) 的排序算法，是简单插入排序的改进版。</p>
+
+<p>它与插入排序的不同之处在于，它会优先比较距离较远的元素。希尔排序又叫<strong>缩小增量排序</strong>。</p>
+
+<pre><code class="language-golang">func ShellSort(data []int) {
+	n := len(data)
+	h := 1
+	for h &lt; n/3 {
+		h = 3*h + 1
+	}
+	for h &gt;= 1 {
+		for i := h; i &lt; n; i++ {
+			for j := i; j &gt;= h &amp;&amp; data[j] &lt; data[j-h]; j -= h {
+				data[j], data[j-h] = data[j-h], data[j]
+			}
+		}
+		h /= 3
+	}
+}
+</code></pre>
+
+<h2 id="并归排序-merge-sort">并归排序 Merge Sort</h2>
+
+<p>归并排序是建立在归并操作上的一种有效的排序算法。该算法是采用分治法（Divide and Conquer）的一个非常典型的应用。</p>
+
+<pre><code class="language-golang">func MergeSort(data []int) []int {
+	if len(data) &lt;= 1 {
+		return data
+	}
+	middle := len(data) / 2
+	left := MergeSort(data[:middle])
+	right := MergeSort(data[middle:])
+
+	return merge(left, right)
+}
+func merge(left, right []int) []int {
+	result := make([]int, len(left)+len(right))
+	for i := 0; len(left) &gt; 0 || len(right) &gt; 0; i++ {
+		if len(left) &gt; 0 &amp;&amp; len(right) &gt; 0 {
+			if left[0] &lt; right[0] {
+				result[i] = left[0]
+				left = left[1:]
+			} else {
+				result[i] = right[0]
+				right = right[1:]
+			}
+		} else if len(left) &gt; 0 {
+			result[i] = left[0]
+			left = left[1:]
+		} else if len(right) &gt; 0 {
+			result[i] = right[0]
+			right = right[1:]
+		}
+	}
+	return result
+}
+</code></pre>
+
+<h2 id="快速排序-quick-sort">快速排序 Quick Sort</h2>
+
+<p>快速排序的基本思想是通过一趟排序将待排记录分隔成独立的两部分，其中一部分记录的关键字均比另一部分的关键字小，则可分别对这两部分记录继续进行排序，以达到整个序列有序。</p>
+
+<pre><code class="language-golang">func quickSort(nums []int) {
+	recursionSort(nums, 0, len(nums)-1)
+}
+
+func recursionSort(data []int, left int, right int) {
+	if left &lt; right {
+		pivot := partition(data, left, right)
+		recursionSort(data, left, pivot-1)
+		recursionSort(data, pivot+1, right)
+	}
+}
+
+func partition(data []int, left int, right int) int {
+	for left &lt; right {
+		for left &lt; right &amp;&amp; data[left] &lt;= data[right] {
+			right--
+		}
+		if left &lt; right {
+			data[left], data[right] = data[right], data[left]
+			left++
+		}
+
+		for left &lt; right &amp;&amp; data[left] &lt;= data[right] {
+			left++
+		}
+		if left &lt; right {
+			data[left], data[right] = data[right], data[left]
+			right--
+		}
+	}
+	return left
+}
+</code></pre>
+
+<h3 id="随机快速排序-random-quick-sort">随机快速排序 Random Quick Sort</h3>
+
+<pre><code class="language-golang">func RandomQuickSort(list []int, start, end int) {
+	if end-start &gt; 1 {
+		mid := randomPartition(list, start, end)
+		RandomQuickSort(list, start, mid)
+		RandomQuickSort(list, mid+1, end)
+	}
+}
+
+func randomPartition(list []int, begin, end int) int {
+	rand.Seed(time.Now().UnixNano())
+	i := begin + rand.Intn(end-begin)
+	list[i], list[begin] = list[begin], list[i]
+	return partition(list, begin, end)
+}
+
+func partition(list []int, begin, end int) (i int) {
+	cValue := list[begin]
+	i = begin
+	for j := i + 1; j &lt; end; j++ {
+		if list[j] &lt; cValue {
+			i++
+			list[j], list[i] = list[i], list[j]
+		}
+	}
+	list[i], list[begin] = list[begin], list[i]
+	return i
+}
+</code></pre>
+
+<h2 id="计数排序-counting-sort">计数排序 Counting Sort</h2>
+
+<pre><code class="language-golang">func CountingSort(data []int, maxValue int) []int {
+	bucketLen := maxValue + 1
+	bucket := make([]int, bucketLen)
+
+	sortedIndex := 0
+	length := len(data)
+
+	for i := 0; i &lt; length; i++ {
+		bucket[data[i]] += 1
+	}
+
+	for j := 0; j &lt; bucketLen; j++ {
+		for bucket[j] &gt; 0 {
+			data[sortedIndex] = j
+			sortedIndex += 1
+			bucket[j] -= 1
+		}
+	}
+	return data
+}
+</code></pre>
+
+<h2 id="桶排序-bucket-sort">桶排序 Bucket Sort</h2>
+
+<p>桶排序是计数排序的升级版。</p>
+
+<pre><code class="language-golang">
+func insertionSort(data []int) {
+	for i := 0; i &lt; len(data); i++ {
+		temp := data[i]
+		j := i - 1
+		for ; j &gt;= 0 &amp;&amp; data[j] &gt; temp; j-- {
+			data[j+1] = data[j]
+		}
+		data[j+1] = temp
+	}
+}
+
+func BucketSort(data []int, bucketSize int) []int {
+	var max, min int
+	for _, n := range data {
+		if n &lt; min {
+			min = n
+		}
+		if n &gt; max {
+			max = n
+		}
+	}
+	nBuckets := int(max-min)/bucketSize + 1
+	buckets := make([][]int, nBuckets)
+	for i := 0; i &lt; nBuckets; i++ {
+		buckets[i] = make([]int, 0)
+	}
+
+	for _, n := range data {
+		idx := int(n-min) / bucketSize
+		buckets[idx] = append(buckets[idx], n)
+	}
+
+	sorted := make([]int, 0)
+	for _, bucket := range buckets {
+		if len(bucket) &gt; 0 {
+			insertionSort(bucket)
+			sorted = append(sorted, bucket...)
+		}
+	}
+
+	return sorted
+}
+</code></pre>
+
+<h2 id="基数排序-radix-sort">基数排序 Radix Sort</h2>
+
+<p>基数排序是一种非比较型整数排序算法，其原理是将整数按位数切割成不同的数字，然后按每个位数分别比较。</p>
+
+<pre><code class="language-golang">func findLargestNum(data []int) int {
+	largestNum := 0
+
+	for i := 0; i &lt; len(data); i++ {
+		if data[i] &gt; largestNum {
+			largestNum = data[i]
+		}
+	}
+	return largestNum
+}
+
+func RadixSort(data []int) {
+
+	largestNum := findLargestNum(data)
+	size := len(data)
+	significantDigit := 1
+	semiSorted := make([]int, size, size)
+
+	for largestNum/significantDigit &gt; 0 {
+		bucket := [10]int{0}
+
+		for i := 0; i &lt; size; i++ {
+			bucket[(data[i]/significantDigit)%10]++
+		}
+
+		for i := 1; i &lt; 10; i++ {
+			bucket[i] += bucket[i-1]
+		}
+
+		for i := size - 1; i &gt;= 0; i-- {
+			bucket[(data[i]/significantDigit)%10]--
+			semiSorted[bucket[(data[i]/significantDigit)%10]] = data[i]
+		}
+
+		for i := 0; i &lt; size; i++ {
+			data[i] = semiSorted[i]
+		}
+
+		significantDigit *= 10
+	}
+}
+</code></pre>
+
+
+
+
+            </div>
+            <div class="post-info">
+                <p class="post-tags">
+                    
+                        <a href="../tags/sort">Sort</a>
+                    
+                        <a href="../tags/algorithm">Algorithm</a>
+                    
+                </p>
+            </div>
+        </article>
+    </main>
+
+
+
+    <footer>
+        <p class="post-author">© <a href="/">zzir</a></p>
+        <p class="foot-nav"><a href="/archives.html">Archive</a> | <a href="/about.html">About</a></p>
+        <p class="beian">
+            <span><img alt="zzir" src="/imgs/beian.png">浙公网安备33010902002287号</span>
+            <span>浙ICP备19040093号</span>
+        </p>
+    </footer>
+
+
+
+</body>
+</html>
