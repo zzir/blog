@@ -69,7 +69,7 @@ code {
     border-radius: .1em;
     font-size: .85em;
     padding: .1em;
-    font-family: mononoki, Menlo, Monaco, Consolas, "Courier New", monospace;
+    font-family: Hack, mononoki, Monaco, Menlo, "Source Code Pro", Consolas, monospace;
 }
 
 pre code {
@@ -80,7 +80,7 @@ pre code {
     padding: 0.5em;
     color: #333;
     background: #fefefe;
-    font-family: mononoki, monospace;
+    font-family: Hack, mononoki, Monaco, Menlo, "Source Code Pro", Consolas, monospace;
     overflow-wrap: normal;
 }
 
