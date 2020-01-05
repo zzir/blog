@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zzir">
+    <meta name="description" content="The architect of civilization.">
+    <meta name="keywords" content="zzir,Golang,Python,Docker,K8S">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.js"></script>
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/contrib/auto-render.min.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/github.css">
+    <script src="/assets/js/highlight.pack.js"></script>
+    <title>Dockerfile And Registry - ZZIR's Blog</title>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ]
+            });
+        });
+    </script>
+</head><body>
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="post-back" id="post-back" style="display: none">
+        <a class="black-link" href="https://zzir.cn">🙄</a>
+    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">
+            Dockerfile And Registry
+        </h1>
+        <p class="post-meta">
+            <time class="dt-published" datetime="2019-10-29T00:00:00+08:00" itemprop="datePublished">Oct 29, 2019
+            </time></p>
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        <table>
+  <thead>
+    <tr>
+      <th>环境</th>
+      <th>版本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>本地环境</td>
+      <td>macOS Catalina</td>
+    </tr>
+    <tr>
+      <td>远程环境</td>
+      <td>CentOS Linux release 7.7.1908 (Core)</td>
+    </tr>
+    <tr>
+      <td>Docker Engine</td>
+      <td>Community 19.03.2</td>
+    </tr>
+    <tr>
+      <td>Docker Compose</td>
+      <td>Version 1.24.1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Docker 除了可以从官方镜像仓库下载和上传镜像，还可以使用 <code class="highlighter-rouge">Dockerfile</code> 自己编译镜像和使用私有或第三方镜像仓库。</p>
+
+<h2 id="dockerfile">Dockerfile</h2>
+
+<p><code class="highlighter-rouge">Dockerfile</code> 文件中包含用于自动构建镜像的指令，构建过程中，每条指令都会生成一个只读层，每一层都是上一层的增量，最后堆叠起来，构成了镜像。</p>
+
+<h3 id="编译-go-实现的-http-服务">编译 Go 实现的 HTTP 服务：</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://gist.github.com/d13f96506aebed11af6e6799f71acba4.git
+<span class="nb">cd </span>d13f96506aebed11af6e6799f71acba4
+vim Dockerfile
+</code></pre></div></div>
+
+<p>如果无法 Clone，可以复制 <code class="highlighter-rouge">server.go</code> 的代码：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"log"</span>
+	<span class="s">"net/http"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">Reverse</span><span class="p">(</span><span class="n">s</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+	<span class="n">r</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">rune</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">:=</span> <span class="m">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">-</span><span class="m">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">;</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="m">1</span><span class="p">,</span> <span class="n">j</span><span class="o">-</span><span class="m">1</span> <span class="p">{</span>
+		<span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="kt">string</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">handler</span><span class="p">(</span><span class="n">w</span> <span class="n">http</span><span class="o">.</span><span class="n">ResponseWriter</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Fprintf</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="s">"hi %s"</span><span class="p">,</span> <span class="n">Reverse</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">URL</span><span class="o">.</span><span class="n">Path</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="p">]))</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">http</span><span class="o">.</span><span class="n">HandleFunc</span><span class="p">(</span><span class="s">"/"</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+	<span class="n">log</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"server run in 0.0.0.0:8080"</span><span class="p">)</span>
+	<span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">ListenAndServe</span><span class="p">(</span><span class="s">":8080"</span><span class="p">,</span> <span class="no">nil</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>然后新增 <code class="highlighter-rouge">Dockerfile</code> 文件，内容如下：</p>
+
+<pre><code class="language-Dockerfile">FROM golang:alpine as builder
+ADD . /workspace
+WORKDIR /workspace
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o web-server .
+
+FROM scratch
+COPY --from=builder /workspace/web-server /web-server
+EXPOSE 8080
+CMD ["/web-server"]
+</code></pre>
+
+<p>上面的 <code class="highlighter-rouge">Dockerfile</code> 使用了多阶段构建(Multi Stage)，构建过程分成了 2 个阶段，第 1 阶段使用预装 <code class="highlighter-rouge">Go</code> 的 Alpine 镜像编译程序，第 2 阶段使用一个空镜像 <code class="highlighter-rouge">scratch</code> ，将第一阶段编译的二进制文件文件 <code class="highlighter-rouge">web-server</code> 复制到根目录，定义镜像开放端口并执行。</p>
+
+<p>执行 <code class="highlighter-rouge">docker build -t test-web-server .</code> 编译镜像。编译成功后，可通过 <code class="highlighter-rouge">docker images</code> 指令查看镜像列表确认。</p>
+
+<p>运行容器测试下结果：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-d</span> <span class="nt">--name</span> test-web-server001 <span class="nt">-p</span> 8080:8080 test-web-server
+docker ps
+docker logs test-web-server001
+curl 127.0.0.1:8080/docker-and-compos
+</code></pre></div></div>
+
+<h3 id="完整-dockerfile-指令说明">完整 <code class="highlighter-rouge">Dockerfile</code> 指令说明</h3>
+
+<pre><code class="language-Dockerfile"># 指定基础镜像，并添加别名
+FROM golang:alpine as builder
+
+# 标识 image 作者
+MAINTAINER zzir
+
+# 将当前目录下文件添加到容器 /workspace
+ADD . /workspace
+
+# 指定当前工作目录
+WORKDIR /workspace
+
+# 执行命令，编译 Go 项目
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o web-server .
+
+
+# 第二阶段构建 ---------- ---------- ---------- ---------- ----------
+FROM alpine
+
+# 添加标签
+LABEL version="1.0" description="test"
+
+# 定义构建参数，可在构建时通过 --build-arg 改变
+ARG key=default_value
+
+# 将上一阶段编译的文件拷贝到当前镜像
+COPY --from=builder /workspace/web-server /usr/local/bin/
+
+# 设置环境变量
+ENV key value
+
+# 执行命令，添加用户
+RUN adduser -S -D -H -h /home/app app
+
+# 指定用户
+USER app
+
+# 声明端口
+EXPOSE 8080
+
+# 定义挂载点
+VOLUME ["/data"]
+
+# ENTRYPOINT 指令存在时，CMD 都是 ENTRYPOINT 的参数
+# ENTRYPOINT ["web-server"]
+
+# 指定容器启动时执行的命令
+CMD ["web-server"]
+
+# 指定默认 SHELL
+SHELL ["/bin/sh", "-c"]
+
+# 其它镜像以当前镜像为基础镜像时触发 
+ONBUILD ADD . /tmp/
+
+# 指定退出的信号值
+STOPSIGNAL SIGKILL
+
+# 配置健康检查
+HEALTHCHECK --interval=1m --timeout=10s --start-period=10s --retries=3  CMD curl -f http://127.0.0.1:8080/ || exit 1
+</code></pre>
+
+<p>由于 alpine 基础镜像默认没有安装 curl，<code class="highlighter-rouge">docker ps</code> 查看容器健康检测会显示 <code class="highlighter-rouge">unhealthy</code>。解决方法：</p>
+
+<ol>
+  <li>编译镜像时执行 <code class="highlighter-rouge">RUN apk add curl -y</code></li>
+  <li>将健康检测 <code class="highlighter-rouge">CMD</code> 替换为 <code class="highlighter-rouge">wget -q -O - 127.0.0.1:8080/asdf</code></li>
+</ol>
+
+<h3 id="entrypoint-和-cmd">ENTRYPOINT 和 CMD</h3>
+
+<p><code class="highlighter-rouge">ENTRYPOINT</code> 和 <code class="highlighter-rouge">CMD</code> 构建阶段都会被忽略，而是在启动时执行。多数情况下它们应该是单独使用的，有一种例外是 <code class="highlighter-rouge">CMD</code> 为 <code class="highlighter-rouge">ENTRYPOINT</code> 提供默认可选参数，比如：</p>
+
+<pre><code class="language-Dockerfile">...
+ENTRYPOINT ["ls", "/"]
+CMD ["-a", "-l"]
+</code></pre>
+
+<p>这种情况下容器启动时执行的是 <code class="highlighter-rouge">ls / -a -l</code> 。但也可以启动时覆盖：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--entrypoint</span> /bin/cat &lt;container&gt; <span class="nt">-n</span> /etc/passwd
+</code></pre></div></div>
+
+<p>这样就把默认启动命令 <code class="highlighter-rouge">ls / -a -l</code> 替换成了 <code class="highlighter-rouge">/bin/cat -n /etc/passwd</code>。</p>
+
+<p>关于 <code class="highlighter-rouge">ENTRYPOINT</code> 和 <code class="highlighter-rouge">CMD</code> 更具体可以参考官方文档：https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact</p>
+
+<h2 id="官方仓库操作">官方仓库操作</h2>
+
+<p>最常用的 <code class="highlighter-rouge">PULL</code> 应该很熟悉了，我们尝试把编译的镜像上传到官方镜像仓库。</p>
+
+<p>我们还使用最开始的 <code class="highlighter-rouge">Dockerfile</code>：</p>
+
+<pre><code class="language-Dockerfile">FROM golang:alpine as builder
+ADD . /workspace
+WORKDIR /workspace
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o web-server .
+
+FROM scratch
+COPY --from=builder /workspace/web-server /web-server
+EXPOSE 8080
+CMD ["/web-server"]
+</code></pre>
+
+<p>并重新编译镜像：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker build <span class="nt">-t</span> test-web-server <span class="nb">.</span>
+</code></pre></div></div>
+
+<p>登录：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker login <span class="nt">--username</span><span class="o">=</span>zzir <span class="nt">--password</span><span class="o">=</span><span class="s1">'********'</span>
+</code></pre></div></div>
+
+<p>为镜像打上标签：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker tag test-web-server zzir/test-web-server:latest
+</code></pre></div></div>
+
+<p>上传镜像：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker push zzir/test-web-server:latest
+</code></pre></div></div>
+
+<p>默认是公开镜像(注意请勿上传敏感信息到公开镜像)，至此你已经可以在其它地方下载 <code class="highlighter-rouge">zzir/test-web-server:latest</code> 啦，这里我使用的是自己的用户名，你需要更换成你自己的，或者重新注册一个。</p>
+
+<p>下载验证：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull zzir/test-web-server
+</code></pre></div></div>
+
+<p>也可以登录 https://cloud.docker.com/repository/docker/zzir/test-web-server/ 查看。</p>
+
+<h2 id="搭建私有仓库-registry">搭建私有仓库 Registry</h2>
+
+<p>上面我们尝试手动编译镜像并上传到官方公开镜像仓库，但工作中我们可能对镜像仓库需要一些更定制化的需求，官方也给出了私有仓库的搭建方法。</p>
+
+<p>搭建私有仓库非常简单，使用 Docker 启动：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-d</span> <span class="nt">-p</span> 5000:5000 <span class="nt">--restart</span><span class="o">=</span>always <span class="nt">--name</span> registry <span class="nt">-v</span> /data/registry:/var/lib/registry registry
+</code></pre></div></div>
+
+<p>需要编辑 <code class="highlighter-rouge">/etc/docker/daemon.json</code> 配置 Docker 仓库地址：</p>
+
+<p><code class="highlighter-rouge">192.168.5.242</code> 是我的远程服务器地址，这里需要换成你的服务器地址。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"insecure-registries"</span><span class="p">:[</span><span class="w">
+      </span><span class="s2">"192.168.5.242:5000"</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>给镜像打上标签：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull zzir/test-web-server
+docker tag zzir/test-web-server:latest 192.168.5.242:5000/test-web-server:latest
+</code></pre></div></div>
+
+<p>推送到私有镜像仓库：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker push 192.168.5.242:5000/test-web-server:latest
+</code></pre></div></div>
+
+<p>通过 API 确认下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl 192.168.5.242:5000/v2/_catalog
+</code></pre></div></div>
+
+<p>返回 <code class="highlighter-rouge">{"repositories":[test-web-server"]}</code> 说明镜像已经上传成功。</p>
+
+<p>更多 API 可以查看 https://docs.docker.com/registry/spec/api/</p>
+
+<p>删除本地镜像再下载测试：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker rmi 192.168.5.242:5000/test-web-server
+docker pull 192.168.5.242:5000/test-web-server
+</code></pre></div></div>
+
+<p>没有问题。</p>
+
+<h2 id="私有仓库-registry-web-ui">私有仓库 Registry WEB UI</h2>
+
+<p>如果你不想通过 API 查看私有镜像仓库状态，也可以安装个镜像仓库的 WEB UI。</p>
+
+<p>直接通过 <code class="highlighter-rouge">Docker</code> 安装：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-d</span> <span class="nt">--name</span> registry-ui <span class="nt">-p</span> 5001:80  <span class="nt">--link</span> registry <span class="nt">-e</span> <span class="nv">URL</span><span class="o">=</span>http://192.168.5.242:5000 <span class="nt">-e</span> <span class="nv">DELETE_IMAGES</span><span class="o">=</span><span class="nb">true </span>joxit/docker-registry-ui:static
+</code></pre></div></div>
+
+<p>浏览器访问 <code class="highlighter-rouge">192.168.5.242:5001</code> 发现 <code class="highlighter-rouge">CORS</code> 跨域错误，需要配置 <code class="highlighter-rouge">registry</code> 容器，为方便我们直接进入容器修改：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">exec</span> <span class="nt">-ti</span> registry /bin/sh
+</code></pre></div></div>
+
+<p>修改 <code class="highlighter-rouge">/etc/docker/registry/config.yml</code> ：</p>
+
+<pre><code class="language-yaml ">headers:
+    X-Content-Type-Options: [nosniff]
+    Access-Control-Allow-Origin: ['*']
+    Access-Control-Allow-Methods: ['*']
+    Access-Control-Allow-Headers: ['*']
+    Access-Control-Max-Age: [1728000]
+    Access-Control-Allow-Credentials: [true]
+    Access-Control-Expose-Headers: ['Docker-Content-Digest']
+</code></pre>
+
+<p>保存并重启 <code class="highlighter-rouge">registry</code> 容器，更优雅的做法是将配置文件挂载入 <code class="highlighter-rouge">registry</code> 容器。</p>
+
+<p>完整 <code class="highlighter-rouge">registry</code> 配置：</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="m">0.1</span>
+<span class="na">log</span><span class="pi">:</span>
+  <span class="na">fields</span><span class="pi">:</span>
+    <span class="na">service</span><span class="pi">:</span> <span class="s">registry</span>
+<span class="na">storage</span><span class="pi">:</span>
+  <span class="na">cache</span><span class="pi">:</span>
+    <span class="na">blobdescriptor</span><span class="pi">:</span> <span class="s">inmemory</span>
+  <span class="na">filesystem</span><span class="pi">:</span>
+    <span class="na">rootdirectory</span><span class="pi">:</span> <span class="s">/var/lib/registry</span>
+<span class="na">http</span><span class="pi">:</span>
+  <span class="na">addr</span><span class="pi">:</span> <span class="s">:5000</span>
+  <span class="na">headers</span><span class="pi">:</span>
+    <span class="na">X-Content-Type-Options</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">nosniff</span><span class="pi">]</span>
+    <span class="na">Access-Control-Allow-Origin</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">*'</span><span class="pi">]</span>
+    <span class="na">Access-Control-Allow-Methods</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">*'</span><span class="pi">]</span>
+    <span class="na">Access-Control-Allow-Headers</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">*'</span><span class="pi">]</span>
+    <span class="na">Access-Control-Max-Age</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">1728000</span><span class="pi">]</span>
+    <span class="na">Access-Control-Allow-Credentials</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">true</span><span class="pi">]</span>
+    <span class="na">Access-Control-Expose-Headers</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">Docker-Content-Digest'</span><span class="pi">]</span>
+<span class="na">health</span><span class="pi">:</span>
+  <span class="na">storagedriver</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">interval</span><span class="pi">:</span> <span class="s">10s</span>
+    <span class="na">threshold</span><span class="pi">:</span> <span class="m">3</span>
+</code></pre></div></div>
+
+<h2 id="更多">更多</h2>
+
+<ul>
+  <li>https://docs.docker.com/develop/develop-images/dockerfile_best-practices/</li>
+  <li>https://docs.docker.com/engine/reference/builder/</li>
+  <li>https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact</li>
+  <li>https://docs.docker.com/compose/</li>
+  <li>https://docs.docker.com/registry/</li>
+  <li>https://github.com/docker/distribution</li>
+  <li>https://docs.docker.com/registry/spec/api/</li>
+</ul>
+
+    </div>
+
+    <a class="u-url" href="/2019/dockerfile-and-registry.html" hidden></a>
+</article>
+
+<div class="post-tags">
+    
+    <a>Docker</a>
+    
+    <a>Dockerfile</a>
+    
+    <a>Registry</a>
+    
+</div>
+
+<div class="pagination">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2019/docker-quick-handbook.html" title="PREV: Docker 常用操作">
+                ‹ Docker 常用操作
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+    </div>
+</main><footer>
+    <p class="post-author">© <a href="/">zzir</a></p>
+    <p class="beian">
+        
+        <span>
+            <img src="/assets/imgs/beian.png">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010902002287">浙公网安备33010902002287号</a>
+        </span>
+        ・︎
+        <span><a href="http://beian.miit.gov.cn/">浙ICP备19040093号</a></span>
+        
+    </p>
+</footer>
+
+<script>
+    // analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?fa1df30338e49443514335c65bd9b8d6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // back display
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() === 0) {
+            document.getElementById("post-back").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

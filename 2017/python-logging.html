@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zzir">
+    <meta name="description" content="The architect of civilization.">
+    <meta name="keywords" content="zzir,Golang,Python,Docker,K8S">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.js"></script>
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/contrib/auto-render.min.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/github.css">
+    <script src="/assets/js/highlight.pack.js"></script>
+    <title>Python Logging - ZZIR's Blog</title>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ]
+            });
+        });
+    </script>
+</head><body>
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="post-back" id="post-back" style="display: none">
+        <a class="black-link" href="https://zzir.cn">🙄</a>
+    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">
+            Python Logging
+        </h1>
+        <p class="post-meta">
+            <time class="dt-published" datetime="2017-07-03T00:00:00+08:00" itemprop="datePublished">Jul 3, 2017
+            </time></p>
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        <p>Python 的 <code class="highlighter-rouge">logging</code> 日志模块用于追踪和记录程序运行时发生的事件。</p>
+
+<p>一个超级简单的例子：</p>
+<pre><code class="language-Python">import logging
+# logging.basicConfig(filename='out.log',level=30)  # 输出日志到文件
+logging.warning('一条警告消息')  # 打印日志到屏幕
+logging.info('啦啦啦')  # 默认日志级别是warning，所以这条不会显示
+</code></pre>
+
+<p>输出：</p>
+<pre><code class="language-log">WARNING:root:一条警告消息
+</code></pre>
+
+<p>Logging 采用模块化方法，并提供了以下几类组件：</p>
+
+<ul>
+  <li><strong>Logger</strong> - 提供了可直接使用的日志接口。</li>
+  <li><strong>Handler</strong> - 日志的处理方式，比如说是打印到屏幕还是记录到文件，或是发送到日志服务器。</li>
+  <li><strong>Filter</strong> - 提供更精细的方式确定哪些日志记录需要输出。</li>
+  <li><strong>Formatter</strong> - 指定日志记录的输出格式。</li>
+</ul>
+
+<p>通过调用 Logger 类的实例来执行日志记录。每个实例都有一个名称，它们在概念上以一个命名空间层次结构排列，使用点（.）作为分隔符。默认是<code class="highlighter-rouge">root</code>。</p>
+<pre><code class="language-Python">logger = logging.getLogger('a.b.c')
+</code></pre>
+
+<!--more-->
+
+<h2 id="日志级别">日志级别</h2>
+
+<p>日志记录级别和数值如下，可自定义级别和数值，相同会覆盖预定义。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Level</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CRITICAL</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>ERROR</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>WARNING</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <td>INFO</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>DEBUG</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>NOTSET</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="logger">Logger</h2>
+
+<p>Logger 对象有三重工作。首先，程序调用Logger对象，以便应用程序可以在运行时记录消息。第二，Logger对象根据 Filter 对象和 formater 对象过滤确定要执行的日志消息。第三，Logger 对象将相关日志消息传递给所有相关 Handler。</p>
+
+<p>Logger 对象中使用最广泛的方法分为两类：配置和消息发送。</p>
+
+<p>这些是最常用的配置方法：</p>
+
+<p><code class="highlighter-rouge">Logger.setLevel()</code> 指定将处理的最低严重性级别的日志消息，其中 debug 是最低内置严重性级别， critical 是最高的内置严重性。例如，如果严重性级别为INFO，则 Logger 将仅处理INFO，WARNING，ERROR 和 CRITICAL 消息，并将忽略DEBUG消息。</p>
+
+<p><code class="highlighter-rouge">Logger.addHandler()</code> 和 <code class="highlighter-rouge">Logger.removeHandler()</code> 从 Logger 对象中添加和删除 Handler对象。</p>
+
+<p><code class="highlighter-rouge">Logger.addFilter()</code> 和 <code class="highlighter-rouge">Logger.removeFilter()</code> 从 Logger 对象中添加和删除 Filter 对象。</p>
+
+<p>配置 Logger 对象后，以下方法创建日志消息：</p>
+
+<p><code class="highlighter-rouge">Logger.debug()</code>，<code class="highlighter-rouge">Logger.info()</code>，<code class="highlighter-rouge">Logger.warning()</code>， <code class="highlighter-rouge">Logger.error()</code>，和<code class="highlighter-rouge">Logger.critical()</code>用于创建对应级别的日志记录。该消息实际上是一个格式串，其可以包含的标准字符串替换语法<code class="highlighter-rouge">%s</code>，<code class="highlighter-rouge">%d</code>，<code class="highlighter-rouge">%f</code>，等。其余的参数是与消息中的替换字段对应的对象列表。</p>
+
+<p><code class="highlighter-rouge">Logger.exception()</code> 创建类似于<code class="highlighter-rouge">Logger.error()</code>的日志消息。仅从异常处理程序调用此方法。</p>
+
+<p><code class="highlighter-rouge">Logger.log()</code> 将日志级别作为显式参数。</p>
+
+<p><code class="highlighter-rouge">getLogger()</code> 如果提供了指定的名称，则返回对具有指定名称的 Logger 实例的引用，否则返回<code class="highlighter-rouge">root</code>。</p>
+
+<h2 id="handler">Handler</h2>
+
+<p><code class="highlighter-rouge">Handler</code> 对象负责将适当的日志消息（基于日志级别）分派到指定目的地。可使用<code class="highlighter-rouge">addHandler()</code>方法向其自身添加零个或多个Handler对象。</p>
+
+<p>常用配置方法：</p>
+
+<p><code class="highlighter-rouge">setLevel()</code>设置输出到指定Handler的日志级别。
+<code class="highlighter-rouge">setFormatter()</code>设置日志格式。
+<code class="highlighter-rouge">addFilter()</code> 和 <code class="highlighter-rouge">removeFilter()</code>。</p>
+
+<p><strong>Handler种类</strong></p>
+
+<ul>
+  <li>StreamHandler</li>
+  <li>FileHandler</li>
+  <li>NullHandler</li>
+  <li>WatchedFileHandler</li>
+  <li>BaseRotatingHandler</li>
+  <li>RotatingFileHandler</li>
+  <li>TimedRotatingFileHandler</li>
+  <li>SocketHandler</li>
+  <li>DatagramHandler</li>
+  <li>SysLogHandler</li>
+  <li>NTEventLogHandler</li>
+  <li>SMTPHandler</li>
+  <li>MemoryHandler</li>
+  <li>HTTPHandler</li>
+  <li>QueueHandler</li>
+</ul>
+
+<p>感兴趣可以查看<a href="https://docs.python.org/3/library/logging.handlers.html">更详细信息</a></p>
+
+<h2 id="formater">Formater</h2>
+
+<p>用于格式化日志输出。</p>
+
+<p>例如：</p>
+<pre><code class="language-Python">formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+</code></pre>
+
+<p>所有<a href="https://docs.python.org/3/library/logging.html#logrecord-attributes">内置属性</a>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">属性名称</th>
+      <th style="text-align: left">格式</th>
+      <th style="text-align: left">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">asctime</td>
+      <td style="text-align: left">%(asctime)s</td>
+      <td style="text-align: left">时间</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">created</td>
+      <td style="text-align: left">%(created)f</td>
+      <td style="text-align: left">日志创建时间戳</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">filename</td>
+      <td style="text-align: left">%(filename)s</td>
+      <td style="text-align: left">文件名称</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">funcName</td>
+      <td style="text-align: left">%(funcName)s</td>
+      <td style="text-align: left">函数名称</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">levelname</td>
+      <td style="text-align: left">%(levelname)s</td>
+      <td style="text-align: left">级别</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">levelno</td>
+      <td style="text-align: left">%(levelno)s</td>
+      <td style="text-align: left">级别(值)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">lineno</td>
+      <td style="text-align: left">%(lineno)d</td>
+      <td style="text-align: left">所在行</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">module</td>
+      <td style="text-align: left">%(module)s</td>
+      <td style="text-align: left">模块名称</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">msecs</td>
+      <td style="text-align: left">%(msecs)d</td>
+      <td style="text-align: left">毫秒部分</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">message</td>
+      <td style="text-align: left">%(message)s</td>
+      <td style="text-align: left">日志消息</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">name</td>
+      <td style="text-align: left">%(name)s</td>
+      <td style="text-align: left">日志名称</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">pathname</td>
+      <td style="text-align: left">%(pathname)s</td>
+      <td style="text-align: left">路径</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">process</td>
+      <td style="text-align: left">%(process)d</td>
+      <td style="text-align: left">进程ID</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">processName</td>
+      <td style="text-align: left">%(processName)s</td>
+      <td style="text-align: left">进程名称</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">relativeCreated</td>
+      <td style="text-align: left">%(relativeCreated)d</td>
+      <td style="text-align: left">日志创建毫秒数</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">thread</td>
+      <td style="text-align: left">%(thread)d</td>
+      <td style="text-align: left">线程ID</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">threadName</td>
+      <td style="text-align: left">%(threadName)s</td>
+      <td style="text-align: left">线程名称</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="简单的例子">简单的例子</h2>
+<pre><code class="language-Python">import logging
+
+logger = logging.getLogger('simple_example')
+logger.setLevel(logging.DEBUG)
+
+# create file handler which logs even debug messages
+fh = logging.FileHandler('spam.log')
+fh.setLevel(logging.DEBUG)
+
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.ERROR)
+
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+fh.setFormatter(formatter)
+
+# add the handlers to logger
+logger.addHandler(ch)
+logger.addHandler(fh)
+
+# 'application' code
+logger.debug('debug message')
+logger.info('info message')
+logger.warn('warn message')
+logger.error('error message')
+logger.critical('critical message')
+</code></pre>
+
+<p>输出：</p>
+<pre><code class="language-log">2017-07-03 15:21:34,586 - simple_example - ERROR - error message
+2017-07-03 15:21:34,587 - simple_example - CRITICAL - critical message
+</code></pre>
+
+<h2 id="稍微复杂的例子">稍微复杂的例子</h2>
+<pre><code class="language-Python">import logging
+import auxiliary_module
+
+# create logger with 'spam_application'
+logger = logging.getLogger('spam_application')
+logger.setLevel(logging.DEBUG)
+
+# create file handler which logs even debug messages
+fh = logging.FileHandler('spam.log')
+fh.setLevel(logging.DEBUG)
+
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.ERROR)
+
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+
+# add the handlers to the logger
+logger.addHandler(fh)
+logger.addHandler(ch)
+
+logger.info('creating an instance of auxiliary_module.Auxiliary')
+a = auxiliary_module.Auxiliary()
+logger.info('created an instance of auxiliary_module.Auxiliary')
+
+logger.info('calling auxiliary_module.Auxiliary.do_something')
+a.do_something()
+logger.info('finished auxiliary_module.Auxiliary.do_something')
+
+logger.info('calling auxiliary_module.some_function()')
+auxiliary_module.some_function()
+logger.info('done with auxiliary_module.some_function()')
+</code></pre>
+
+<p><code class="highlighter-rouge">auxiliary_module</code>文件：</p>
+<pre><code class="language-Python">import logging
+
+# create logger
+module_logger = logging.getLogger('spam_application.auxiliary')
+
+
+class Auxiliary:
+    def __init__(self):
+        self.logger = logging.getLogger('spam_application.auxiliary.Auxiliary')
+        self.logger.info('creating an instance of Auxiliary')
+
+    def do_something(self):
+        self.logger.info('doing something')
+        a = 1 + 1
+        self.logger.info('done doing something')
+
+
+def some_function():
+    module_logger.info('received a call to "some_function"')
+</code></pre>
+
+<p>spam.log的内容：</p>
+<pre><code class="language-log">2017-07-03 15:28:41,109 - spam_application - INFO - creating an instance of auxiliary_module.Auxiliary
+2017-07-03 15:28:41,109 - spam_application.auxiliary.Auxiliary - INFO - creating an instance of Auxiliary
+2017-07-03 15:28:41,109 - spam_application - INFO - created an instance of auxiliary_module.Auxiliary
+2017-07-03 15:28:41,109 - spam_application - INFO - calling auxiliary_module.Auxiliary.do_something
+2017-07-03 15:28:41,110 - spam_application.auxiliary.Auxiliary - INFO - doing something
+2017-07-03 15:28:41,110 - spam_application.auxiliary.Auxiliary - INFO - done doing something
+2017-07-03 15:28:41,110 - spam_application - INFO - finished auxiliary_module.Auxiliary.do_something
+2017-07-03 15:28:41,110 - spam_application - INFO - calling auxiliary_module.some_function()
+2017-07-03 15:28:41,110 - spam_application.auxiliary - INFO - received a call to "some_function"
+2017-07-03 15:28:41,110 - spam_application - INFO - done with auxiliary_module.some_function()
+</code></pre>
+
+<p><strong>参考</strong></p>
+
+<p>https://docs.python.org/3/howto/logging.html  <br />
+https://docs.python.org/3/library/logging.html  <br />
+https://docs.python.org/3.6/howto/logging-cookbook.html</p>
+
+    </div>
+
+    <a class="u-url" href="/2017/python-logging.html" hidden></a>
+</article>
+
+<div class="post-tags">
+    
+    <a>Logging</a>
+    
+    <a>Python</a>
+    
+</div>
+
+<div class="pagination">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2017/python-threading.html" title="PREV: Python 多线程和锁">
+                ‹ Python 多线程和锁
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2017/bitcoin-segwit.html" title="NEXT: Bitcoin SegWit(Segregated Witness)">
+                › Bitcoin SegWit(Segregated Witness)
+            </a>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+</main><footer>
+    <p class="post-author">© <a href="/">zzir</a></p>
+    <p class="beian">
+        
+        <span>
+            <img src="/assets/imgs/beian.png">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010902002287">浙公网安备33010902002287号</a>
+        </span>
+        ・︎
+        <span><a href="http://beian.miit.gov.cn/">浙ICP备19040093号</a></span>
+        
+    </p>
+</footer>
+
+<script>
+    // analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?fa1df30338e49443514335c65bd9b8d6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // back display
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() === 0) {
+            document.getElementById("post-back").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

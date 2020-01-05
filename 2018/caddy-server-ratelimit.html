@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zzir">
+    <meta name="description" content="The architect of civilization.">
+    <meta name="keywords" content="zzir,Golang,Python,Docker,K8S">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.js"></script>
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/contrib/auto-render.min.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/github.css">
+    <script src="/assets/js/highlight.pack.js"></script>
+    <title>Caddy Server 访问频率限制 - ZZIR's Blog</title>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ]
+            });
+        });
+    </script>
+</head><body>
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="post-back" id="post-back" style="display: none">
+        <a class="black-link" href="https://zzir.cn">🙄</a>
+    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">
+            Caddy Server 访问频率限制
+        </h1>
+        <p class="post-meta">
+            <time class="dt-published" datetime="2018-07-08T00:00:00+08:00" itemprop="datePublished">Jul 8, 2018
+            </time></p>
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        <p>Caddy Server 访问频率限制，请求多次将返回 429 状态码。实现此功能需要安装 <code class="highlighter-rouge">http.ratelimit</code> 插件，可以在<a href="https://caddyserver.com/download">下载页</a>下载时选择此插件。</p>
+
+<h2 id="举例">举例</h2>
+
+<h3 id="语法">语法：</h3>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ratelimit methods path rate burst unit
+...or...
+ratelimit methods rate burst unit {
+    whitelist CIDR
+    resources
+}
+</code></pre></div></div>
+
+<ul>
+  <li><code class="highlighter-rouge">methods</code> 请求方法，例如 get（多个方法 <code class="highlighter-rouge">,</code> 隔开，可以  <code class="highlighter-rouge">*</code> 表示所有方法）</li>
+  <li><code class="highlighter-rouge">path</code> 路径，例如 <code class="highlighter-rouge">/</code>、<code class="highlighter-rouge">/api</code></li>
+  <li><code class="highlighter-rouge">rate</code> 单位时间请求次数</li>
+  <li><code class="highlighter-rouge">burst</code> 客户端可超过的最大次数，不能小于单位时间请求次数</li>
+  <li><code class="highlighter-rouge">unit</code> 单位时间（当前支持：second，minute，hour，day，week）</li>
+  <li><code class="highlighter-rouge">whitelist</code> 白名单</li>
+  <li><code class="highlighter-rouge">resources</code> 目录或文件路径，每行一个</li>
+</ul>
+
+<!--more-->
+
+<h3 id="例如">例如：</h3>
+<p>单个资源：</p>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="m">127</span>.<span class="m">0</span>.<span class="m">0</span>.<span class="m">1</span>:<span class="m">8080</span> {
+    <span class="n">proxy</span> / <span class="m">10</span>.<span class="m">10</span>.<span class="m">0</span>.<span class="m">222</span>:<span class="m">8080</span>
+    <span class="n">gzip</span>
+    <span class="n">log</span> /<span class="n">var</span>/<span class="n">log</span>/<span class="n">caddy</span>/<span class="n">test</span>.<span class="n">log</span>
+    <span class="n">ratelimit</span> * / <span class="m">1</span> <span class="m">1</span> <span class="n">second</span>
+    <span class="c"># 表示所有方法，所有路径，每秒最多请求1次
+</span>}
+</code></pre></div></div>
+
+<p>多个资源的表示：</p>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="m">127</span>.<span class="m">0</span>.<span class="m">0</span>.<span class="m">1</span>:<span class="m">8080</span> {
+    <span class="n">proxy</span> / <span class="m">10</span>.<span class="m">10</span>.<span class="m">0</span>.<span class="m">222</span>:<span class="m">8080</span>
+    <span class="n">gzip</span>
+    <span class="n">log</span> /<span class="n">var</span>/<span class="n">log</span>/<span class="n">caddy</span>/<span class="n">test</span>.<span class="n">log</span>
+    <span class="n">ratelimit</span> <span class="n">get</span>,<span class="n">post</span> <span class="m">1</span> <span class="m">1</span> <span class="n">second</span> {
+        <span class="n">whitelist</span> <span class="m">127</span>.<span class="m">0</span>.<span class="m">0</span>.<span class="m">1</span>/<span class="m">32</span>
+        <span class="n">whitelist</span> <span class="m">10</span>.<span class="m">10</span>.<span class="m">0</span>.<span class="m">0</span>/<span class="m">16</span>
+        /<span class="n">api</span>/
+        ^/<span class="n">dist</span>/<span class="n">path</span>
+    }
+    <span class="c"># get、post方法
+</span>    <span class="c"># 每秒最多请求1次，白名单除外，路径 ^/dist/path 除外
+</span>    <span class="c"># 注意！想要限制 /api/，同时排除 ^/api/stats 不会生效
+</span>}
+</code></pre></div></div>
+
+<h2 id="参考">参考</h2>
+<p>https://caddyserver.com/docs/http.ratelimit  <br />
+https://github.com/xuqingfeng/caddy-rate-limit</p>
+
+    </div>
+
+    <a class="u-url" href="/2018/caddy-server-ratelimit.html" hidden></a>
+</article>
+
+<div class="post-tags">
+    
+    <a>Caddy</a>
+    
+    <a>ratelimit</a>
+    
+</div>
+
+<div class="pagination">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2017/google-authentication.html" title="PREV: Google Authentication (2FA)">
+                ‹ Google Authentication (2FA)
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2018/bitcoin-blockchain.html" title="NEXT: Bitcoin 区块和交易数据结构">
+                › Bitcoin 区块和交易数据结构
+            </a>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+</main><footer>
+    <p class="post-author">© <a href="/">zzir</a></p>
+    <p class="beian">
+        
+        <span>
+            <img src="/assets/imgs/beian.png">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010902002287">浙公网安备33010902002287号</a>
+        </span>
+        ・︎
+        <span><a href="http://beian.miit.gov.cn/">浙ICP备19040093号</a></span>
+        
+    </p>
+</footer>
+
+<script>
+    // analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?fa1df30338e49443514335c65bd9b8d6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // back display
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() === 0) {
+            document.getElementById("post-back").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

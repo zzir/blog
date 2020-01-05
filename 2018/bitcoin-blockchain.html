@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zzir">
+    <meta name="description" content="The architect of civilization.">
+    <meta name="keywords" content="zzir,Golang,Python,Docker,K8S">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.js"></script>
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/contrib/auto-render.min.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/github.css">
+    <script src="/assets/js/highlight.pack.js"></script>
+    <title>Bitcoin 区块和交易数据结构 - ZZIR's Blog</title>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ]
+            });
+        });
+    </script>
+</head><body>
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="post-back" id="post-back" style="display: none">
+        <a class="black-link" href="https://zzir.cn">🙄</a>
+    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">
+            Bitcoin 区块和交易数据结构
+        </h1>
+        <p class="post-meta">
+            <time class="dt-published" datetime="2018-07-10T00:00:00+08:00" itemprop="datePublished">Jul 10, 2018
+            </time></p>
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        <p><img src="/imgs/201807-blockchain.png" alt="" /></p>
+
+<p>区块链是一种账本数据库，分布式，数据存储的每个节点都会同步复制整个账本，信息透明难以篡改。</p>
+
+<p>区块中存放着交易，区块按照高度有序链接起来的这种数据结构被称为区块链。每个区块都指向前一个区块，一个区块由 <a href="#区块头">区块头</a> 和 <a href="#交易">交易</a> 组成。</p>
+
+<h2 id="区块">区块</h2>
+
+<p>区块由一个包含元数据的区块头和紧跟其后的构成区块主体的一长串交易列表组成。区块结构如图：</p>
+
+<p><img src="/imgs/201807-block.png" alt="" /></p>
+
+<p>区块头中数据有：</p>
+<ul>
+  <li>区块版本</li>
+  <li>前个区块哈希</li>
+  <li>Merkle Root 哈希</li>
+  <li>时间戳</li>
+  <li>Bits 难度</li>
+  <li>Nonce “挖矿” 随机数</li>
+</ul>
+
+<p>Coinbase 交易：每个区块中的第一条交易都是 Coinbase 交易，用于奖励 “矿工” 将交易打包到区块。奖励分为两部分，一是区块奖励，一是区块中除 Coinbase 交易外其它交易手续费总和。</p>
+
+<!--more-->
+
+<h3 id="区块头">区块头</h3>
+
+<p>区块头的长度是80字节，将区块头数据进行两次 <code class="highlighter-rouge">Sha256</code> 运算将得到<strong>区块哈希</strong>。</p>
+
+<p>区块头结构如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Size</th>
+      <th>Data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>4 bytes</td>
+      <td><a href="#Little-Endian">Little-endian</a> ⟲</td>
+    </tr>
+    <tr>
+      <td>Previous Block Hash</td>
+      <td>32 bytes</td>
+      <td>Little-endian ⟲</td>
+    </tr>
+    <tr>
+      <td>MerkleRoot</td>
+      <td>32 bytes</td>
+      <td>Little-endian ⟲</td>
+    </tr>
+    <tr>
+      <td>Timestamp</td>
+      <td>4 bytes</td>
+      <td>Little-endian ⟲</td>
+    </tr>
+    <tr>
+      <td>Bits (Difficulty Target)</td>
+      <td>4 bytes</td>
+      <td>Little-endian ⟲</td>
+    </tr>
+    <tr>
+      <td>Nonce</td>
+      <td>4 bytes</td>
+      <td>Little-endian ⟲</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="merkle-root">Merkle Root</h3>
+
+<p>Merkle Tree 是一种哈希二叉树，用于归纳一个区块中的所有交易，同时生成整个交易集合的数字签名，且提供了一种校验区块是否存在某交易的高效途径。</p>
+
+<p>区块链中的每个区块都包含了产生于该区块的所有交易，且以Merkle树表示。那么如何获得它呢？</p>
+
+<ol>
+  <li>从区块交易列表中获取每对Txid，并对它们进行两次 <code class="highlighter-rouge">Sha256</code> 运算，得到哈希。</li>
+  <li>如果为奇数，则复制一份凑成偶数再进行两次 <code class="highlighter-rouge">Sha256</code> 运算，得到哈希。</li>
+  <li>递归1、2，直到最终获得一个哈希，它就是Merkle Root。</li>
+</ol>
+
+<p><img src="/imgs/201807-merkleroot.png" alt="" /></p>
+
+<p>为什么使用 Merkle Root 方式呢，为什么不对区块内所以交易一次性进行哈希呢，那样不是更快么？</p>
+
+<p>使用 Merkle Root 原因有二：</p>
+<ol>
+  <li>完整性验证，任何一个节点的哈希发生变化，都会导致最终的 Root 节点哈希发生变化。这一特性也可用于快速定位问题节点。</li>
+  <li>零知识证明，如下图，16 条交易的节点能够通过生成一条仅有 4 个 32 字节哈希值长度(总128字节)的 Merkle 路径，来证明区块中存在一笔交易 <code class="highlighter-rouge">K</code>，该路径有4个哈希值 H<sub>L</sub>、H<sub>IJ</sub>、H<sub>MNOP</sub> 和 H<sub>ABCDEFGH</sub>。由这4个哈希值产生的认证路径，再通过计算另外四对哈希值 H<sub>KL</sub>、H<sub>IJKL</sub>、H<sub>IJKLMNOP</sub> 和 Merkle Root，任何节点都能证明 H<sub>K</sub> 包含在Merkle Root。
+<img src="/imgs/201807-merkleroot-check.png" alt="图来自https://github.com/bitcoinbook/bitcoinbook/" /></li>
+</ol>
+
+<p>关于 Merkle 路径，我们来看一张图：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>交易数量</th>
+      <th>区块大小</th>
+      <th>路径数量</th>
+      <th>路径大小</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>16</td>
+      <td>4 KB</td>
+      <td>4</td>
+      <td>128 bytes</td>
+    </tr>
+    <tr>
+      <td>512</td>
+      <td>128 KB</td>
+      <td>9</td>
+      <td>288 bytes</td>
+    </tr>
+    <tr>
+      <td>2048</td>
+      <td>512 KB</td>
+      <td>11</td>
+      <td>352 bytes</td>
+    </tr>
+    <tr>
+      <td>4096</td>
+      <td>1 MB</td>
+      <td>12</td>
+      <td>384 bytes</td>
+    </tr>
+    <tr>
+      <td>65,535</td>
+      <td>16 MB</td>
+      <td>16</td>
+      <td>512 bytes</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>即使增长到交易数量为 262144，区块大小到 65M，路径数也才 18。所以使用 Merkle Root 非常高效，如果是所有交易进行一次哈希，虽然获得 Hash 是快些，但对于要验证问题交易或节点，将是个灾难。</p>
+
+<h3 id="bits-和-nonce">Bits 和 Nonce</h3>
+
+<p>Bits 是挖矿目标难度 Target 的紧凑格式。</p>
+
+<p>Nonce 是挖矿遍历时的随机数。</p>
+
+<p>关于 “挖矿” 的具体内容，我会单独总结一篇，感兴趣可以关注后续文章。
+这里有一个在线的模拟挖矿，各种数据显示都很直观，适合了解挖矿内部运作：<a href="http://yogh.io/#mine:last">点我前往模拟挖矿</a></p>
+
+<h2 id="交易">交易</h2>
+
+<p>目前存在两种交易结构。比特币白皮书中定义的交易结构和新的隔离见证交易结构。</p>
+
+<p><a href="https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki">BIP 141</a> 定义一种新的交易结构，我们称之为 “<a href="https://zzir.io/2017/bitcoin-segwit/">Segregated Witness (隔离见证)</a>” 交易。旧交易结构签名数据放在交易输入里，隔离见证交易则将签名数据 “分离” 出来，放在交易的 <code class="highlighter-rouge">Locktime</code> 之前。</p>
+
+<p>交易结构：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[nVersion] [n] [tx inputs] [n] [tx outputs] [nLockTime]
+    |       |               |                    |
+ 4 bytes  varint          varint             4 bytes
+</code></pre></div></div>
+<p>隔离见证(Segregated Witness)交易结构：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[nVersion] [marker] [flag][n] [tx inputs] [n] [tx outputs] [witness][nLockTime]
+    |       \    /   \  /  |               |                \     /     |
+ 4 bytes     0x00    0x01 varint         varint            scriptSig  4 bytes
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Size</th>
+      <th>Data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Version</td>
+      <td>4 bytes</td>
+      <td><a href="#Little-Endian">Little-endian</a> ⟲</td>
+    </tr>
+    <tr>
+      <td>* Marker</td>
+      <td>1 bytes</td>
+      <td>0x00</td>
+    </tr>
+    <tr>
+      <td>* Flag</td>
+      <td>1 bytes</td>
+      <td>0x01</td>
+    </tr>
+    <tr>
+      <td>Input Counter</td>
+      <td>1–9 bytes</td>
+      <td><a href="#VarInt">VarInt</a></td>
+    </tr>
+    <tr>
+      <td><a href="#Inputs">Inputs</a></td>
+      <td>Variable</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Output Counter</td>
+      <td>1–9 bytes</td>
+      <td><a href="#VarInt">VarInt</a></td>
+    </tr>
+    <tr>
+      <td><a href="#outputs">Outputs</a></td>
+      <td>Variable</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>* Witness</td>
+      <td>Variable</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Locktime</td>
+      <td>4 bytes</td>
+      <td>Little-endian ⟲</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="highlighter-rouge">*</code> 为 Segregated Witness 交易字段。</p>
+
+<p>我们解析一条 Segregated Witness (P2SH-P2WPKH)交易：</p>
+
+<p>如果你对 <a href="https://zzir.io/2017/bitcoin-segwit/#P2SH-P2WPKH">P2SH-P2WPKH</a> 交易感兴趣可以查看我之前写的一篇介绍 Segregated Witness 的文章。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"txid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"af0c4cdd2537ae367b0e03db0cd795fa37543bd672c9234b2c307009a9a8108f"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ff300093626745127aad29e8628ee4606b87cb660f7ff63817dd4857cd15a175"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">248</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"vsize"</span><span class="p">:</span><span class="w"> </span><span class="mi">166</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"locktime"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"vin"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+  </span><span class="nl">"vout"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>HEX 数据：</p>
+
+<p><img src="/imgs/201807-tx-hex.png" alt="" /></p>
+
+<h3 id="inputs">Inputs</h3>
+
+<p>交易输入结构：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Size</th>
+      <th>Data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TXID</td>
+      <td>32 bytes</td>
+      <td><a href="#Little-Endian">Little-endian</a> ⟲</td>
+    </tr>
+    <tr>
+      <td>VOUT</td>
+      <td>4 bytes</td>
+      <td>Little-endian ⟲</td>
+    </tr>
+    <tr>
+      <td>ScriptSig Size</td>
+      <td>1–9 bytes</td>
+      <td><a href="#VarInt">VarInt</a></td>
+    </tr>
+    <tr>
+      <td>ScriptSig</td>
+      <td>Variable</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Sequence</td>
+      <td>4 bytes</td>
+      <td>Little-endian ⟲</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>输入JSON：</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"txid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6635d3f451478f0e1f88692d5cfb9194f133fbb314cb87fa9483f89bd296284b"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"vout"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"scriptSig"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"asm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0014db75523757a256579a197746568f331103417b85"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"hex"</span><span class="p">:</span><span class="w"> </span><span class="s2">"160014db75523757a256579a197746568f331103417b85"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"txinwitness"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"3045022100c8b2a6027f939bb964e395c94cd6f1d8ff9d1f406e41975b2ac979a6007c3ac4022019953dfe376d0152152955e02d72e7a7b9a61f8d5700642c97a2dc4ba13628b801"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"02983f3687310bcfe2ad1ad55d011112c3f8d659950c10cab9ff43ae34d7b6280e"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"sequence"</span><span class="p">:</span><span class="w"> </span><span class="mi">4294967293</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="outputs">outputs</h3>
+
+<p>交易输出结构：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Size</th>
+      <th>Data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Value</td>
+      <td>8 bytes</td>
+      <td><a href="#Little-Endian">Little-endian</a> ⟲</td>
+    </tr>
+    <tr>
+      <td>ScriptPubKey Size</td>
+      <td>1–9 bytes</td>
+      <td><a href="#VarInt">VarInt</a></td>
+    </tr>
+    <tr>
+      <td>ScriptPubKey</td>
+      <td>Variable</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>输出JSON：</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.00000000</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"n"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"scriptPubKey"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"asm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OP_HASH160 2228cecac3c1fa3143ba2ac7d2525d8b9b05c87b OP_EQUAL"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"hex"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a9142228cecac3c1fa3143ba2ac7d2525d8b9b05c87b87"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"reqSigs"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scripthash"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"addresses"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"2MvMqrBRct4F2zuyrpgrq2qqq61VZc1znPB"</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="err">,</span><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">48.99996680</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"n"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"scriptPubKey"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"asm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OP_HASH160 22e2f5339cdf0778935e8127dc51e4a0ae62d162 OP_EQUAL"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"hex"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a91422e2f5339cdf0778935e8127dc51e4a0ae62d16287"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"reqSigs"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scripthash"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"addresses"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"2MvRgr7SeyTVutrUaJdmZ5ETVdoPp5eWoj5"</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="varint">VarInt</h3>
+<p>比特币使用可变字节表示脚本长度，当一个字节不够表示时，如下规律：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Size</th>
+      <th>Example</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&lt;= <code class="highlighter-rouge">0xfc</code></td>
+      <td>0x12</td>
+      <td>1 个字节</td>
+    </tr>
+    <tr>
+      <td>&lt;= <code class="highlighter-rouge">0xffff</code></td>
+      <td>0xfd1234</td>
+      <td>前缀是<code class="highlighter-rouge">fd</code>，小端表示接下来的2个字节</td>
+    </tr>
+    <tr>
+      <td>&lt;= <code class="highlighter-rouge">0xffffffff</code></td>
+      <td>0xfe12345678</td>
+      <td>前缀是<code class="highlighter-rouge">fe</code>，小端表示接下来的4个字节</td>
+    </tr>
+    <tr>
+      <td>&lt;= <code class="highlighter-rouge">0xffffffffffffffff</code></td>
+      <td>0xff1234567890abcdef</td>
+      <td>前缀是<code class="highlighter-rouge">ff</code>，小端表示接下来的8个字节</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>如：<code class="highlighter-rouge">0x48</code>，没有 <code class="highlighter-rouge">fd</code>、<code class="highlighter-rouge">fe</code>、<code class="highlighter-rouge">ff</code> 前缀，所以我们知道它是2 bytes表示的。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>VarInt: 0x48
+        = 72 bytes
+</code></pre></div></div>
+
+<p>如：<code class="highlighter-rouge">fd2606</code>，因为是 <code class="highlighter-rouge">fd</code> 前缀，我们读取<code class="highlighter-rouge">fd</code>之后的 4 bytes，反转小端再转换为十进制表示。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>VarInt: 0xfd2606
+        = 0x2602    (next 2 bytes)
+        = 0x0226    (Little-Endian)
+        = 550 bytes
+</code></pre></div></div>
+
+<h3 id="little-endian">Little-Endian</h3>
+<p>小端 (Little-endian) 字节序。如：<code class="highlighter-rouge">0x12345678</code></p>
+
+<p>大端类似于十六进制字节从左到右的阅读顺序。小端最低位字节是 <code class="highlighter-rouge">0x78</code> 存储在最低的内存地址处，后面的字节依次往后存。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Big-Endian:    |12|34|56|78|
+Little-Endian: |78|56|34|12|
+</code></pre></div></div>
+
+<h2 id="参考">参考</h2>
+<ul>
+  <li>https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch09.asciidoc</li>
+  <li>http://learnmeabitcoin.com/glossary/</li>
+  <li>http://learnmeabitcoin.com/glossary/merkle-root</li>
+  <li>http://learnmeabitcoin.com/glossary/varint</li>
+  <li>http://yogh.io/#mine:last</li>
+  <li>http://royalforkblog.github.io/2014/11/20/txn-demo/</li>
+</ul>
+
+    </div>
+
+    <a class="u-url" href="/2018/bitcoin-blockchain.html" hidden></a>
+</article>
+
+<div class="post-tags">
+    
+    <a>Blockchain</a>
+    
+    <a>Bitcoin</a>
+    
+</div>
+
+<div class="pagination">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2018/caddy-server-ratelimit.html" title="PREV: Caddy Server 访问频率限制">
+                ‹ Caddy Server 访问频率限制
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2019/golang-sort.html" title="NEXT: Golang 排序算法实现">
+                › Golang 排序算法实现
+            </a>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+</main><footer>
+    <p class="post-author">© <a href="/">zzir</a></p>
+    <p class="beian">
+        
+        <span>
+            <img src="/assets/imgs/beian.png">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010902002287">浙公网安备33010902002287号</a>
+        </span>
+        ・︎
+        <span><a href="http://beian.miit.gov.cn/">浙ICP备19040093号</a></span>
+        
+    </p>
+</footer>
+
+<script>
+    // analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?fa1df30338e49443514335c65bd9b8d6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // back display
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() === 0) {
+            document.getElementById("post-back").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

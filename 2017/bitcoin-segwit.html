@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zzir">
+    <meta name="description" content="The architect of civilization.">
+    <meta name="keywords" content="zzir,Golang,Python,Docker,K8S">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.js"></script>
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/contrib/auto-render.min.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/github.css">
+    <script src="/assets/js/highlight.pack.js"></script>
+    <title>Bitcoin SegWit(Segregated Witness) - ZZIR's Blog</title>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ]
+            });
+        });
+    </script>
+</head><body>
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="post-back" id="post-back" style="display: none">
+        <a class="black-link" href="https://zzir.cn">🙄</a>
+    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">
+            Bitcoin SegWit(Segregated Witness)
+        </h1>
+        <p class="post-meta">
+            <time class="dt-published" datetime="2017-08-15T00:00:00+08:00" itemprop="datePublished">Aug 15, 2017
+            </time></p>
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        <p>SegWit 是指通过从比特币交易中移除签名数据来提高区块链上区块大小限制的这一过程。交易的某一部分被移除，可以腾出空间向链中添加更多交易。</p>
+
+<p>Segregate 指’分离’，Witnesses 指’签名’。因此，Segregated Witness 简言之就是将交易签名数据分开存放。此处可见<a href="https://bitcoincore.org/zh_CN/2016/01/26/segwit-benefits/">隔离见证的好处</a>。</p>
+
+<!--more-->
+
+<h2 id="segregated-witness-交易">Segregated Witness 交易</h2>
+
+<ol>
+  <li><code class="highlighter-rouge">P2WPKH</code> <em>(pay to witness public key hash)</em></li>
+  <li><code class="highlighter-rouge">P2WSH</code>  <em>(pay to witness script hash)</em></li>
+  <li><code class="highlighter-rouge">P2SH-P2WPKH</code>  <em>(P2WPKH nested in BIP16 P2SH)</em></li>
+  <li><code class="highlighter-rouge">P2SH-P2WSH</code>   <em>(P2WSH nested in BIP16 P2SH)</em></li>
+</ol>
+
+<p><code class="highlighter-rouge">P2WPKH</code>，<code class="highlighter-rouge">P2WSH</code> 是 <code class="highlighter-rouge">P2PKH</code> 和 <code class="highlighter-rouge">P2SH</code> 的升级。</p>
+
+<p><code class="highlighter-rouge">P2SH-P2WPKH</code> 和 <code class="highlighter-rouge">P2SH-P2WSH</code> 可以让不支持segwit的老版本也能发送segwit交易。</p>
+
+<h2 id="p2pkh-tx-和-p2wpkh-tx-对比">P2PKH TX 和 P2WPKH TX 对比</h2>
+
+<p>p2pkh transaction:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"hex"</span><span class="p">:</span><span class="w"> </span><span class="s2">"02000000015ca5e7bf9d435fbf0faea02a977c4100ec744bcf823202caa8426a785ebd4ceb000000006a4730440220593d0a26baee9780762ce0b4e88cb5167fba06c7db0850e601d54a60145b628402205f7aac3cf48c2c6dff14093bfdec762af99f5c2b6ed2f9d34ec694657ee4d8ab012103c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa743ffffffff0100127a00000000001976a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac00000000"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"txid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2dcba80fc3e196f1c868ca7a0d21274995d8e24e91e898c6e85bee94494b7d04"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2dcba80fc3e196f1c868ca7a0d21274995d8e24e91e898c6e85bee94494b7d04"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">191</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"vsize"</span><span class="p">:</span><span class="w"> </span><span class="mi">191</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"locktime"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"vin"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"txid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eb4cbd5e786a42a8ca023282cf4b74ec00417c972aa0ae0fbf5f439dbfe7a55c"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"vout"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"scriptSig"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"asm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"30440220593d0a26baee9780762ce0b4e88cb5167fba06c7db0850e601d54a60145b628402205f7aac3cf48c2c6dff14093bfdec762af99f5c2b6ed2f9d34ec694657ee4d8ab[ALL] 03c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa743"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"hex"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4730440220593d0a26baee9780762ce0b4e88cb5167fba06c7db0850e601d54a60145b628402205f7aac3cf48c2c6dff14093bfdec762af99f5c2b6ed2f9d34ec694657ee4d8ab012103c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa743"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"sequence"</span><span class="p">:</span><span class="w"> </span><span class="mi">4294967295</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"vout"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.08000000</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"n"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"scriptPubKey"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"asm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OP_DUP OP_HASH160 08a62834a781b38ce5e0cd86eb61efe9a95d57dd OP_EQUALVERIFY OP_CHECKSIG"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"hex"</span><span class="p">:</span><span class="w"> </span><span class="s2">"76a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"reqSigs"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pubkeyhash"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"addresses"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="s2">"mgJgkPB7BMiyL1X3P6Ty4FAcNVTNPm65m1"</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>p2wpkh transaction:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"hex"</span><span class="p">:</span><span class="w"> </span><span class="s2">"01000000000101859f69e79898cba9115a58598a85b66751a9adec0f055145419b0a384f266425553d000000ffffffff019fbb0d0000000000160014ba20f1b78d7e7111283b1f97bd141a03bc94d208024730440220662686732bf79a63a1a655e7ebd889a97af669b1be93f27f5beb0117523c442b0220061dc98470d304f0508b76e9ba9400c5e6ac1046533e006e21cbd89b85ca31fa012103c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa74300000000"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"txid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a785e06b8db7d0eb7b592ffbe31dac63642b9d6100b1dbad13397e4173e69672"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"19122b6ee2dc8a0ccc51be42fad5bc92a1e3c27820a51e507a278ea16ec188aa"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">191</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"vsize"</span><span class="p">:</span><span class="w"> </span><span class="mi">110</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"locktime"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"vin"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"txid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2564264f380a9b414551050fecada95167b6858a59585a11a9cb9898e7699f85"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"vout"</span><span class="p">:</span><span class="w"> </span><span class="mi">15701</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"scriptSig"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"asm"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"hex"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"txinwitness"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"30440220662686732bf79a63a1a655e7ebd889a97af669b1be93f27f5beb0117523c442b0220061dc98470d304f0508b76e9ba9400c5e6ac1046533e006e21cbd89b85ca31fa01"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"03c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa743"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"sequence"</span><span class="p">:</span><span class="w"> </span><span class="mi">4294967295</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"vout"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.00899999</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"n"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"scriptPubKey"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"asm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0 ba20f1b78d7e7111283b1f97bd141a03bc94d208"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"hex"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0014ba20f1b78d7e7111283b1f97bd141a03bc94d208"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"witness_v0_keyhash"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="segregated-witness-tx-区别">Segregated Witness TX 区别</h2>
+
+<p><img src="/imgs/201708-witnesstx.png" alt="" /></p>
+
+<p><strong>not segwit</strong></p>
+
+<pre><code class="language-none">[nVersion][txins][txouts][nLockTime]
+</code></pre>
+
+<p><strong>segwit tx</strong></p>
+
+<pre><code class="language-none">[nVersion][marker][flag][txins][txouts][witness][nLockTime]
+</code></pre>
+
+<p><code class="highlighter-rouge">marker</code> 字段必须是 <code class="highlighter-rouge">0x00</code>。</p>
+
+<p><code class="highlighter-rouge">flag</code> 必须是1字节的非0值，当前必须是 <code class="highlighter-rouge">0x01</code>。</p>
+
+<p><code class="highlighter-rouge">witness</code> 是一个交易的所有有<code class="highlighter-rouge">witness</code>数据的序列化。每个<code class="highlighter-rouge">txin</code>关联到一个<code class="highlighter-rouge">witness</code>字段，<code class="highlighter-rouge">witness</code>数据不是脚本也没有520字节的压栈限制。</p>
+
+<p>一个非<code class="highlighter-rouge">witness</code>的<code class="highlighter-rouge">txin</code>必须关联一个空的<code class="highlighter-rouge">witness</code>字段，表示为<code class="highlighter-rouge">0x00</code>.如果所有的<code class="highlighter-rouge">txin</code>都没有<code class="highlighter-rouge">witness</code>程序，那么交易必须使用旧的格式序列化(例外:coinbase交易)。</p>
+
+<p>其他区别：</p>
+
+<ol>
+  <li><code class="highlighter-rouge">txid</code> 和 <code class="highlighter-rouge">hash</code> 不同。如果交易没有<code class="highlighter-rouge">witness</code>数据，那么<code class="highlighter-rouge">txid</code>等于<code class="highlighter-rouge">hash</code>。</li>
+  <li>将原本 <code class="highlighter-rouge">txins</code> 里的 <code class="highlighter-rouge">scriptSig</code> 数据移到新字段 <code class="highlighter-rouge">witness</code> 里。</li>
+  <li>新的 <code class="highlighter-rouge">scriptPubKey</code> 输出锁定脚本。</li>
+  <li>新的签名算法，定义在<a href="https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki">BIP143</a>。</li>
+  <li>两个新的支付地址类型，定义在<a href="https://github.com/bitcoin/bips/blob/master/bip-0142.mediawiki">BIP142</a>。</li>
+</ol>
+
+<p><em>hash</em> 的计算方式是<code class="highlighter-rouge">double SHA256([nVersion][marker][flag][txins][txouts][witness][nLockTime])</code></p>
+
+<p><em>txid</em> 的计算方式是<code class="highlighter-rouge">double SHA256([nVersion][txins][txouts][nLockTime])</code></p>
+
+<p><strong>举个栗子：</strong></p>
+
+<p><code class="highlighter-rouge">txid</code>为 <code class="highlighter-rouge">a785e06b8db7d0eb7b592ffbe31dac63642b9d6100b1dbad13397e4173e69672</code> 的 <code class="highlighter-rouge">P2WPKH</code> 交易。</p>
+
+<pre><code class="language-Python">import hashlib
+from binascii import hexlify, unhexlify
+
+def bytes_to_hex_str(byte_str):
+    return hexlify(byte_str).decode('ascii')
+
+def hex_str_to_bytes(hex_str):
+    return unhexlify(hex_str.encode('ascii'))
+
+def sha256(s):
+    return hashlib.new('sha256', s).digest()
+
+def ab_to_ba(string):
+    chrl = [string[i:i + 2] for i in range(0, len(string), 2)][::-1]
+    new_chr = ''
+    for i in chrl:
+        new_chr += i
+    return new_chr
+
+witness_hex = '01000000000101859f69e79898cba9115a58598a85b66751a9adec0f055145419b0a384f266425553d000000ffffffff019fbb0d0000000000160014ba20f1b78d7e7111283b1f97bd141a03bc94d208024730440220662686732bf79a63a1a655e7ebd889a97af669b1be93f27f5beb0117523c442b0220061dc98470d304f0508b76e9ba9400c5e6ac1046533e006e21cbd89b85ca31fa012103c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa74300000000'
+
+no_witness_hex = '0100000001859f69e79898cba9115a58598a85b66751a9adec0f055145419b0a384f266425553d000000ffffffff019fbb0d0000000000160014ba20f1b78d7e7111283b1f97bd141a03bc94d20800000000'
+
+tx_hash = ab_to_ba(bytes_to_hex_str(sha256(sha256(hex_str_to_bytes(witness_hex)))))
+tx_txid = ab_to_ba(bytes_to_hex_str(sha256(sha256(hex_str_to_bytes(no_witness_hex)))))
+
+print('hash:', tx_hash, '\ntxid:', tx_txid)
+
+# hash: 19122b6ee2dc8a0ccc51be42fad5bc92a1e3c27820a51e507a278ea16ec188aa 
+# txid: a785e06b8db7d0eb7b592ffbe31dac63642b9d6100b1dbad13397e4173e69672
+</code></pre>
+
+<p><strong>其他：</strong></p>
+
+<p><em>Segwit TX Size Calculations:</em></p>
+
+<ol>
+  <li>Transaction weight(weight) == Base transaction size * 3 + Total transaction size</li>
+  <li>Virtual transaction size == Transaction weight / 4</li>
+  <li>Base transaction size == Total transaction size - Witness data</li>
+  <li>Total transaction size == Base transaction size + Witness data</li>
+</ol>
+
+<p>(ie. Transaction weight same method as calculating Block weight from Base size and Total size)</p>
+
+<h2 id="tx-输出脚本">Tx 输出脚本</h2>
+
+<h3 id="p2pkh">P2PKH</h3>
+
+<p>最常用，简单的支付给一个单一的公钥。</p>
+
+<pre><code class="language-None">scriptPubKey: OP_DUP OP_HASH160 &lt;20-byte-pubkey-hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+              0x76   0xA9       14{20-b-pubkey-hash}  0x88           0xAC
+scriptSig: &lt;sig&gt; &lt;pubkey&gt;
+</code></pre>
+
+<p>已知：</p>
+
+<ol>
+  <li>&lt;20-byte-pubkey-hash&gt; == RIPEMD160(SHA256(pubkey))</li>
+  <li>&lt;20-byte-pubkey-hash&gt; == b58check_to_hex(address)</li>
+</ol>
+
+<p>所以，p2pkh锁定脚本scriptPubKey的实现:</p>
+
+<pre><code class="language-Python">def mk_p2pkh_script(addr):
+    return '76a914' + b58check_to_hex(addr) + '88ac'
+</code></pre>
+
+<h3 id="p2sh">P2SH</h3>
+
+<p>P2SH定义在<a href="https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki">BIP16</a>，它允许付款到任意复杂的脚本用一个修改长度的<code class="highlighter-rouge">scriptPubKey</code>。</p>
+
+<pre><code class="language-None">scriptPubKey: OP_HASH160 &lt;20-byte-script-hash&gt; OP_EQUAL
+              0xA9       14{20b-script-hash}   0x87
+redeemScript: OP_1 &lt;pubkey1&gt; &lt;pubkey2&gt; OP_2 OP_CHECKMULTISIG
+              0x51 0x21...   0x21...   0x52 0xae
+scriptSig: &lt;...&gt; &lt;...&gt; &lt;...&gt; &lt;redeemScript&gt;
+</code></pre>
+
+<p>已知：</p>
+
+<ol>
+  <li>&lt;20-byte-script-hash&gt; == RIPEMD160(SHA256(redeemScript))</li>
+  <li>&lt;20-byte-script-hash&gt; == P2WPKH:&lt;20-byte-pubkey-hash&gt;</li>
+</ol>
+
+<p>所以，p2sh锁定脚本scriptPubKey的实现:</p>
+
+<pre><code class="language-Python">def mk_p2sh_script(addr):
+    return 'a914' + b58check_to_hex(addr) + '87'
+</code></pre>
+
+<h3 id="p2wpkh">P2WPKH</h3>
+
+<p>Pay To Witness Public Key Hash。</p>
+
+<pre><code class="language-None">scriptPubKey: OP_0 &lt;20-byte-key-hash&gt;
+              (0x0014{20-byte-key-hash})
+scriptSig:    (empty)
+witness:      &lt;signature&gt; &lt;pubkey&gt;
+</code></pre>
+
+<p>已知：</p>
+
+<ol>
+  <li>&lt;20-byte-pubkey-hash&gt; == RIPEMD160(SHA256(pubkey))</li>
+  <li>&lt;20-byte-pubkey-hash&gt; == b58check_to_hex(address)</li>
+</ol>
+
+<p>所以，p2wpkh锁定脚本scriptPubKey的实现:</p>
+
+<pre><code class="language-Python">def mk_p2wpkh_script(addr):
+    return '0014' + b58check_to_hex(addr)
+</code></pre>
+
+<h3 id="p2wsh">P2WSH</h3>
+
+<p>Pay To Witness Script Hash。</p>
+
+<pre><code class="language-None">scriptPubKey: OP_0 &lt;32-byte-hash&gt;
+              (0x0020{32-byte-hash})
+scriptSig:    (empty)
+redeemScript: OP_1 &lt;pubkey1&gt; &lt;pubkey2&gt; OP_2 OP_CHECKMULTISIG
+              0x51 0x21...   0x21...   0x52   0xae
+witness:      0 &lt;signature1&gt; &lt;1 &lt;pubkey1&gt; &lt;pubkey2&gt; 2 CHECKMULTISIG&gt;
+</code></pre>
+
+<p>已知：</p>
+
+<ol>
+  <li>&lt;32-byte-script-hash&gt; == SHA256(redeemScript)</li>
+</ol>
+
+<p>所以，p2wsh锁定脚本scriptPubKey的实现:</p>
+
+<pre><code class="language-Python">def mk_p2wsh_script():
+    scripthash = bytes_to_hex_str(sha256(hex_str_to_bytes(redeemscript)))
+    pkscript = "0020" + scripthash
+    return pkscript
+</code></pre>
+
+<h3 id="p2sh-p2wpkh">P2SH-P2WPKH</h3>
+
+<p>P2WPKH nested in BIP16 P2SH。</p>
+
+<pre><code class="language-None">scriptPubKey: HASH160 &lt;20-byte-script-hash&gt; EQUAL
+                  (0xA914{20-byte-script-hash}87)
+scriptSig:    &lt;OP_0 &lt;20-byte-pubkey-hash&gt;&gt;
+              (0x0014{20-byte-pubkey-hash})
+witness:      &lt;signature&gt; &lt;pubkey&gt;
+</code></pre>
+
+<p>已知：</p>
+
+<ol>
+  <li>RIPEMD160(SHA256(pubkey)) == &lt;20-byte-pubkey-hash&gt; &amp;&amp;</li>
+  <li>RIPEMD160(SHA256(0x0014{20-byte-pubkey-hash})) == &lt;20-byte-script-hash&gt;</li>
+</ol>
+
+<p>所以，p2sh-p2wpkh锁定脚本scriptPubKey的实现:</p>
+
+<pre><code class="language-Python"># p2wpkh
+pubkey_20_byte_hash = '0014' + b58check_to_hex(addr)
+# p2sh
+p2sh_script_hash256 = bytes_to_hex_str(
+    sha256(hex_str_to_bytes(pubkey_20_byte_hash))
+)
+p2sh_script_hash160 = bytes_to_hex_str(
+    ripemd160(hex_str_to_bytes(p2sh_script_hash256))
+)
+# print('p2sh-p2wpkh addr&gt;&gt;', hex_to_b58check(p2sh_script_hash160, 196))
+schash = 'a914' + p2sh_script_hash160 + '87'
+return schash
+</code></pre>
+
+<h3 id="p2sh-p2wsh">P2SH-P2WSH</h3>
+
+<p>P2WSH nested in BIP16 P2SH。</p>
+
+<pre><code class="language-None">scriptPubKey: HASH160 &lt;20-byte-hash&gt; EQUAL
+              (0xA914{20-byte-hash}87)
+scriptSig:    &lt;OP_0 &lt;32-byte-hash&gt;&gt;
+              (0x0020{32-byte-hash})
+witness:      0 &lt;signature1&gt; &lt;1 &lt;pubkey1&gt; &lt;pubkey2&gt; 2 CHECKMULTISIG&gt;
+</code></pre>
+
+<p>已知：</p>
+
+<ol>
+  <li>SHA256(redeemScript) == &lt;32-byte-script-hash&gt; &amp;&amp;</li>
+  <li>RIPEMD160(SHA256(0x0020{32-byte-script-hash})) == &lt;20-byte-script-hash&gt;</li>
+</ol>
+
+<p>所以，p2sh-p2wsh锁定脚本scriptPubKey的实现:</p>
+
+<pre><code class="language-Python"># p2wsh
+scripthash = bytes_to_hex_str(sha256(hex_str_to_bytes(redeemscript)))
+pkscript = "0020" + scripthash
+# p2sh
+p2sh_script_hash256 = bytes_to_hex_str(sha256(hex_str_to_bytes(pkscript)))
+p2sh_script_hash160 = bytes_to_hex_str(
+    ripemd160(hex_str_to_bytes(p2sh_script_hash256))
+)
+schash = 'a914' + p2sh_script_hash160 + '87'
+return schash
+</code></pre>
+
+<h2 id="一个小demo">一个小DEMO</h2>
+
+<pre><code class="language-Python">#!/usr/bin/env python3
+import decimal
+import hashlib
+from binascii import hexlify, unhexlify
+from bitcoinrpc.authproxy import AuthServiceProxy   # PyPi: python-bitcoinrpc
+from bitcoin.transaction import serialize   # PyPi: bitcoin
+from bitcoin.main import b58check_to_hex, hex_to_b58check
+from pprint import pprint
+
+# testnet5
+p = AuthServiceProxy("http://%s:%s@127.0.0.1:18554" % ('rpc', '123456'))
+
+address1 = 'mfnCSPtgXEGdt8mJPguvgmhiswfgkqEjAx'
+address2 = 'n3xBmjjCNGDkkt5fdCdV7G7pdx1zxUJXAo'
+address3 = 'mnFMaBdF6YdB1Y6AKtXqfS3Z9U26iHPP1E'
+pubkey1 = p.validateaddress(address1)['pubkey']
+pubkey2 = p.validateaddress(address2)['pubkey']
+pubkey3 = p.validateaddress(address3)['pubkey']
+
+multisigaddress = p.createmultisig(2, [pubkey1, pubkey2, pubkey3])['address']
+redeemscript = p.createmultisig(2, [pubkey1, pubkey2, pubkey3])['redeemScript']
+
+p.addmultisigaddress(2, [pubkey1, pubkey2, pubkey3])
+p.addwitnessaddress(multisigaddress)
+
+print('multisigaddress:', multisigaddress, '\nredeemscript:', redeemscript)
+
+def bytes_to_hex_str(byte_str):
+    return hexlify(byte_str).decode('ascii')
+
+def hex_str_to_bytes(hex_str):
+    return unhexlify(hex_str.encode('ascii'))
+
+def ripemd160(s):
+    return hashlib.new('ripemd160', s).digest()
+
+def sha256(s):
+    return hashlib.new('sha256', s).digest()
+
+def mk_p2wsh_script():
+    """生成p2wsh的脚本"""
+    scripthash = bytes_to_hex_str(sha256(hex_str_to_bytes(redeemscript)))
+    pkscript = "0020" + scripthash
+    return pkscript
+
+def mk_p2sh_script(addr):
+    print('b58check_to_hex(addr)', b58check_to_hex(addr))
+    return 'a914' + b58check_to_hex(addr) + '87'
+
+def mk_p2wpkh_script(addr):
+    return '0014' + b58check_to_hex(addr)
+
+def mk_p2pkh_script(addr):
+    return '76a914' + b58check_to_hex(addr) + '88ac'
+
+def mk_p2wpkh_in_p2sh_script(addr):
+    # p2wpkh
+    pubkey_20_byte_hash = '0014' + b58check_to_hex(addr)
+    # p2sh
+    p2sh_script_hash256 = bytes_to_hex_str(
+        sha256(hex_str_to_bytes(pubkey_20_byte_hash))
+    )
+    p2sh_script_hash160 = bytes_to_hex_str(
+        ripemd160(hex_str_to_bytes(p2sh_script_hash256))
+    )
+    print('p2sh-p2wpkh addr&gt;&gt;', hex_to_b58check(p2sh_script_hash160, 196))  # 5
+    schash = 'a914' + p2sh_script_hash160 + '87'
+    return schash
+
+
+def mk_p2wsh_in_p2sh_script():
+    # p2wsh
+    scripthash = bytes_to_hex_str(sha256(hex_str_to_bytes(redeemscript)))
+    pkscript = "0020" + scripthash
+    # p2sh
+    p2sh_script_hash256 = bytes_to_hex_str(sha256(hex_str_to_bytes(pkscript)))
+    p2sh_script_hash160 = bytes_to_hex_str(
+        ripemd160(hex_str_to_bytes(p2sh_script_hash256))
+    )
+    print('hex_to_b58check', hex_to_b58check(p2sh_script_hash160, 196))     # 5
+    schash = 'a914' + p2sh_script_hash160 + '87'
+    return schash
+
+def select_utxo(amount):
+    """
+    :param amount: 总额(加上手续费)
+    :return: [交易的输入，所有输入的总额]
+    """
+    ins = []
+    ins_amount = 0
+    
+    # listunspent = p.listunspent()
+
+    listunspent = [
+        {
+            'txid': '224f3c21169e6eeeb7154583dcccf6ffb6ebd7bc73bb5976b6568c82fa7f16bf',
+            'vout': 0, 'amount': 0.0891, 'spendable': True
+        }
+    ]
+
+    for unspent in listunspent:
+        if not unspent['spendable']:
+            continue
+
+        if ins_amount &lt; amount:
+            txin = {
+                'script': '',
+                'outpoint': {
+                    'index': unspent['vout'],
+                    'hash': unspent['txid']
+                },
+                'sequence': 4294967295
+            }
+            ins.append(txin)
+            ins_amount += unspent['amount']
+        else:
+            break
+
+    if ins_amount &lt;= amount:
+        return 0
+
+    return [ins, ins_amount]
+
+def create_tx(send_list, my_fee, change_addr):
+    """
+    :param send_list: [{'address':xxx, 'value':0},...]，输出
+    :param my_fee: 单位BTC
+    :param change_addr: 找零地址
+    :return: txid
+    """
+    # tx
+    tx = {'version': 1, 'ins': [], 'outs': [], 'locktime': 0}
+
+    # out
+    out_value_sum = 0
+    for out in send_list:
+        out_script = mk_p2pkh_script(out['address'])
+        if out['type'] == 'p2wsh':
+            out_script = mk_p2wsh_script()
+        elif out['type'] == 'p2sh':
+            out_script = mk_p2sh_script(out['address'])
+        elif out['type'] == 'p2wpkh':
+            out_script = mk_p2wpkh_script(out['address'])
+        elif out['type'] == 'p2pkh':
+            out_script = mk_p2pkh_script(out['address'])
+        elif out['type'] == 'p2sh-p2wpkh':
+            out_script = mk_p2wpkh_in_p2sh_script(out['address'])
+        elif out['type'] == 'p2sh-p2wsh':
+            out_script = mk_p2wsh_in_p2sh_script()
+        txout = {
+            'value': int(decimal.Decimal(out['value'] * 10**8)),
+            'script': out_script
+        }
+        tx['outs'].append(txout)
+        out_value_sum += out['value']
+
+    # in
+    select = select_utxo(round(out_value_sum + my_fee, 8))
+    # print(select)
+    if select:
+        ins = select[0]
+        ins_value_sum = select[1]
+    else:
+        return '余额不足'
+
+    tx['ins'] = ins
+
+    # change to myself
+    change_value = float(ins_value_sum) - out_value_sum - my_fee
+    # print(change_value, ins_value_sum, out_value_sum, my_fee)
+
+    if change_addr:
+        txout = {
+            'value': int(decimal.Decimal(change_value * 10**8)),
+            'script': mk_p2pkh_script(change_addr)
+        }
+        tx['outs'].append(txout)
+
+    print('tx:→', tx)
+
+    # serialize
+    raw_tx = serialize(tx)
+
+    # sign
+    sign_raw_tx = p.signrawtransaction(raw_tx)
+
+    pprint(p.decoderawtransaction(sign_raw_tx['hex']))
+
+    return p.sendrawtransaction(sign_raw_tx['hex'], False)
+
+
+if __name__ == '__main__':
+
+    change_address = ''
+    fee = 0.00003
+
+    pay_to = [
+        {'address': 'mfnCSPtgXEGdt8mJPguvgmhiswfgkqEjAx', 'value': 0.01, 'type': 'p2wsh'},
+        {'address': '2N71hQLY9GGbTry3WsLscBnK3jtYVyzLyeM', 'value': 0.01, 'type': 'p2sh'},
+        {'address': 'mfnCSPtgXEGdt8mJPguvgmhiswfgkqEjAx', 'value': 0.01, 'type': 'p2wpkh'},
+        {'address': 'mfnCSPtgXEGdt8mJPguvgmhiswfgkqEjAx', 'value': 0.01, 'type': 'p2pkh'},
+        {'address': 'mjLTwdup9YH9Yq1F3X2mLezEeypLVN6qiW', 'value': 0.01, 'type': 'p2sh-p2wpkh'},
+        {'address': 'mfnCSPtgXEGdt8mJPguvgmhiswfgkqEjAx', 'value': 0.01, 'type': 'p2sh-p2wsh'},
+    ]
+
+    txid = create_tx(pay_to, fee, change_address)
+    print('txid:→', txid)
+
+# txid:→ 6fcafce56db51b2863e27a3786132e3f6ee24686f29d4c9a0752d936a548585a
+</code></pre>
+
+<h3 id="raw-data">Raw Data</h3>
+
+<pre><code class="language-None">p2wsh: 29c147aa8b2b0cdbe10f9ac732ad43487893f73ce330c2c2b70d03ffac4a5978
+p2sh: 906fc3fc397b3818c7d8cb0baa30b675837cdb727da12aa4ce3dbfa809354082
+p2wpkh: f77a6ce8710c9da8e1481d95e1d7a6999303bc5c0064e261afca884baa7793a1
+p2pkh: b7760c28e302fabdd44beb00b60e88c7c674b259503a9d91d036be3fc64296ed
+p2sh-p2wpkh: c04ea4febcd01c2d010f22c9126001747ed58bf632891f779d7acdb8d0cae9e5
+p2sh-p2wsh: 4c4a2864967a8e089a91a20676e85f34f956387639ee1f3459b0509d71c04649
+
+
+P2WSH:
+version:   02000000
+marker:    00
+flag:      01
+txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 0000000000
+sequence:  ffffffff
+txout:     01 a0bb0d0000000000 19 76a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
+witness:   04
+              00
+              48 3045022100f005c6fafd1f0e1b3bc8fa38767f8a19406397608e6d58dfcf003706355dd71f02201d31d88a9619b9a33f99f59fec79c3cd85dd664c66685fe5dc1e8dfb4ad0ed4901
+              48 3045022100a172be2248d88f9fa27ee6d754d87b6325e512d06af199fa3d0c563a53a464ba0220216fe27da49a2383ae183f9430246f65c852583fc2dd778f27d7a209115d9d1f01
+              69 52
+                 21 032ee1c8dbc0fd00d1d75f710e0951baf42749bc7096c903e78ee149ef1715c5b7
+                 21 039fac71ff2a3de5f458e73ac790484fedfdc8ce83e87296c6d42003cadb5c3dad
+                 21 034631171f10da731e952326c8e903e1b11b9b41e109255fd626f30b5b6c4dbf57
+                 53
+                 ae
+locktime:  00000000
+
+
+
+P2SH:
+version:   02000000
+txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 01000000
+scriptSig: fd fe
+              00 00
+              48 30 45022100a058b64de3f82d436c3879c296e5c9a0e75d74f8d62d4f62a933d43c944379520220235cac4ac16109fad9a77fe80616a11408df85fa0825321fbf36f8126123015f0148 
+                 30 45022100ab3ba29fa0c7fe93dcb83d747efef699cbff360ebeed7c33116408c77dd5a1df02202c80b55c92125ac1a4b7fd403fbd13beb630d184fcf597b0d35c3f0b54011c67014c
+              69 52 
+                 21 032ee1c8dbc0fd00d1d75f710e0951baf42749bc7096c903e78ee149ef1715c5b7
+                 21 039fac71ff2a3de5f458e73ac790484fedfdc8ce83e87296c6d42003cadb5c3dad
+                 21 034631171f10da731e952326c8e903e1b11b9b41e109255fd626f30b5b6c4dbf57
+                 53
+                 ae
+sequence:  ffffffff
+txout:     01 a0bb0d0000000000 1976a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
+locktime:  00000000
+
+
+P2WPKH:
+version:   02000000
+marker:    00
+flag:      01
+txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 02000000
+scriptSig: 00
+sequence:  ffffffff
+txout:     01 a0bb0d0000000000 19 76a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
+witness:   02
+              47 30440220151ba0a73a725535e00677942fa59f13bbade793b471c714d7519299e9a3410b022072b845eeeaa9f4a0c93a04f72e08e127d5e256062afb76df7257313c7bcbcdef01
+              21 032ee1c8dbc0fd00d1d75f710e0951baf42749bc7096c903e78ee149ef1715c5b7
+locktime:  00000000
+
+
+P2PKH:
+version:   02000000
+txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 03000000
+scriptSig: 6b
+              48 3045022100c3d5b2ecbb9dcf87750d6671d8f64bffe4184774c807cd6f7de296ce2be892e402204c93a631ee5783ae9274ad3c7401e5200ade86da08c21dd8b355d3c389609d2001
+              21 032ee1c8dbc0fd00d1d75f710e0951baf42749bc7096c903e78ee149ef1715c5b7
+sequence:  ffffffff
+txout:     01 a0bb0d0000000000 19 76a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
+locktime:  00000000
+
+
+P2SH-P2WPKH:
+version:   02000000
+marker:    00
+flag:      01
+txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 04000000
+scriptSig: 17 16 001429e4ad2badfd9ef69597d1cbb703972cdcc7e736
+sequence:  ffffffff
+txout:     01 a0bb0d0000000000 1976a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
+witness:   02
+              47 304402207cbea9b907c805e2bd88728f3a6b7d50e8680bdf0d3ef74b131c8c99e012232d0220424a14f70f840d020709ac3eff0e01adb407f4b1d98e82f8a3a29403b70d0f6501
+              21 03afcc89b1d34b7db1ebcc880606ad30fa4c1a612f7107af0ffa23ff6a7b3b04f5
+locktime:  00000000
+
+
+P2SH-P2WSH:
+version:   02000000
+marker:    00
+flag:      01
+txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 05000000
+scriptSig: 23 22 0020bf164d9dbd7f5ec8d957b62bb185dec14852fe4fa5eaf8b1d78fbb743c95a8b4
+sequence:  ffffffff
+txout:     01 a0bb0d0000000000 1976a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
+witness:   04
+              00
+              47 304402207991d61ca6b2883d97d1c2f26a4fc6b9f31cb68e63cb6172c357a97a7bbd5aa902207bad944ab68f600780ac8ecc701624a44ecc9978a70e2226a71d5a5a6317ba5e01
+              48 3045022100ce5500a7c6d55f71187b4549905242a463239caebca6f373d646cdda7d747aa2022022bb7bac272d6e47dc2d80257970f97d042ce6587bcb3b99c14f7789b54417f301
+              69 52
+                 21 032ee1c8dbc0fd00d1d75f710e0951baf42749bc7096c903e78ee149ef1715c5b7
+                 21 039fac71ff2a3de5f458e73ac790484fedfdc8ce83e87296c6d42003cadb5c3dad
+                 21 034631171f10da731e952326c8e903e1b11b9b41e109255fd626f30b5b6c4dbf57
+                 53
+                 ae
+locktime:  00000000
+</code></pre>
+
+<hr />
+
+<p>相关链接：</p>
+
+<p>https://en.bitcoin.it/wiki/Script  <br />
+https://en.bitcoin.it/wiki/List_of_address_prefixes     <br />
+https://bitcoincore.org/en/segwit_wallet_dev/  <br />
+https://github.com/bitcoin/bips/blob/master/bip-0067.mediawiki  <br />
+https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki  <br />
+https://github.com/bitcoin/bips/blob/master/bip-0142.mediawiki  <br />
+https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki  <br />
+https://github.com/bitcoinbook/bitcoinbook/blob/second_edition/appdx-segwit.asciidoc</p>
+
+    </div>
+
+    <a class="u-url" href="/2017/bitcoin-segwit.html" hidden></a>
+</article>
+
+<div class="post-tags">
+    
+    <a>Blockchain</a>
+    
+    <a>Bitcoin</a>
+    
+</div>
+
+<div class="pagination">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2017/python-logging.html" title="PREV: Python Logging">
+                ‹ Python Logging
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2017/pyhon-zmq.html" title="NEXT: Python ZMQ">
+                › Python ZMQ
+            </a>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+</main><footer>
+    <p class="post-author">© <a href="/">zzir</a></p>
+    <p class="beian">
+        
+        <span>
+            <img src="/assets/imgs/beian.png">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010902002287">浙公网安备33010902002287号</a>
+        </span>
+        ・︎
+        <span><a href="http://beian.miit.gov.cn/">浙ICP备19040093号</a></span>
+        
+    </p>
+</footer>
+
+<script>
+    // analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?fa1df30338e49443514335c65bd9b8d6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // back display
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() === 0) {
+            document.getElementById("post-back").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

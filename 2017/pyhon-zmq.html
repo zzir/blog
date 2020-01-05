@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zzir">
+    <meta name="description" content="The architect of civilization.">
+    <meta name="keywords" content="zzir,Golang,Python,Docker,K8S">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.js"></script>
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/contrib/auto-render.min.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/github.css">
+    <script src="/assets/js/highlight.pack.js"></script>
+    <title>Python ZMQ - ZZIR's Blog</title>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ]
+            });
+        });
+    </script>
+</head><body>
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="post-back" id="post-back" style="display: none">
+        <a class="black-link" href="https://zzir.cn">🙄</a>
+    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">
+            Python ZMQ
+        </h1>
+        <p class="post-meta">
+            <time class="dt-published" datetime="2017-08-31T00:00:00+08:00" itemprop="datePublished">Aug 31, 2017
+            </time></p>
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        <h2 id="zmq-allowed-patterns">ZMQ Allowed Patterns</h2>
+
+<ul>
+  <li>PUB and SUB</li>
+  <li>REQ and REP</li>
+  <li>REQ and ROUTER</li>
+  <li>DEALER and REP</li>
+  <li>DEALER and ROUTER</li>
+  <li>DEALER and DEALER</li>
+  <li>ROUTER and ROUTER</li>
+  <li>PUSH and PULL</li>
+  <li>PAIR and PAIR</li>
+</ul>
+
+<h2 id="zmq模式">ZMQ模式</h2>
+
+<h3 id="req-rep">REQ-REP</h3>
+
+<p><img src="/imgs/201708-fig2.png" alt="" /></p>
+
+<p>请求-应答：由请求端发起请求，并等待回应端回应请求。从请求端来看，一定是一对对收发配对的；反之，在回应端一定是发收对。请求端和回应端都可以是1：N的模型。通常把1认为是server，N认为是Client。</p>
+
+<p>注意：</p>
+
+<ol>
+  <li>必须先提问，后回答</li>
+  <li>对于一个提问，只能回答一次</li>
+  <li>在没有收到回答前不能再次提问</li>
+</ol>
+
+<!--more-->
+
+<p><strong>举个栗子</strong></p>
+
+<p>Request:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:10000'</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">b</span><span class="s">'hello, i am msg-</span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">_</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"Received reply </span><span class="si">%</span><span class="s">d [</span><span class="si">%</span><span class="s">s]"</span> <span class="o">%</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+
+</code></pre></div></div>
+
+<p>Reply:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import zmq
+import time
+
+context = zmq.Context()
+socket = content.socket(zmq.REP)
+socket.bind('tcp://127.0.0.1:10000')
+
+while True:
+    message = socket.recv()
+    print("Received request: %s " % message)
+    time.sleep(1)
+    socket.send("yay, it's ok.")
+</code></pre></div></div>
+
+<h4 id="extended-request-reply">Extended Request-Reply</h4>
+
+<p>关于 DEALER 和 ROUTE：</p>
+
+<p><img src="/imgs/201708-fig27.png" alt="" /></p>
+
+<p>DEALER 类似一个异步的 REQ Socket。</p>
+
+<p>ROUTE 类似一个一部的 REP Socket。</p>
+
+<p>你依然可以使用REQ，也可以使用DEALER，它们有两个不同：</p>
+
+<ul>
+  <li>The REQ socket always sends an empty delimiter frame before any data frames; the DEALER does not.</li>
+  <li>The REQ socket will send only one message before it receives a reply; the DEALER is fully asynchronous.</li>
+</ul>
+
+<p>看一个具体的例子：</p>
+
+<p><img src="/imgs/201708-fig16.png" alt="" /></p>
+
+<p>Broker:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+
+<span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">ROUTER</span><span class="p">)</span>
+<span class="n">frontend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5559'</span><span class="p">)</span>
+
+<span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
+<span class="n">backend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5560'</span><span class="p">)</span>
+
+<span class="c1"># init poll set
+</span><span class="n">poller</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Poller</span><span class="p">()</span>
+<span class="n">poller</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">frontend</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">)</span>
+<span class="n">poller</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">socks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">poller</span><span class="o">.</span><span class="n">poll</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">socks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">frontend</span><span class="p">)</span> <span class="o">==</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">frontend</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">socks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span> <span class="o">==</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
+        <span class="n">frontend</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Client:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="c1">#  Prepare our context and sockets
+</span><span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
+
+<span class="c1">#  Do 10 requests, waiting each time for a response
+</span><span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">):</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">b</span><span class="s">"Hello"</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"Received reply </span><span class="si">%</span><span class="s">s [</span><span class="si">%</span><span class="s">s]"</span> <span class="o">%</span> <span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+
+</code></pre></div></div>
+
+<p>Server:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REP</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"Received request: </span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">message</span><span class="p">)</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">b</span><span class="s">"World"</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p>客户端和服务端相对透明，唯一的静态节点代理在中间。</p>
+
+<h3 id="pub-sub">PUB-SUB</h3>
+
+<p><img src="/imgs/201708-fig4.png" alt="" /></p>
+
+<p>发布-订阅：类似广播。这个模型里，发布端是单向只发送数据的，且不关心是否把全部的信息都发送给订阅者。如果发布端开始发布信息的时候，订阅端尚未连接上，这些信息直接丢弃。不过一旦订阅连接上来，中间会保证没有信息丢失。同样，订阅端则只负责接收，而不能反馈。如果发布端和订阅端需要交互（比如要确认订阅者是否已经连接上），则使用额外的socket采用请求回应模型满足这个需求。</p>
+
+<p>举个栗子：</p>
+
+<p>Publisher</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">port</span> <span class="o">=</span> <span class="s">"10001"</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUB</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">topic</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">9999</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
+    <span class="n">messagedata</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">215</span><span class="p">)</span> <span class="o">-</span> <span class="mi">80</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">d </span><span class="si">%</span><span class="s">d"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">d </span><span class="si">%</span><span class="s">d"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Subscriber:</p>
+
+<p>Publisher像广播一样一直在发送，不管Subscriber是否接收得到，当Subscriber连接上Publisher之后，从连上那一刻开始接收KEY为10001的内容，满5次自动断开。Publisher依然会向端口广播消息，不论Subscriber是否连接。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="c1"># Socket to talk to server
+</span><span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">"Collecting updates from weather server..."</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:10001"</span><span class="p">)</span>
+
+<span class="c1"># Subscribe to zipcode, default is NYC, 10001, not port
+</span><span class="n">topicfilter</span> <span class="o">=</span> <span class="s">"10001"</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="n">topicfilter</span><span class="p">)</span>
+
+<span class="c1"># Process 5 updates
+</span><span class="n">total_value</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">update_nbr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">total_value</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">messagedata</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'topic: </span><span class="si">%</span><span class="s">s  messagedata: </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span>
+    <span class="s">"Average value: topic '</span><span class="si">%</span><span class="s">s' messagedata </span><span class="si">%</span><span class="s">dF"</span> <span class="o">%</span>
+    <span class="p">(</span><span class="n">topicfilter</span><span class="p">,</span> <span class="n">total_value</span> <span class="o">/</span> <span class="n">update_nbr</span><span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="push-pull">PUSH-PULL</h3>
+
+<p><img src="/imgs/201708-fig5.png" alt="" /></p>
+
+<p>管道模式。这个模型里，管道是单向的，从PUSH端单向的向PULL端单向的推送数据流。</p>
+
+<p>举个栗子：</p>
+
+<p>Ventilator:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+
+<span class="n">ventilator</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUSH</span><span class="p">)</span>
+<span class="n">ventilator</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5557"</span><span class="p">)</span>
+
+<span class="c1"># random.seed()
+</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">workload</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">ventilator</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">workload</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>Worker:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+
+<span class="n">ventilator</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">)</span>
+<span class="n">ventilator</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5557'</span><span class="p">)</span>
+
+<span class="n">sink</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUSH</span><span class="p">)</span>
+<span class="n">sink</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5558'</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="c1"># do something
+</span>    <span class="n">recv</span> <span class="o">=</span> <span class="n">ventilator</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="n">sink</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">recv</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Sink:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+
+<span class="n">sink</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">)</span>
+<span class="n">sink</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5558"</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">sink</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h3 id="pair">PAIR</h3>
+
+<p><img src="/imgs/201708-pair.png" alt="" /></p>
+
+<p>在一个进程中，用于两个线程间的通信。</p>
+
+<p>Conventional sockets allow:</p>
+
+<ul>
+  <li>only strict one-to-one (two peers)</li>
+  <li>many-to-one (many clients, one server)</li>
+  <li>one-to-many (multicast) relationships</li>
+</ul>
+
+<p><strong>Exclusive pair pattern</strong></p>
+
+<p>Paired sockets are very similar to regular sockets.</p>
+
+<ul>
+  <li>The communication is bidirectional.</li>
+  <li>There is no specific state stored within the socket</li>
+  <li>There can only be one connected peer.</li>
+  <li>The server listens on a certain port and a client connects to it.</li>
+</ul>
+
+<p>举个栗子：</p>
+
+<p>服务端和客户端可以发送任意的消息数量。</p>
+
+<p>Server:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">port</span> <span class="o">=</span> <span class="s">"5556"</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PAIR</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://*:</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">"Server message to client3"</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">msg</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Client:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">port</span> <span class="o">=</span> <span class="s">"5556"</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PAIR</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://localhost:</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">msg</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">"client message to server1"</span><span class="p">)</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">"client message to server2"</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="路由">路由</h2>
+
+<p>更复杂的网络模型。ZMQ可以很好的支持路由功能（实现路由功能的组件叫做Device），把1：N扩展为N：M（只需要加入若干路由节点）。从这个模型看，更底层的端点地址是对上层隐藏的。每个请求都隐含回应地址，而应用则不关心它。</p>
+
+<p>Device 组件有 3 个基本模式：</p>
+
+<ul>
+  <li>Queue</li>
+  <li>Forwarder</li>
+  <li>Streamer</li>
+</ul>
+
+<p>还有新的Proxy()。</p>
+
+<h3 id="queue-device">Queue Device</h3>
+
+<p><img src="/imgs/201708-Queue.png" alt="" /></p>
+
+<p>Queue 是位于客户端和服务器之间的中介，将客户端的请求转发给服务端，再将收到的服务端的回应转发给客户端。</p>
+
+<p>Queue:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">frontend</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">XREP</span><span class="p">)</span>
+        <span class="n">frontend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://*:5559'</span><span class="p">)</span>
+
+        <span class="n">backend</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">XREQ</span><span class="p">)</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://*:5560'</span><span class="p">)</span>
+
+        <span class="n">zmq</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">QUEUE</span><span class="p">,</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+    <span class="k">except</span> <span class="nb">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">e</span>
+        <span class="k">print</span> <span class="s">"bringing down zmq device"</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">pass</span>
+        <span class="n">frontend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">content</span><span class="o">.</span><span class="n">term</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Client:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="n">port</span> <span class="o">=</span> <span class="s">'5559'</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+
+<span class="k">print</span> <span class="s">'Connecting to server...'</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://localhost:</span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+
+<span class="n">client_id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
+    <span class="k">print</span> <span class="s">'Sending request '</span><span class="p">,</span> <span class="n">request</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">'Hello from </span><span class="si">%</span><span class="s">s '</span> <span class="o">%</span> <span class="n">client_id</span><span class="p">)</span>
+
+    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">'Received reply </span><span class="si">%</span><span class="s">d [</span><span class="si">%</span><span class="s">s]'</span> <span class="o">%</span> <span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Server:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="n">port</span> <span class="o">=</span> <span class="s">'5560'</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REP</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://localhost:</span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+
+<span class="n">server_id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">'Received request: '</span><span class="p">,</span> <span class="n">message</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">'World from server </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">server_id</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>如果想查看负载均衡效果，可以运行多个客户端和服务端。客户端的请求会经由中介分配到不同的服务器。</p>
+
+<h3 id="forwarder">Forwarder</h3>
+
+<p><img src="/imgs/201708-forwarder.png" alt="" /></p>
+
+<p>如同 QUEUE 的 request-reply 模式。FORWARDER 像 pub-sub 的代理服务器。它允许 publishers 和 subscribers 移动部件，FORWARDER 是中心部件负责连接所有的publishers和subscribers。</p>
+
+<p>Forwarder:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># sub
+</span>        <span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
+        <span class="n">frontend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
+
+        <span class="n">frontend</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s">""</span><span class="p">)</span>
+
+        <span class="c1"># pub
+</span>        <span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUB</span><span class="p">)</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
+
+        <span class="c1"># forwarder
+</span>        <span class="n">zmq</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">FORWARDER</span><span class="p">,</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+    <span class="k">except</span> <span class="nb">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">e</span>
+        <span class="k">print</span> <span class="s">"bringing down zmq device"</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">pass</span>
+        <span class="n">frontend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">term</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Client:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="n">port</span> <span class="o">=</span> <span class="s">"5560"</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="s">"Collecting updates from server..."</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://localhost:</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+
+<span class="n">topicfilter</span> <span class="o">=</span> <span class="s">"9"</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="n">topicfilter</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">update_nbr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span>
+</code></pre></div></div>
+
+<p>Server:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">port</span> <span class="o">=</span> <span class="s">"5559"</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUB</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://localhost:</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+
+<span class="n">publisher_id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">topic</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">messagedata</span> <span class="o">=</span> <span class="s">"server#</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">publisher_id</span>
+    <span class="k">print</span> <span class="s">"</span><span class="si">%</span><span class="s">s </span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">)</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">d </span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="streamer">Streamer</h3>
+
+<p><img src="/imgs/201708-streamer.png" alt="" /></p>
+
+<p>Streamer 用于并行管道消息通信。作为一个代理，从PUSH端收集任务并发放给PULL端。</p>
+
+<p>Streamer:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+
+        <span class="c1"># pull
+</span>        <span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">)</span>
+        <span class="n">frontend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5559'</span><span class="p">)</span>
+
+        <span class="c1"># push
+</span>        <span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUSH</span><span class="p">)</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5560'</span><span class="p">)</span>
+
+        <span class="c1"># streamer
+</span>        <span class="n">zmq</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">STREAMER</span><span class="p">,</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+    <span class="k">except</span> <span class="nb">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">e</span>
+        <span class="k">print</span> <span class="s">'streamer_device'</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">pass</span>
+        <span class="n">frontend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">term</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>PUSH:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="k">def</span> <span class="nf">producer</span><span class="p">():</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+    <span class="n">zmq_socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUSH</span><span class="p">)</span>
+    <span class="n">zmq_socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
+    <span class="c1"># push
+</span>    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">20000</span><span class="p">):</span>
+        <span class="n">work_message</span> <span class="o">=</span> <span class="p">{</span><span class="s">'num'</span><span class="p">:</span> <span class="n">num</span><span class="p">}</span>
+        <span class="n">zmq_socket</span><span class="o">.</span><span class="n">send_json</span><span class="p">(</span><span class="n">work_message</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">producer</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>PULL:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="k">def</span> <span class="nf">consumer</span><span class="p">():</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+    <span class="c1"># pull
+</span>    <span class="n">consumer_receiver</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">)</span>
+    <span class="n">consumer_receiver</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
+
+    <span class="n">consumer_id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">"I am consumer #</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">consumer_id</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">work</span> <span class="o">=</span> <span class="n">consumer_receiver</span><span class="o">.</span><span class="n">recv_json</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">work</span><span class="p">[</span><span class="s">'num'</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s">'consumer'</span><span class="p">:</span> <span class="n">consumer_id</span><span class="p">,</span> <span class="s">'num'</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
+        <span class="k">print</span> <span class="n">result</span>
+
+<span class="n">consumer</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h3 id="proxy">Proxy()</h3>
+
+<p>用于替代Device。</p>
+
+<p>Show me The Code:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+
+    <span class="c1"># Socket facing clients
+</span>    <span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">ROUTER</span><span class="p">)</span>
+    <span class="n">frontend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
+
+    <span class="c1"># Socket facing services
+</span>    <span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
+    <span class="n">backend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
+
+    <span class="n">zmq</span><span class="o">.</span><span class="n">proxy</span><span class="p">(</span><span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+
+    <span class="c1"># We never get here
+</span>    <span class="n">frontend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">backend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">term</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div></div>
+
+<hr />
+
+<p>参考链接：  <br />
+http://zguide.zeromq.org/py:all  <br />
+http://pyzmq.readthedocs.io/en/latest/api/  <br />
+https://learning-0mq-with-pyzmq.readthedocs.io/en/latest/pyzmq/  <br />
+https://pyzmq.readthedocs.io/en/latest/api/index.html</p>
+
+
+    </div>
+
+    <a class="u-url" href="/2017/pyhon-zmq.html" hidden></a>
+</article>
+
+<div class="post-tags">
+    
+    <a>ZMQ</a>
+    
+    <a>Python</a>
+    
+</div>
+
+<div class="pagination">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2017/bitcoin-segwit.html" title="PREV: Bitcoin SegWit(Segregated Witness)">
+                ‹ Bitcoin SegWit(Segregated Witness)
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2017/google-authentication.html" title="NEXT: Google Authentication (2FA)">
+                › Google Authentication (2FA)
+            </a>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+</main><footer>
+    <p class="post-author">© <a href="/">zzir</a></p>
+    <p class="beian">
+        
+        <span>
+            <img src="/assets/imgs/beian.png">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010902002287">浙公网安备33010902002287号</a>
+        </span>
+        ・︎
+        <span><a href="http://beian.miit.gov.cn/">浙ICP备19040093号</a></span>
+        
+    </p>
+</footer>
+
+<script>
+    // analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?fa1df30338e49443514335c65bd9b8d6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // back display
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() === 0) {
+            document.getElementById("post-back").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

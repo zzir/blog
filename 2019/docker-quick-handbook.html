@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zzir">
+    <meta name="description" content="The architect of civilization.">
+    <meta name="keywords" content="zzir,Golang,Python,Docker,K8S">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.js"></script>
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/contrib/auto-render.min.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/github.css">
+    <script src="/assets/js/highlight.pack.js"></script>
+    <title>Docker 常用操作 - ZZIR's Blog</title>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ]
+            });
+        });
+    </script>
+</head><body>
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="post-back" id="post-back" style="display: none">
+        <a class="black-link" href="https://zzir.cn">🙄</a>
+    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">
+            Docker 常用操作
+        </h1>
+        <p class="post-meta">
+            <time class="dt-published" datetime="2019-10-25T00:00:00+08:00" itemprop="datePublished">Oct 25, 2019
+            </time></p>
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        <blockquote>
+  <p>Build, share and run modern applications anywhere. – Docker</p>
+</blockquote>
+
+<p>Docker 是一个针对开发者、架构师、DevOps 和 IT 的容器解决方案。</p>
+
+<p>本篇主要记录日常开发中一些常用操作。</p>
+
+<p>持续更新中，最后更新时间：2019/10/28。</p>
+
+<h2 id="容器">容器</h2>
+
+<h3 id="启动一个容器并进入容器里">启动一个容器并进入容器里</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-ti</span> alpine:latest /bin/sh
+</code></pre></div></div>
+<p>常用参数解释：</p>
+<ul>
+  <li><code class="highlighter-rouge">-t</code>: 伪终端模式</li>
+  <li><code class="highlighter-rouge">-i</code>: 打开标准输入</li>
+  <li><code class="highlighter-rouge">-d</code>: 后台运行</li>
+  <li><code class="highlighter-rouge">-p</code>: 映射端口</li>
+  <li><code class="highlighter-rouge">-v</code>: 挂载目录</li>
+</ul>
+
+<h3 id="创建一个容器但是不启动它">创建一个容器但是不启动它</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker create <span class="nt">--name</span> test001 alpine:latest /bin/sh <span class="nt">-c</span> <span class="s2">"while true; do date; sleep 2; done"</span>
+</code></pre></div></div>
+
+<h3 id="启动重启删除一个容器">启动/重启/删除一个容器</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker start test001
+docker restart test001
+docker <span class="nb">rm </span>test001
+</code></pre></div></div>
+<p><em>注意：删除操作需要先将容器关闭</em></p>
+
+<h3 id="进入容器内部">进入容器内部</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker attach test001
+</code></pre></div></div>
+
+<h3 id="执行容器内的命令">执行容器内的命令</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">exec</span> <span class="nt">-ti</span> <span class="nt">--user</span> root test001 /bin/sh
+</code></pre></div></div>
+
+<p>参数解释：</p>
+
+<ul>
+  <li><code class="highlighter-rouge">--user</code> 指定用户</li>
+</ul>
+
+<h3 id="宿主容器相互拷贝">宿主/容器相互拷贝</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">cp </span>test001:/etc/passwd /tmp/passwd
+docker <span class="nb">cp</span> /tmp/passwd test001:/cat/passwd
+</code></pre></div></div>
+
+<h3 id="暂停恢复一个容器">暂停/恢复一个容器</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pause test001
+docker unpause test001
+</code></pre></div></div>
+<p>可以使用 <code class="highlighter-rouge">docker logs -f test001</code> 验证其状态</p>
+
+<h3 id="关闭删除容器">关闭/删除容器</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker stop test001
+</code></pre></div></div>
+
+<p>或者直接 Kill 掉容器</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">kill </span>test001
+</code></pre></div></div>
+
+<p>等待容器结束并打印退出码</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">wait </span>test001
+</code></pre></div></div>
+
+<p>删除镜像</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">rm </span>test001
+</code></pre></div></div>
+
+<h3 id="列出运行中的容器">列出运行中的容器</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker ps
+</code></pre></div></div>
+<p>可以加 <code class="highlighter-rouge">-a</code> 参数列出所有容器</p>
+
+<h3 id="查看容器运行状况cpumemionet等">查看容器运行状况(CPU/MEM/IO/NET等)</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker stats
+</code></pre></div></div>
+
+<h3 id="查看容器内进程状态">查看容器内进程状态</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker top test001
+</code></pre></div></div>
+
+<h3 id="查看容器端口信息">查看容器端口信息</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker port test001
+</code></pre></div></div>
+
+<h3 id="查看容器日志信息">查看容器日志信息</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker logs <span class="nt">-f</span> test001
+</code></pre></div></div>
+
+<p>参数解释：</p>
+
+<ul>
+  <li><code class="highlighter-rouge">-f</code> 持续输出</li>
+</ul>
+
+<h3 id="查看容器镜像元数据">查看容器/镜像元数据</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker inspect test001
+</code></pre></div></div>
+
+<h3 id="更改容器名称">更改容器名称</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker rename test001 test111
+docker rename test111 test001 <span class="c"># 将名称改回来</span>
+</code></pre></div></div>
+
+<h3 id="查看容器文件更改">查看容器文件更改</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker diff test001
+</code></pre></div></div>
+
+<h3 id="更改容器配置">更改容器配置</h3>
+<p><em>注意：不支持 Windows 系统</em></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-dit</span> <span class="nt">--name</span> test002 <span class="nt">-m</span> 100M alpine /bin/sh
+docker update <span class="nt">-m</span> 80M test002
+</code></pre></div></div>
+
+<h3 id="导入导出">导入/导出</h3>
+<p>容器 (export/import)：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">export</span> <span class="nt">-o</span> /tmp/test001-copy.tar test001 <span class="c"># 单个导出</span>
+docker import /tmp/test001-copy.tar test001-copy
+docker images
+</code></pre></div></div>
+<p>镜像 (save/load)：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker save <span class="nt">-o</span> /tmp/test001-copy2.tar test001-copy:latest alpine:latest <span class="c"># 可多个镜像</span>
+docker load <span class="nt">-i</span> /tmp/test001-copy2.tar
+</code></pre></div></div>
+<p>区别：</p>
+<ul>
+  <li><code class="highlighter-rouge">export</code> 针对容器，导出内容不包含中间层信息，适用于制作基础镜像</li>
+  <li><code class="highlighter-rouge">save</code> 针对镜像，可多个一起导出</li>
+  <li><code class="highlighter-rouge">import</code> 导入容器到镜像，可重新命名</li>
+  <li><code class="highlighter-rouge">load</code> 导入镜像，无法命名</li>
+</ul>
+
+<h2 id="镜像">镜像</h2>
+
+<h3 id="查看镜像列表">查看镜像列表</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker images
+</code></pre></div></div>
+
+<h3 id="删除镜像">删除镜像</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker rmi test001-copy
+</code></pre></div></div>
+<p><em>注意：删除镜像需要依赖此镜像的容器都删除后才能操作</em></p>
+
+<h3 id="给镜像打标签">给镜像打标签</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker tag alpine:latest my/alpine:latest
+</code></pre></div></div>
+
+<h3 id="镜像历史">镜像历史</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker <span class="nb">history </span>my/alpine:latest
+</code></pre></div></div>
+
+<h3 id="从容器创建一个新镜像">从容器创建一个新镜像</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker commit <span class="nt">-p</span> <span class="nt">-a</span> <span class="s2">"test"</span> <span class="nt">-m</span> <span class="s2">"test content"</span> test001 my/test002:latest
+docker images | <span class="nb">grep </span>my/
+</code></pre></div></div>
+<p>参数说明:</p>
+<ul>
+  <li><code class="highlighter-rouge">-p</code>: commit 时暂停</li>
+  <li><code class="highlighter-rouge">-a</code>: 提交镜像作者</li>
+  <li><code class="highlighter-rouge">-m</code>: 提交镜像说明</li>
+  <li><code class="highlighter-rouge">-c</code>: 使用 Dockerfile 创建</li>
+</ul>
+
+<h3 id="事件查看">事件查看</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker events <span class="nt">--filter</span> <span class="s1">'container=test001'</span>
+docker events <span class="nt">--filter</span> <span class="s1">'image=alpine'</span>
+docker events <span class="nt">--filter</span> <span class="s1">'container=test'</span> <span class="nt">--filter</span> <span class="s1">'container=d9cdb1525ea8'</span>
+docker events <span class="nt">--filter</span> <span class="s1">'type=volume'</span>
+docker events <span class="nt">--filter</span> <span class="s1">'type=network'</span>
+docker events <span class="nt">--filter</span> <span class="s1">'type=container'</span> <span class="nt">--format</span> <span class="s1">'Type=\{\{.Type\}\}  Status=\{\{.Status\}\}  ID=\{\{.ID\}\}'</span>
+</code></pre></div></div>
+<p>全部以 JSON 输出</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker events <span class="nt">--format</span> <span class="s1">'\{\{json .\}\}'</span>
+</code></pre></div></div>
+<p>更多自定义可以参考：https://docs.docker.com/engine/reference/commandline/events/</p>
+
+<h2 id="资源">资源</h2>
+
+<h3 id="列出所有数据卷">列出所有数据卷</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker volume <span class="nb">ls</span>
+</code></pre></div></div>
+
+<h3 id="创建删除数据卷">创建/删除数据卷</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker volume create test-volume
+docker volume <span class="nb">rm </span>test-volume
+</code></pre></div></div>
+
+<h3 id="查看数据卷信息">查看数据卷信息</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker volume inspect test-volume
+</code></pre></div></div>
+
+<h3 id="挂载数据卷">挂载数据卷</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-ti</span> <span class="nt">--name</span> test003 <span class="nt">--mount</span> <span class="nb">type</span><span class="o">=</span>volume,source<span class="o">=</span>test-volume,target<span class="o">=</span>/data alpine /bin/sh
+</code></pre></div></div>
+
+<h3 id="挂载目录">挂载目录</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-ti</span> <span class="nt">--name</span> test004 <span class="nt">-v</span> /tmp/docker/data:/data alpine /bin/sh
+</code></pre></div></div>
+
+<h3 id="网络列表">网络列表</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker network <span class="nb">ls</span>
+</code></pre></div></div>
+
+<h3 id="创建删除网络">创建/删除网络</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker network create <span class="nt">-d</span> bridge test-bridge
+docker network <span class="nb">rm </span>test-bridge
+</code></pre></div></div>
+
+<h3 id="容器指定网络">容器指定网络</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-ti</span> <span class="nt">--name</span> test005 <span class="nt">--network</span><span class="o">=</span>test-bridge alpine /bin/sh
+</code></pre></div></div>
+
+<h3 id="容器设置-cpu-和内存限制">容器设置 CPU 和内存限制</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-ti</span> <span class="nt">--name</span> test006 <span class="nt">--cpus</span><span class="o">=</span>1 <span class="nt">-m</span> 100M alpine /bin/sh
+</code></pre></div></div>
+
+<h2 id="插件">插件</h2>
+
+<h3 id="将数据卷通过存储到远程">将数据卷通过存储到远程</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker plugin <span class="nb">install</span> <span class="nt">--grant-all-permissions</span> vieux/sshfs
+docker volume create <span class="nt">--driver</span> vieux/sshfs <span class="nt">-o</span> <span class="nv">sshcmd</span><span class="o">=</span><span class="nb">test</span>@192.168.5.242:/data/docker/sshvolume <span class="nt">-o</span> <span class="nv">password</span><span class="o">=</span>youpassword ssh-volume
+docker run <span class="nt">-ti</span> <span class="nt">--name</span> test009 <span class="nt">--mount</span> <span class="nb">type</span><span class="o">=</span>volume,volume-driver<span class="o">=</span>vieux/sshfs,source<span class="o">=</span>ssh-volume,target<span class="o">=</span>/data alpine /bin/sh
+</code></pre></div></div>
+
+<h2 id="其它">其它</h2>
+
+<h3 id="删除历史不使用的镜像">删除历史不使用的镜像</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker images | <span class="nb">grep </span>none | <span class="nb">awk</span> <span class="s1">'{ print $3; }'</span> | xargs docker rmi
+</code></pre></div></div>
+
+<h2 id="更多">更多</h2>
+
+<ul>
+  <li>https://docs.docker.com/engine/reference/commandline/docker/</li>
+</ul>
+
+
+    </div>
+
+    <a class="u-url" href="/2019/docker-quick-handbook.html" hidden></a>
+</article>
+
+<div class="post-tags">
+    
+    <a>Docker</a>
+    
+</div>
+
+<div class="pagination">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2019/golang-sort.html" title="PREV: Golang 排序算法实现">
+                ‹ Golang 排序算法实现
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2019/dockerfile-and-registry.html" title="NEXT: Dockerfile And Registry">
+                › Dockerfile And Registry
+            </a>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+</main><footer>
+    <p class="post-author">© <a href="/">zzir</a></p>
+    <p class="beian">
+        
+        <span>
+            <img src="/assets/imgs/beian.png">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010902002287">浙公网安备33010902002287号</a>
+        </span>
+        ・︎
+        <span><a href="http://beian.miit.gov.cn/">浙ICP备19040093号</a></span>
+        
+    </p>
+</footer>
+
+<script>
+    // analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?fa1df30338e49443514335c65bd9b8d6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // back display
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() === 0) {
+            document.getElementById("post-back").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>
