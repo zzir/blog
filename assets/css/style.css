@@ -853,6 +853,10 @@ p a > code:hover {
     padding-bottom: 0
 }
 
+.sect1 + .sect1 {
+    border-top: 1px solid #e7e7e9
+}
+
 details, .audioblock, .imageblock, .literalblock, .listingblock, .stemblock, .videoblock {
     margin-bottom: 1.25em
 }
