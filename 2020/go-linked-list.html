@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zzir">
+    <meta name="description" content="The architect of civilization.">
+    <meta name="keywords" content="zzir,Golang,Python,Docker,K8S">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.js"></script>
+    <script defer src="https://cdn.staticfile.org/KaTeX/0.11.1/contrib/auto-render.min.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/github.css">
+    <script src="/assets/js/highlight.pack.js"></script>
+    <title>单链表、双链表的 Golang 实现 - ZZIR's Blog</title>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ]
+            });
+        });
+    </script>
+</head><body>
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="post-back" id="post-back" style="display: none">
+        <a class="black-link" href="https://zzir.cn">🙄</a>
+    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">
+            单链表、双链表的 Golang 实现
+        </h1>
+        <p class="post-meta">
+            <time class="dt-published" datetime="2020-01-05T00:00:00+08:00" itemprop="datePublished">Jan 5, 2020
+            </time>・
+            <span itemprop="author" itemscope itemtype="http://schema.org/Person"
+            ><span class="p-author h-card" itemprop="name">zzir</span></span
+            ></p>
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        <div class="sect1">
+<h2 id="single-linked-list">Single Linked List</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="单链表定义">单链表定义</h3>
+<div class="paragraph">
+<p>此处将 <code>Node</code> 和 <code>List</code> 分开定义，方便理解，官方的方法是把两个结构合并，<br>
+戳：https://golang.org/src/container/list/list.go?s=2063:2093#L14</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">type Node struct {
+	value interface{}
+	next  *Node
+}
+
+type List struct {
+	len  int
+	head *Node
+	tail *Node
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="接口列表">接口列表</h3>
+<div class="paragraph">
+<p>非必要可以省略此步骤，此处使用 <code>Interface</code> 只是为了方便阅读和展示。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">type SingleLinkedList interface {
+	Init()
+	Len() int
+	PushFront(v interface{})
+	PushBack(v interface{})
+	Insert(v interface{}, index int) error
+	RemoveFront() interface{}
+	RemoveBack() interface{}
+	Remove(index int) interface{}
+	GetHead() *Node
+	Get(index int) interface{}
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="初始化">初始化</h3>
+<div class="paragraph">
+<p>初始化操作，需要手动初始化，也可以实现在首次插入时进行初始化操作。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) Init() {
+	l.len = 0
+	l.head = nil
+	l.tail = nil
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="链表长度">链表长度</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) Len() int {
+	return l.len
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="添加操作">添加操作</h3>
+<div class="paragraph">
+<p>新节点三种插入方式，分别是 头部插入、末尾插入、指定位置插入。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">// 从链表头部插入一个新节点
+func (l *List) PushFront(v interface{}) {
+	node := &amp;Node{
+		value: v,
+		next:  nil,
+	}
+	if l.len == 0 {
+		l.tail = node
+	} else {
+		node.next = l.head
+	}
+	l.head = node
+	l.len++
+}
+
+// 从链表尾部插入一个新节点
+func (l *List) PushBack(v interface{}) {
+	node := &amp;Node{
+		value: v,
+		next:  nil,
+	}
+	if l.len == 0 {
+		l.head = node
+	} else {
+		l.tail.next = node
+	}
+	l.tail = node
+	l.len++
+}
+
+// 指定位置，插入新节点
+func (l *List) Insert(v interface{}, index int) error {
+	if index &gt;= l.len {
+		return errors.New("index error")
+	}
+	if index == 0 {
+		l.PushFront(v)
+		return nil
+	}
+	node := &amp;Node{
+		value: v,
+		next:  nil,
+	}
+	prev := l.head
+	for i := 1; i &lt; l.len; i++ {
+		if i == index {
+			node.next = prev.next
+			prev.next = node
+			l.len++
+			return nil
+		}
+		prev = prev.next
+	}
+
+	return errors.New("insert error")
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="移除操作">移除操作</h3>
+<div class="paragraph">
+<p>三种移除操作，移除头部、移除尾部、指定位置移除。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">// 移除头部节点
+func (l *List) RemoveFront() interface{} {
+	if l.len == 0 {
+		return nil
+	}
+	node := l.head
+	l.head = l.head.next
+	l.len--
+	return node.value
+}
+
+// 移除尾部节点
+func (l *List) RemoveBack() interface{} {
+	if l.len == 0 {
+		return nil
+	}
+	node := l.head
+	for i := 1; i &lt; l.len-1; i++ {
+		node = node.next
+	}
+	tmp := node.next
+	node.next = nil
+	l.tail = node
+	l.len--
+	return tmp.value
+}
+
+// 指定位置移除节点
+func (l *List) Remove(index int) interface{} {
+	if l.len == 0 {
+		return nil
+	}
+	if index == 0 {
+		return l.RemoveFront()
+	} else if index == l.len-1 {
+		return l.RemoveBack()
+	}
+	node := l.head
+	for i := 1; i &lt; index; i++ {
+		node = node.next
+	}
+	tmp := node.next
+	node.next = node.next.next
+	l.len--
+	return tmp.value
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="获取节点">获取节点</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">// 获取头部节点
+func (l *List) GetHead() *Node {
+	return l.head
+}
+
+// 获取指定位置的节点值
+func (l *List) Get(index int) interface{} {
+	if index &gt;= l.len {
+		return nil
+	}
+	node := l.head
+	for i := 0; i &lt; l.len; i++ {
+		if i == index {
+			return node.value
+		}
+		node = node.next
+	}
+	return nil
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="测试">测试</h4>
+<div class="paragraph">
+<p>完整代码见：<br>
+<a href="https://github.com/zzir/algo/blob/master/code/linked_list/single_linked_list/list.go" class="bare">https://github.com/zzir/algo/blob/master/code/linked_list/single_linked_list/list.go</a></p>
+</div>
+<div class="paragraph">
+<p>测试用例：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func main() {
+	var sl SingleLinkedList = &amp;List{}
+	sl.Init()
+	sl.PushFront(6)
+	sl.PushFront(7)
+	sl.PushFront(8)
+	sl.PushBack(1)
+	sl.PushBack(2)
+	sl.PushBack(3)
+	fmt.Println("r", sl.RemoveFront())
+	_ = sl.Insert(9, 0)
+	_ = sl.Insert(8, 5)
+	fmt.Println("r", sl.RemoveBack())
+	fmt.Println("r", sl.RemoveBack())
+	fmt.Println("rm", sl.Remove(1))
+	fmt.Println("rm", sl.Remove(2))
+
+	fmt.Println("len", sl.Len())
+	node := sl.GetHead()
+	for {
+		fmt.Println("&gt;&gt;&gt;", node.value)
+		if node.next == nil {
+			break
+		}
+		node = node.next
+	}
+	fmt.Println(sl.Get(1))
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="double-linked-list">Double Linked List</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>在 Single Linked List 的基础上修改。</p>
+</div>
+<div class="sect2">
+<h3 id="定义">定义</h3>
+<div class="paragraph">
+<p>增加了 <code>prev</code> 字段。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">type Node struct {
+	value interface{}
+	next  *Node
+	prev  *Node // add prev
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="接口列表-2">接口列表</h3>
+<div class="paragraph">
+<p>增加了 <code>GetTail</code> 接口，获取尾部节点。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">type DoubleLinkedList interface {
+	Init()
+	Len() int
+	PushFront(v interface{})
+	PushBack(v interface{})
+	Insert(v interface{}, index int) error
+	RemoveFront() interface{}
+	RemoveBack() interface{}
+	Remove(index int) interface{}
+	GetHead() *Node
+	GetTail() *Node // add
+	Get(index int) interface{}
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="插入操作">插入操作</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) PushFront(v interface{}) {
+	node := &amp;Node{
+		value: v,
+		next:  nil,
+		prev:  nil, // add
+	}
+	if l.len == 0 {
+		l.tail = node
+	} else {
+		l.head.prev = node // add
+		node.next = l.head
+	}
+	l.head = node
+	l.len++
+}
+
+func (l *List) PushBack(v interface{}) {
+	node := &amp;Node{
+		value: v,
+		next:  nil,
+		prev:  nil, // add
+	}
+	if l.len == 0 {
+		l.head = node
+	} else {
+		node.prev = l.tail // add
+		l.tail.next = node
+	}
+	l.tail = node
+	l.len++
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="指定位置插入节点">指定位置插入节点</h4>
+<div class="paragraph">
+<p>这里做了一个判断，以链表长度中值为基准，当插入当位置靠近起点时，从头部开始往中间遍历插入，反之，从末尾往中间遍历插入。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) Insert(v interface{}, index int) error {
+	// new
+	if index &gt;= l.len {
+		return errors.New("index error")
+	}
+	if index == 0 {
+		l.PushFront(v)
+		return nil
+	}
+	if index == l.len-1 {
+		l.PushBack(v)
+		return nil
+	}
+
+	mid := l.len / 2 // chose to start from the front or behind
+
+	newNode := &amp;Node{
+		value: v,
+		next:  nil,
+		prev:  nil,
+	}
+	node := &amp;Node{}
+	if index &lt;= mid { // from front
+		node = l.head
+		for i := 1; i &lt;= mid; i++ {
+			if i == index {
+				break
+			}
+			node = node.next
+		}
+	} else { // from behind
+		node = l.tail
+		for i := l.len; i &gt; mid; i-- {
+			if i == index {
+				break
+			}
+			node = node.prev
+		}
+	}
+	newNode.prev = node
+	newNode.next = node.next
+	node.next.prev = newNode
+	node.next = newNode
+	l.len++
+	return nil
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="移除操作-2">移除操作</h3>
+<div class="paragraph">
+<p>移除头部节点、移除尾部节点。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) RemoveFront() interface{} {
+	if l.len == 0 {
+		return nil
+	}
+	node := l.head
+	l.head = l.head.next
+	l.head.prev = nil // add
+	l.len--
+	return node.value
+}
+
+func (l *List) RemoveBack() interface{} {
+	// new
+	if l.len == 0 {
+		return nil
+	}
+	node := l.tail
+	l.tail = l.tail.prev
+	l.tail.next = nil
+	l.len--
+	return node.value
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="指定位置移除">指定位置移除</h4>
+<div class="paragraph">
+<p>移除指定位置的节点，和指定位置插入一样，根据是否更靠近链表两端，从头或尾部开始往反方向遍历。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) Remove(index int) interface{} {
+	// new
+	if l.len == 0 {
+		return nil
+	}
+	if index == 0 {
+		return l.RemoveFront()
+	} else if index == l.len-1 {
+		return l.RemoveBack()
+	}
+
+	mid := l.len / 2
+
+	node := &amp;Node{}
+	if index &lt;= mid {
+		node = l.head
+		for i := 1; i &lt;= mid; i++ {
+			if i == index {
+				break
+			}
+			node = node.next
+		}
+
+	} else {
+		node = l.tail
+		for i := l.len; i &gt; mid; i-- {
+			if i == index {
+				break
+			}
+			node = node.prev
+		}
+	}
+	tmp := node.next
+	node.next = tmp.next
+	tmp.next.prev = node
+	l.len--
+	return tmp.value
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="获取节点-2">获取节点</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">// 获取尾部节点，可用于从尾部往前遍历
+// add
+func (l *List) GetTail() *Node {
+	return l.tail
+}
+
+// 获取指定节点值
+func (l *List) Get(index int) interface{} {
+	// new
+	if index &gt;= l.len {
+		return nil
+	}
+
+	mid := l.len
+
+	node := &amp;Node{}
+	if index &lt;= mid {
+		node = l.head
+		for i := 0; i &lt;= mid; i++ {
+			if i == index {
+				return node.value
+			}
+			node = node.next
+		}
+	} else {
+		node = l.tail
+		for i := l.len; i &gt; mid; i-- {
+			if i == index {
+				return node.value
+			}
+			node = node.prev
+		}
+	}
+	return nil
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="测试-2">测试</h3>
+<div class="paragraph">
+<p>完整代码见：<br>
+<a href="https://github.com/zzir/algo/blob/master/code/linked_list/double_linked_list/list.go" class="bare">https://github.com/zzir/algo/blob/master/code/linked_list/double_linked_list/list.go</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func main() {
+	var dl DoubleLinkedList = &amp;List{}
+	dl.Init()
+	dl.PushFront(1)
+	dl.PushFront(2)
+	dl.PushFront(3)
+	dl.PushBack(4)
+	dl.PushBack(5)
+	dl.PushBack(6)
+	_ = dl.Insert(9, 1)
+	_ = dl.Insert(9, 2)
+	_ = dl.Insert(8, 5)
+	_ = dl.Insert(8, 6)
+	dl.RemoveFront()
+	dl.RemoveBack()
+	dl.Remove(1)
+	dl.Remove(4)
+	fmt.Println(1, dl.Get(1))
+	fmt.Println(5, dl.Get(5))
+	fmt.Println(3, dl.Get(3))
+
+	fmt.Println("len", dl.Len())
+	node := dl.GetHead()
+	for {
+		fmt.Print(node.value, " ")
+		if node.next == nil {
+			break
+		}
+		node = node.next
+	}
+	fmt.Print("\n")
+
+	node = dl.GetTail()
+	for {
+		fmt.Print(node.value, " ")
+		if node.prev == nil {
+			break
+		}
+		node = node.prev
+	}
+	fmt.Print("\n")
+
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="reference">Reference</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://golang.org/pkg/container/list/" class="bare">https://golang.org/pkg/container/list/</a></p>
+</li>
+<li>
+<p><a href="https://github.com/golang/go/blob/master/src/container/list/list.go" class="bare">https://github.com/golang/go/blob/master/src/container/list/list.go</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+    </div>
+
+    <a class="u-url" href="/2020/go-linked-list.html" hidden></a>
+</article>
+
+<div class="post-tags">
+    
+    <a>Golang</a>
+    
+    <a>LinkedList</a>
+    
+</div>
+
+<div class="pagination">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2019/dockerfile-and-registry.html" title="PREV: Dockerfile And Registry">
+                ‹ Dockerfile And Registry
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+    </div>
+</main><footer>
+    <p class="post-author">© <a href="/">zzir</a></p>
+    <p class="beian">
+        
+        <span>
+            <img src="/assets/imgs/beian.png">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010902002287">浙公网安备33010902002287号</a>
+        </span>
+        ・︎
+        <span><a href="http://beian.miit.gov.cn/">浙ICP备19040093号</a></span>
+        
+    </p>
+</footer>
+
+<script>
+    // analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?fa1df30338e49443514335c65bd9b8d6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // back display
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() === 0) {
+            document.getElementById("post-back").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

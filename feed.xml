@@ -1,4 +1,597 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://zzir.cn/feed.xml" rel="self" type="application/atom+xml" /><link href="https://zzir.cn/" rel="alternate" type="text/html" /><updated>2020-01-06T16:09:21+08:00</updated><id>https://zzir.cn/feed.xml</id><title type="html">ZZIR’s Blog</title><subtitle>The architect of civilization.</subtitle><author><name>zzir</name></author><entry><title type="html">Dockerfile And Registry</title><link href="https://zzir.cn/2019/dockerfile-and-registry.html" rel="alternate" type="text/html" title="Dockerfile And Registry" /><published>2019-10-29T00:00:00+08:00</published><updated>2019-10-29T00:00:00+08:00</updated><id>https://zzir.cn/2019/dockerfile-and-registry</id><content type="html" xml:base="https://zzir.cn/2019/dockerfile-and-registry.html">&lt;table&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://zzir.cn/feed.xml" rel="self" type="application/atom+xml" /><link href="https://zzir.cn/" rel="alternate" type="text/html" /><updated>2020-01-06T16:10:53+08:00</updated><id>https://zzir.cn/feed.xml</id><title type="html">ZZIR’s Blog</title><subtitle>The architect of civilization.</subtitle><author><name>zzir</name></author><entry><title type="html">单链表、双链表的 Golang 实现</title><link href="https://zzir.cn/2020/go-linked-list.html" rel="alternate" type="text/html" title="单链表、双链表的 Golang 实现" /><published>2020-01-05T00:00:00+08:00</published><updated>2020-01-05T00:00:00+08:00</updated><id>https://zzir.cn/2020/go-linked-list</id><content type="html" xml:base="https://zzir.cn/2020/go-linked-list.html">&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;single-linked-list&quot;&gt;Single Linked List&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;单链表定义&quot;&gt;单链表定义&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;此处将 &lt;code&gt;Node&lt;/code&gt; 和 &lt;code&gt;List&lt;/code&gt; 分开定义，方便理解，官方的方法是把两个结构合并，&lt;br&gt;
+戳：https://golang.org/src/container/list/list.go?s=2063:2093#L14&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;type Node struct {
+	value interface{}
+	next  *Node
+}
+
+type List struct {
+	len  int
+	head *Node
+	tail *Node
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;接口列表&quot;&gt;接口列表&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;非必要可以省略此步骤，此处使用 &lt;code&gt;Interface&lt;/code&gt; 只是为了方便阅读和展示。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;type SingleLinkedList interface {
+	Init()
+	Len() int
+	PushFront(v interface{})
+	PushBack(v interface{})
+	Insert(v interface{}, index int) error
+	RemoveFront() interface{}
+	RemoveBack() interface{}
+	Remove(index int) interface{}
+	GetHead() *Node
+	Get(index int) interface{}
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;初始化&quot;&gt;初始化&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;初始化操作，需要手动初始化，也可以实现在首次插入时进行初始化操作。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) Init() {
+	l.len = 0
+	l.head = nil
+	l.tail = nil
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;链表长度&quot;&gt;链表长度&lt;/h3&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) Len() int {
+	return l.len
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;添加操作&quot;&gt;添加操作&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;新节点三种插入方式，分别是 头部插入、末尾插入、指定位置插入。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;// 从链表头部插入一个新节点
+func (l *List) PushFront(v interface{}) {
+	node := &amp;amp;Node{
+		value: v,
+		next:  nil,
+	}
+	if l.len == 0 {
+		l.tail = node
+	} else {
+		node.next = l.head
+	}
+	l.head = node
+	l.len++
+}
+
+// 从链表尾部插入一个新节点
+func (l *List) PushBack(v interface{}) {
+	node := &amp;amp;Node{
+		value: v,
+		next:  nil,
+	}
+	if l.len == 0 {
+		l.head = node
+	} else {
+		l.tail.next = node
+	}
+	l.tail = node
+	l.len++
+}
+
+// 指定位置，插入新节点
+func (l *List) Insert(v interface{}, index int) error {
+	if index &amp;gt;= l.len {
+		return errors.New(&quot;index error&quot;)
+	}
+	if index == 0 {
+		l.PushFront(v)
+		return nil
+	}
+	node := &amp;amp;Node{
+		value: v,
+		next:  nil,
+	}
+	prev := l.head
+	for i := 1; i &amp;lt; l.len; i++ {
+		if i == index {
+			node.next = prev.next
+			prev.next = node
+			l.len++
+			return nil
+		}
+		prev = prev.next
+	}
+
+	return errors.New(&quot;insert error&quot;)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;移除操作&quot;&gt;移除操作&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;三种移除操作，移除头部、移除尾部、指定位置移除。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;// 移除头部节点
+func (l *List) RemoveFront() interface{} {
+	if l.len == 0 {
+		return nil
+	}
+	node := l.head
+	l.head = l.head.next
+	l.len--
+	return node.value
+}
+
+// 移除尾部节点
+func (l *List) RemoveBack() interface{} {
+	if l.len == 0 {
+		return nil
+	}
+	node := l.head
+	for i := 1; i &amp;lt; l.len-1; i++ {
+		node = node.next
+	}
+	tmp := node.next
+	node.next = nil
+	l.tail = node
+	l.len--
+	return tmp.value
+}
+
+// 指定位置移除节点
+func (l *List) Remove(index int) interface{} {
+	if l.len == 0 {
+		return nil
+	}
+	if index == 0 {
+		return l.RemoveFront()
+	} else if index == l.len-1 {
+		return l.RemoveBack()
+	}
+	node := l.head
+	for i := 1; i &amp;lt; index; i++ {
+		node = node.next
+	}
+	tmp := node.next
+	node.next = node.next.next
+	l.len--
+	return tmp.value
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;获取节点&quot;&gt;获取节点&lt;/h3&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;// 获取头部节点
+func (l *List) GetHead() *Node {
+	return l.head
+}
+
+// 获取指定位置的节点值
+func (l *List) Get(index int) interface{} {
+	if index &amp;gt;= l.len {
+		return nil
+	}
+	node := l.head
+	for i := 0; i &amp;lt; l.len; i++ {
+		if i == index {
+			return node.value
+		}
+		node = node.next
+	}
+	return nil
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect3&quot;&gt;
+&lt;h4 id=&quot;测试&quot;&gt;测试&lt;/h4&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;完整代码见：&lt;br&gt;
+&lt;a href=&quot;https://github.com/zzir/algo/blob/master/code/linked_list/single_linked_list/list.go&quot; class=&quot;bare&quot;&gt;https://github.com/zzir/algo/blob/master/code/linked_list/single_linked_list/list.go&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;测试用例：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func main() {
+	var sl SingleLinkedList = &amp;amp;List{}
+	sl.Init()
+	sl.PushFront(6)
+	sl.PushFront(7)
+	sl.PushFront(8)
+	sl.PushBack(1)
+	sl.PushBack(2)
+	sl.PushBack(3)
+	fmt.Println(&quot;r&quot;, sl.RemoveFront())
+	_ = sl.Insert(9, 0)
+	_ = sl.Insert(8, 5)
+	fmt.Println(&quot;r&quot;, sl.RemoveBack())
+	fmt.Println(&quot;r&quot;, sl.RemoveBack())
+	fmt.Println(&quot;rm&quot;, sl.Remove(1))
+	fmt.Println(&quot;rm&quot;, sl.Remove(2))
+
+	fmt.Println(&quot;len&quot;, sl.Len())
+	node := sl.GetHead()
+	for {
+		fmt.Println(&quot;&amp;gt;&amp;gt;&amp;gt;&quot;, node.value)
+		if node.next == nil {
+			break
+		}
+		node = node.next
+	}
+	fmt.Println(sl.Get(1))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;double-linked-list&quot;&gt;Double Linked List&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;在 Single Linked List 的基础上修改。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;定义&quot;&gt;定义&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;增加了 &lt;code&gt;prev&lt;/code&gt; 字段。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;type Node struct {
+	value interface{}
+	next  *Node
+	prev  *Node // add prev
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;接口列表-2&quot;&gt;接口列表&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;增加了 &lt;code&gt;GetTail&lt;/code&gt; 接口，获取尾部节点。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;type DoubleLinkedList interface {
+	Init()
+	Len() int
+	PushFront(v interface{})
+	PushBack(v interface{})
+	Insert(v interface{}, index int) error
+	RemoveFront() interface{}
+	RemoveBack() interface{}
+	Remove(index int) interface{}
+	GetHead() *Node
+	GetTail() *Node // add
+	Get(index int) interface{}
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;插入操作&quot;&gt;插入操作&lt;/h3&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) PushFront(v interface{}) {
+	node := &amp;amp;Node{
+		value: v,
+		next:  nil,
+		prev:  nil, // add
+	}
+	if l.len == 0 {
+		l.tail = node
+	} else {
+		l.head.prev = node // add
+		node.next = l.head
+	}
+	l.head = node
+	l.len++
+}
+
+func (l *List) PushBack(v interface{}) {
+	node := &amp;amp;Node{
+		value: v,
+		next:  nil,
+		prev:  nil, // add
+	}
+	if l.len == 0 {
+		l.head = node
+	} else {
+		node.prev = l.tail // add
+		l.tail.next = node
+	}
+	l.tail = node
+	l.len++
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect3&quot;&gt;
+&lt;h4 id=&quot;指定位置插入节点&quot;&gt;指定位置插入节点&lt;/h4&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;这里做了一个判断，以链表长度中值为基准，当插入当位置靠近起点时，从头部开始往中间遍历插入，反之，从末尾往中间遍历插入。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) Insert(v interface{}, index int) error {
+	// new
+	if index &amp;gt;= l.len {
+		return errors.New(&quot;index error&quot;)
+	}
+	if index == 0 {
+		l.PushFront(v)
+		return nil
+	}
+	if index == l.len-1 {
+		l.PushBack(v)
+		return nil
+	}
+
+	mid := l.len / 2 // chose to start from the front or behind
+
+	newNode := &amp;amp;Node{
+		value: v,
+		next:  nil,
+		prev:  nil,
+	}
+	node := &amp;amp;Node{}
+	if index &amp;lt;= mid { // from front
+		node = l.head
+		for i := 1; i &amp;lt;= mid; i++ {
+			if i == index {
+				break
+			}
+			node = node.next
+		}
+	} else { // from behind
+		node = l.tail
+		for i := l.len; i &amp;gt; mid; i-- {
+			if i == index {
+				break
+			}
+			node = node.prev
+		}
+	}
+	newNode.prev = node
+	newNode.next = node.next
+	node.next.prev = newNode
+	node.next = newNode
+	l.len++
+	return nil
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;移除操作-2&quot;&gt;移除操作&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;移除头部节点、移除尾部节点。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) RemoveFront() interface{} {
+	if l.len == 0 {
+		return nil
+	}
+	node := l.head
+	l.head = l.head.next
+	l.head.prev = nil // add
+	l.len--
+	return node.value
+}
+
+func (l *List) RemoveBack() interface{} {
+	// new
+	if l.len == 0 {
+		return nil
+	}
+	node := l.tail
+	l.tail = l.tail.prev
+	l.tail.next = nil
+	l.len--
+	return node.value
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect3&quot;&gt;
+&lt;h4 id=&quot;指定位置移除&quot;&gt;指定位置移除&lt;/h4&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;移除指定位置的节点，和指定位置插入一样，根据是否更靠近链表两端，从头或尾部开始往反方向遍历。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) Remove(index int) interface{} {
+	// new
+	if l.len == 0 {
+		return nil
+	}
+	if index == 0 {
+		return l.RemoveFront()
+	} else if index == l.len-1 {
+		return l.RemoveBack()
+	}
+
+	mid := l.len / 2
+
+	node := &amp;amp;Node{}
+	if index &amp;lt;= mid {
+		node = l.head
+		for i := 1; i &amp;lt;= mid; i++ {
+			if i == index {
+				break
+			}
+			node = node.next
+		}
+
+	} else {
+		node = l.tail
+		for i := l.len; i &amp;gt; mid; i-- {
+			if i == index {
+				break
+			}
+			node = node.prev
+		}
+	}
+	tmp := node.next
+	node.next = tmp.next
+	tmp.next.prev = node
+	l.len--
+	return tmp.value
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;获取节点-2&quot;&gt;获取节点&lt;/h3&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;// 获取尾部节点，可用于从尾部往前遍历
+// add
+func (l *List) GetTail() *Node {
+	return l.tail
+}
+
+// 获取指定节点值
+func (l *List) Get(index int) interface{} {
+	// new
+	if index &amp;gt;= l.len {
+		return nil
+	}
+
+	mid := l.len
+
+	node := &amp;amp;Node{}
+	if index &amp;lt;= mid {
+		node = l.head
+		for i := 0; i &amp;lt;= mid; i++ {
+			if i == index {
+				return node.value
+			}
+			node = node.next
+		}
+	} else {
+		node = l.tail
+		for i := l.len; i &amp;gt; mid; i-- {
+			if i == index {
+				return node.value
+			}
+			node = node.prev
+		}
+	}
+	return nil
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;测试-2&quot;&gt;测试&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;完整代码见：&lt;br&gt;
+&lt;a href=&quot;https://github.com/zzir/algo/blob/master/code/linked_list/double_linked_list/list.go&quot; class=&quot;bare&quot;&gt;https://github.com/zzir/algo/blob/master/code/linked_list/double_linked_list/list.go&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func main() {
+	var dl DoubleLinkedList = &amp;amp;List{}
+	dl.Init()
+	dl.PushFront(1)
+	dl.PushFront(2)
+	dl.PushFront(3)
+	dl.PushBack(4)
+	dl.PushBack(5)
+	dl.PushBack(6)
+	_ = dl.Insert(9, 1)
+	_ = dl.Insert(9, 2)
+	_ = dl.Insert(8, 5)
+	_ = dl.Insert(8, 6)
+	dl.RemoveFront()
+	dl.RemoveBack()
+	dl.Remove(1)
+	dl.Remove(4)
+	fmt.Println(1, dl.Get(1))
+	fmt.Println(5, dl.Get(5))
+	fmt.Println(3, dl.Get(3))
+
+	fmt.Println(&quot;len&quot;, dl.Len())
+	node := dl.GetHead()
+	for {
+		fmt.Print(node.value, &quot; &quot;)
+		if node.next == nil {
+			break
+		}
+		node = node.next
+	}
+	fmt.Print(&quot;\n&quot;)
+
+	node = dl.GetTail()
+	for {
+		fmt.Print(node.value, &quot; &quot;)
+		if node.prev == nil {
+			break
+		}
+		node = node.prev
+	}
+	fmt.Print(&quot;\n&quot;)
+
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;reference&quot;&gt;Reference&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://golang.org/pkg/container/list/&quot; class=&quot;bare&quot;&gt;https://golang.org/pkg/container/list/&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/golang/go/blob/master/src/container/list/list.go&quot; class=&quot;bare&quot;&gt;https://github.com/golang/go/blob/master/src/container/list/list.go&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content><author><name>zzir</name></author><category term="Golang" /><category term="LinkedList" /><summary type="html">Single Linked List</summary></entry><entry><title type="html">Dockerfile And Registry</title><link href="https://zzir.cn/2019/dockerfile-and-registry.html" rel="alternate" type="text/html" title="Dockerfile And Registry" /><published>2019-10-29T00:00:00+08:00</published><updated>2019-10-29T00:00:00+08:00</updated><id>https://zzir.cn/2019/dockerfile-and-registry</id><content type="html" xml:base="https://zzir.cn/2019/dockerfile-and-registry.html">&lt;table&gt;
   &lt;thead&gt;
     &lt;tr&gt;
       &lt;th&gt;环境&lt;/th&gt;
@@ -3339,276 +3932,4 @@ def some_function():
 
 &lt;p&gt;https://docs.python.org/3/howto/logging.html  &lt;br /&gt;
 https://docs.python.org/3/library/logging.html  &lt;br /&gt;
-https://docs.python.org/3.6/howto/logging-cookbook.html&lt;/p&gt;</content><author><name>zzir</name></author><category term="Logging" /><category term="Python" /><summary type="html">Python 的 logging 日志模块用于追踪和记录程序运行时发生的事件。</summary></entry><entry><title type="html">Python 多线程和锁</title><link href="https://zzir.cn/2017/python-threading.html" rel="alternate" type="text/html" title="Python 多线程和锁" /><published>2017-04-05T00:00:00+08:00</published><updated>2017-04-05T00:00:00+08:00</updated><id>https://zzir.cn/2017/python-threading</id><content type="html" xml:base="https://zzir.cn/2017/python-threading.html">&lt;h2 id=&quot;进程和线程&quot;&gt;进程和线程&lt;/h2&gt;
-&lt;p&gt;进程是执行中的计算机程序。每个进程都拥有自己的地址空间、内存、数据栈及其它的辅助数据。操作系统管理着所有的进程，并为这些进程合理分配时间。进程可以通过派生新的进程来执行其它任务，不过每个进程都拥有自己的内存和数据栈等，进程之间的数据交换采用 &lt;strong&gt;进程间通信(IPC)&lt;/strong&gt; 方式。&lt;/p&gt;
-
-&lt;p&gt;线程在进程之下执行，一个进程下可以运行多个线程，它们之间共享相同上下文。线程包括开始、执行顺序和结束三部分。它有一个指针，用于记录当前运行的上下文。当其它线程执行时，它可以被抢占(中断)和临时挂起(也称睡眠) ——这种做法叫做 &lt;strong&gt;让步(yielding)&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;一个进程中的各个线程与主进程共享同一片数据空间，与独立进程相比，线程之间信息共享和通信更加容易。线程一般以并发执行，正是由于这种并发和数据共享机制，使多任务间的协作成为可能。当然，这种共享也并不是没有风险的，如果多个线程访问同一数据空间，由于访问顺序不同，可能导致结果不一致，这种情况通常称为&lt;strong&gt;竞态条件(race condition)&lt;/strong&gt;，不过大多数线程库都有同步原语，以允许线程管理器的控制执行和访问；另一个要注意的问题是，线程无法给予公平执行时间，CPU 时间分配会倾向那些阻塞更少的函数。&lt;/p&gt;
-
-&lt;h2 id=&quot;全局解释器锁gil&quot;&gt;全局解释器锁(GIL)&lt;/h2&gt;
-&lt;p&gt;Python 代码执行由 &lt;em&gt;Python 虚拟机&lt;/em&gt; (又名解释器主循环) 进行控制。Python 在设计时是这样考虑的，在主循环中同时只能有一个控制线程在执行。对 Python 虚拟机的访问由 &lt;em&gt;全局解释器(GIL)&lt;/em&gt; 控制，这个锁用于，当有多个线程时保证同一时刻只能有一个线程在运行。&lt;/p&gt;
-
-&lt;p&gt;由于 Python 的 GIL 的限制，多线程更适合 I/O 密集型应用( I/O 释放了 GIL，可以允许更多的并发)，对于计算密集型应用，为了实现更好的并行性，适合使用多进程，已便利用 CPU 的多核优势。Python 的多进程相关模块：subprocess、multiprocessing、concurrent.futures&lt;/p&gt;
-
-&lt;!--more--&gt;
-
-&lt;h2 id=&quot;threading-模块&quot;&gt;threading 模块&lt;/h2&gt;
-&lt;p&gt;threading 是 Python 高级别的多线程模块。&lt;/p&gt;
-
-&lt;h3 id=&quot;threading-模块的函数&quot;&gt;threading 模块的函数&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;active_count()&lt;/strong&gt;  当前活动的 Thread 对象个数&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;current_thread()&lt;/strong&gt;  返回当前 Thread 对象&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;get_ident()&lt;/strong&gt;  返回当前线程&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;enumerater()&lt;/strong&gt;  返回当前活动 Thread 对象列表&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;main_thread()&lt;/strong&gt;  返回主 Thread 对象&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;settrace(func)&lt;/strong&gt;  为所有线程设置一个 trace 函数&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;setprofile(func)&lt;/strong&gt;  为所有线程设置一个 profile 函数&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;stack_size([size])&lt;/strong&gt;  返回新创建线程栈大小；或为后续创建的线程设定栈大小为 size&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;TIMEOUT_MAX&lt;/strong&gt;  &lt;code class=&quot;highlighter-rouge&quot;&gt;Lock.acquire()&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;RLock.acquire()&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Condition.wait()&lt;/code&gt; 允许的最大值&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;threading 可用对象列表：&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Thread&lt;/strong&gt; 表示执行线程的对象&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Lock&lt;/strong&gt;  锁原语对象&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;RLock&lt;/strong&gt;  可重入锁对象，使单一进程再次获得已持有的锁(递归锁)&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Condition&lt;/strong&gt;  条件变量对象，使得一个线程等待另一个线程满足特定条件，比如改变状态或某个值&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Semaphore&lt;/strong&gt;  为线程间共享的有限资源提供一个”计数器”，如果没有可用资源会被阻塞&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Event&lt;/strong&gt;  条件变量的通用版本，任意数量的线程等待某个时间的发生，在改事件发生后所有线程被激活&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Timer&lt;/strong&gt;  与 Thread 相识，不过它要在运行前等待一段时间&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Barrier&lt;/strong&gt;  创建一个”阻碍”，必须达到指定数量的线程后才可以继续&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;thread-类&quot;&gt;Thread 类&lt;/h3&gt;
-&lt;p&gt;Thread 对象的属性有：&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.name&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.ident&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.daemon&lt;/code&gt;。详见(&lt;em&gt;The Python Standard Library&lt;/em&gt;)&lt;/p&gt;
-
-&lt;p&gt;Thread 对象方法：&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.start()&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.run()&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.join(timeout=None)&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.getName&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.setName&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.is_alive()&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.isDaemon()&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.setDaemon()&lt;/code&gt;。详见(&lt;em&gt;The Python Standard Library&lt;/em&gt;)&lt;/p&gt;
-
-&lt;p&gt;使用 Thread 类，可以有很多种方法来创建线程，这里使用常见的两种：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;创建 Thread 实例，传给它一个函数。&lt;/li&gt;
-  &lt;li&gt;派生 Thread 子类，并创建子类的实例。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;一个单线程栗子&quot;&gt;一个单线程栗子&lt;/h3&gt;
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#!/usr/bin/env python3
-
-import threading
-from random import randint
-from time import sleep, ctime
-
-def hi(n):
-    sleep(n)
-    print(&quot;ZzZzzz, sleep: &quot;, n)    # 打印 Sleep 的秒数
-
-def main():
-    print(&quot;### Start at: &quot;, ctime())
-
-    for i in range(10):
-        hi(randint(1,2))    # 调用十次，每次 Sleep 1秒或2秒
-
-    print(&quot;### Done at: &quot;, ctime())
-
-if __name__ == '__main__':
-    main()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;运行结果：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-control&quot;&gt;### Start at:  Thu Sep  1 14:11:00 2016
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  2
-ZzZzzz, sleep:  2
-ZzZzzz, sleep:  2
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  2
-### Done at:  Thu Sep  1 14:11:14 2016
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;一共是用了14秒。&lt;/p&gt;
-
-&lt;h3 id=&quot;多线程创建-thread-实例传给它一个函数&quot;&gt;多线程：创建 Thread 实例，传给它一个函数&lt;/h3&gt;
-&lt;p&gt;直接上代码：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#!/usr/bin/env python3
-
-import threading
-from random import randint
-from time import sleep, ctime
-
-def hi(n):
-    sleep(n)
-    print(&quot;ZzZzzz, sleep: &quot;, n)
-
-def main():
-    print(&quot;### Start at: &quot;, ctime())
-    threads = []
-
-    for i in range(10):
-        rands = randint(1,2)
-        # 实例化每个 Thread 对象，把函数和参数传递进去，返回 Thread 实例
-        t = threading.Thread(target=hi, args=(rands,))
-        threads.append(t)     # 分配线程
-
-    for i in range(10):
-        threads[i].start()    # 开始执行多线程
-
-    for i in range(10):
-        threads[i].join()     # (自旋锁)等待线程结束或超时，然后再往下执行
-
-    print(&quot;### Done at: &quot;, ctime())
-
-if __name__ == '__main__':
-    main()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;运行结果：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-control&quot;&gt;### Start at:  Thu Sep  1 14:18:00 2016
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  2
-ZzZzzz, sleep:  2
-ZzZzzz, sleep:  2
-ZzZzzz, sleep:  2
-### Done at:  Thu Sep  1 14:18:02 2016
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;使用多线程，只用了2秒。&lt;/p&gt;
-
-&lt;h3 id=&quot;多线程派生-thread-子类并创建子类的实例&quot;&gt;多线程：派生 Thread 子类，并创建子类的实例&lt;/h3&gt;
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#!/usr/bin/env python3
-
-import threading
-from random import randint
-from time import sleep, ctime
-
-class MyThread(threading.Thread):
- 
-    def __init__(self, func, args, times):
-        super(MyThread, self).__init__()
-        self.func = func
-        self.args = args
-        self.times = times
-    
-    def run(self):
-        print(&quot;begin thread......&quot;, self.times)
-        self.res = self.func(*self.args)
-        print(&quot;end threads......&quot;, self.times)
-
-
-def hi(n):
-    sleep(n)
-    print(&quot;ZzZzzz, sleep: &quot;, n)
-
-def main():
-    print(&quot;### Start at: &quot;, ctime())
-    threads = []
-
-    for i in range(10):
-        rands = randint(1,2)
-        t = MyThread(hi, (rands,), i+1)
-        threads.append(t)
-
-    for i in range(10):
-        threads[i].start()
-
-    for i in range(10):
-        threads[i].join()
-
-    print(&quot;### Done at: &quot;, ctime())
-
-if __name__ == '__main__':
-    main()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;执行结果：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-control&quot;&gt;### Start at:  Thu Sep  1 14:47:09 2016
-begin thread...... 1
-begin thread...... 2
-begin thread...... 3
-begin thread...... 4
-begin thread...... 5
-begin thread...... 6
-begin thread...... 7
-begin thread...... 8
-begin thread...... 9
-begin thread...... 10
-ZzZzzz, sleep:  1
-ZzZzzz, sleep:  1
-end threads...... 1
-end threads...... 4
-ZzZzzz, sleep:  1
-end threads...... 7
-ZzZzzz, sleep:  1
-end threads...... 3
-ZzZzzz, sleep:  1
-end threads...... 9
-ZzZzzz, sleep:  2
-end threads...... 2
-ZzZzzz, sleep:  2
-end threads...... 5
-ZzZzzz, sleep:  2
-ZzZzzz, sleep:  2
-end threads...... 10
-end threads...... 6
-ZzZzzz, sleep:  2
-end threads...... 8
-### Done at:  Thu Sep  1 14:47:11 2016
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;这个栗子对 Thread 子类化，而不是对其实例化，使得定制线程对象更具灵活性，同时也简化线程创建的调用过程。&lt;/p&gt;
-
-&lt;h2 id=&quot;线程锁&quot;&gt;线程锁&lt;/h2&gt;
-&lt;p&gt;当多线程争夺锁时，允许第一个获得锁的线程进入临街区，并执行代码。所有之后到达的线程将被阻塞，直到第一个线程执行结束，退出临街区，并释放锁。需要注意，那些阻塞的线程是没有顺序的。&lt;/p&gt;
-
-&lt;p&gt;举个栗子：&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/env python3
-&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;threading&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;randint&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ctime&lt;/span&gt;
-
-
-&lt;span class=&quot;n&quot;&gt;L&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threading&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;# 引入锁
-&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;L&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;acquire&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;# 加锁
-&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ZzZzzz, sleep: &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;L&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;release&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;# 释放锁
-&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;### Start at: &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ctime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;rands&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;randint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threading&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rands&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,))&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;### Done at: &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ctime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'__main__'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;运行上面的代码，再将锁的代码注释掉，对比下输出。&lt;/p&gt;</content><author><name>zzir</name></author><category term="threading" /><category term="Python" /><summary type="html">进程和线程 进程是执行中的计算机程序。每个进程都拥有自己的地址空间、内存、数据栈及其它的辅助数据。操作系统管理着所有的进程，并为这些进程合理分配时间。进程可以通过派生新的进程来执行其它任务，不过每个进程都拥有自己的内存和数据栈等，进程之间的数据交换采用 进程间通信(IPC) 方式。</summary></entry></feed>
+https://docs.python.org/3.6/howto/logging-cookbook.html&lt;/p&gt;</content><author><name>zzir</name></author><category term="Logging" /><category term="Python" /><summary type="html">Python 的 logging 日志模块用于追踪和记录程序运行时发生的事件。</summary></entry></feed>
