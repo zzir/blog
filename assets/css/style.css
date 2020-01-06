@@ -517,7 +517,6 @@ img {
 
 img, object, svg {
     display: inline-block;
-    vertical-align: middle
 }
 
 textarea {
