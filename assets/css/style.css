@@ -170,7 +170,7 @@ li p {
     font-size: 1.4em;
     color: #ccc;
     text-align: center;
-    font-family: "Caveat";
+    font-family: "Caveat", 'Lora', 'Noto Serif SC', serif;
     padding-top: 4em;
     padding-bottom: 1em;
     clear: both;
@@ -288,7 +288,7 @@ footer {
 .home-heading a {
     text-decoration: none;
     color: #000;
-    font-family: "Caveat";
+    font-family: "Caveat", 'Lora', 'Noto Serif SC', serif;
     font-size: 2.5em;
     user-select: none;
 }
@@ -296,7 +296,7 @@ footer {
 .home-sub-heading {
     font-size: 1.2em;
     color: grey;
-    font-family: "Caveat";
+    font-family: "Caveat", 'Lora', 'Noto Serif SC', serif;
     user-select: none;
 }
 
@@ -1701,3 +1701,7 @@ b.conum * {
     margin: 1.25cm .75cm
 }
 
+@font-face {
+    font-display: swap;
+    font-family: 'Lora', 'Noto Serif SC', serif;
+}
