@@ -687,7 +687,7 @@ h4 strong, h5 strong, h6 strong {
     word-spacing: -.15em;
     background: #f7f7f8;
     -webkit-border-radius: 4px;
-    border-radius: 4px;
+    border-radius: .25em;
     line-height: 1.45;
     text-rendering: optimizeSpeed;
     word-wrap: break-word
@@ -1048,7 +1048,7 @@ table.tableblock #preamble > .sectionbody > [class="paragraph"]:first-of-type p 
 .listingblock pre.highlightjs > code {
     padding: 1em;
     -webkit-border-radius: 4px;
-    border-radius: 4px
+    border-radius: .5em
 }
 
 .listingblock pre.prettyprint {
