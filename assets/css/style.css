@@ -1295,10 +1295,6 @@ ul.unstyled, ol.unstyled {
     margin-left: 0
 }
 
-ul.checklist {
-    margin-left: .625em
-}
-
 ul.checklist li > p:first-child > .fa-square-o:first-child,
 ul.checklist li > p:first-child > .fa-check-square-o:first-child {
     width: 1.25em;
