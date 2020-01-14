@@ -521,8 +521,10 @@ Little-Endian: |78|56|34|12|
         customSize: '100%',
     });
     zooming.listen('.paragraph img');
+
     // highlight
     hljs.initHighlightingOnLoad();
+
     // katex
     document.addEventListener("DOMContentLoaded", function () {
         renderMathInElement(document.body, {
@@ -534,18 +536,6 @@ Little-Endian: |78|56|34|12|
             ]
         });
     });
-</script>
-
-
-<script>
-    // analytics
-    var _hmt = _hmt || [];
-    (function () {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?fa1df30338e49443514335c65bd9b8d6";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-    })();
 
     // back display
     function getScrollTop() {
@@ -564,6 +554,18 @@ Little-Endian: |78|56|34|12|
         }
     }
 </script>
+
+
+<script>
+    // google analytics
+    window.ga = window.ga || function () {
+        (ga.q = ga.q || []).push(arguments)
+    };
+    ga.l = +new Date;
+    ga('create', 'UA-121779014-1', 'auto');
+    ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
 
 </body>
 </html>
