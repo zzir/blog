@@ -245,7 +245,7 @@ footer {
 .home h2 {
     color: grey;
     margin-top: 1em;
-    display: inline-block;
+    display: block;
 }
 
 .home ul {
@@ -257,6 +257,8 @@ footer {
     padding: 0 0 1em 2em;
     line-height: 2;
     list-style-type: none;
+    width: 100%;
+    display: inline-block;
 }
 
 .home li span {
@@ -273,8 +275,8 @@ footer {
     text-overflow: ellipsis;
     white-space: nowrap;
     text-decoration: none;
-    width: 80%;
-    max-width: 80%
+    max-width: 80%;
+    display: block;
 }
 
 .post-back {
