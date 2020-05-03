@@ -73,14 +73,14 @@
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:10000'</span><span class="p">)</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">REQ</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:10000'</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">b</span><span class="s">'hello, i am msg-</span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">_</span><span class="p">)</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">"Received reply </span><span class="si">%</span><span class="s">d [</span><span class="si">%</span><span class="s">s]"</span> <span class="o">%</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="s">b'hello, i am msg-%s'</span> <span class="o">%</span> <span class="n">_</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"Received reply %d [%s]"</span> <span class="o">%</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
 
 </code></pre></div></div>
 
@@ -125,29 +125,29 @@ while True:
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
 
-<span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">ROUTER</span><span class="p">)</span>
-<span class="n">frontend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5559'</span><span class="p">)</span>
+<span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">ROUTER</span><span class="p">)</span>
+<span class="n">frontend</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5559'</span><span class="p">)</span>
 
-<span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
-<span class="n">backend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5560'</span><span class="p">)</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">DEALER</span><span class="p">)</span>
+<span class="n">backend</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5560'</span><span class="p">)</span>
 
 <span class="c1"># init poll set
-</span><span class="n">poller</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Poller</span><span class="p">()</span>
-<span class="n">poller</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">frontend</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">)</span>
-<span class="n">poller</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">)</span>
+</span><span class="n">poller</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Poller</span><span class="p">()</span>
+<span class="n">poller</span><span class="p">.</span><span class="n">register</span><span class="p">(</span><span class="n">frontend</span><span class="p">,</span> <span class="n">zmq</span><span class="p">.</span><span class="n">POLLIN</span><span class="p">)</span>
+<span class="n">poller</span><span class="p">.</span><span class="n">register</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">zmq</span><span class="p">.</span><span class="n">POLLIN</span><span class="p">)</span>
 
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="n">socks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">poller</span><span class="o">.</span><span class="n">poll</span><span class="p">())</span>
+    <span class="n">socks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">poller</span><span class="p">.</span><span class="n">poll</span><span class="p">())</span>
 
-    <span class="k">if</span> <span class="n">socks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">frontend</span><span class="p">)</span> <span class="o">==</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">:</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="n">frontend</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
-        <span class="n">backend</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">socks</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">frontend</span><span class="p">)</span> <span class="o">==</span> <span class="n">zmq</span><span class="p">.</span><span class="n">POLLIN</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">frontend</span><span class="p">.</span><span class="n">recv_multipart</span><span class="p">()</span>
+        <span class="n">backend</span><span class="p">.</span><span class="n">send_multipart</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">socks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span> <span class="o">==</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">:</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">recv_multipart</span><span class="p">()</span>
-        <span class="n">frontend</span><span class="o">.</span><span class="n">send_multipart</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">socks</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span> <span class="o">==</span> <span class="n">zmq</span><span class="p">.</span><span class="n">POLLIN</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">backend</span><span class="p">.</span><span class="n">recv_multipart</span><span class="p">()</span>
+        <span class="n">frontend</span><span class="p">.</span><span class="n">send_multipart</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>Client:</p>
@@ -155,15 +155,15 @@ while True:
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
 
 <span class="c1">#  Prepare our context and sockets
-</span><span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
+</span><span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">REQ</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
 
 <span class="c1">#  Do 10 requests, waiting each time for a response
 </span><span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">):</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">b</span><span class="s">"Hello"</span><span class="p">)</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">"Received reply </span><span class="si">%</span><span class="s">s [</span><span class="si">%</span><span class="s">s]"</span> <span class="o">%</span> <span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="s">b"Hello"</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"Received reply %s [%s]"</span> <span class="o">%</span> <span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
 
 </code></pre></div></div>
 
@@ -171,14 +171,14 @@ while True:
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REP</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">REP</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
 
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">"Received request: </span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">message</span><span class="p">)</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">b</span><span class="s">"World"</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"Received request: %s"</span> <span class="o">%</span> <span class="n">message</span><span class="p">)</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="s">b"World"</span><span class="p">)</span>
 
 </code></pre></div></div>
 
@@ -200,16 +200,16 @@ while True:
 
 <span class="n">port</span> <span class="o">=</span> <span class="s">"10001"</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUB</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PUB</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:%s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
 
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="n">topic</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">9999</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
-    <span class="n">messagedata</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">215</span><span class="p">)</span> <span class="o">-</span> <span class="mi">80</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">d </span><span class="si">%</span><span class="s">d"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">d </span><span class="si">%</span><span class="s">d"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">topic</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">9999</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
+    <span class="n">messagedata</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">215</span><span class="p">)</span> <span class="o">-</span> <span class="mi">80</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"%d %d"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="s">"%d %d"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
+    <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>Subscriber:</p>
@@ -219,26 +219,26 @@ while True:
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
 
 <span class="c1"># Socket to talk to server
-</span><span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
+</span><span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">SUB</span><span class="p">)</span>
 
 <span class="k">print</span><span class="p">(</span><span class="s">"Collecting updates from weather server..."</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:10001"</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:10001"</span><span class="p">)</span>
 
 <span class="c1"># Subscribe to zipcode, default is NYC, 10001, not port
 </span><span class="n">topicfilter</span> <span class="o">=</span> <span class="s">"10001"</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="n">topicfilter</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="n">topicfilter</span><span class="p">)</span>
 
 <span class="c1"># Process 5 updates
 </span><span class="n">total_value</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="k">for</span> <span class="n">update_nbr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="n">string</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span> <span class="o">=</span> <span class="n">string</span><span class="p">.</span><span class="n">split</span><span class="p">()</span>
     <span class="n">total_value</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">messagedata</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">'topic: </span><span class="si">%</span><span class="s">s  messagedata: </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'topic: %s  messagedata: %s'</span> <span class="o">%</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
 
 <span class="k">print</span><span class="p">(</span>
-    <span class="s">"Average value: topic '</span><span class="si">%</span><span class="s">s' messagedata </span><span class="si">%</span><span class="s">dF"</span> <span class="o">%</span>
+    <span class="s">"Average value: topic '%s' messagedata %dF"</span> <span class="o">%</span>
     <span class="p">(</span><span class="n">topicfilter</span><span class="p">,</span> <span class="n">total_value</span> <span class="o">/</span> <span class="n">update_nbr</span><span class="p">)</span>
 <span class="p">)</span>
 </code></pre></div></div>
@@ -256,47 +256,47 @@ while True:
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
 <span class="kn">import</span> <span class="nn">random</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
 
-<span class="n">ventilator</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUSH</span><span class="p">)</span>
-<span class="n">ventilator</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5557"</span><span class="p">)</span>
+<span class="n">ventilator</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PUSH</span><span class="p">)</span>
+<span class="n">ventilator</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5557"</span><span class="p">)</span>
 
 <span class="c1"># random.seed()
 </span>
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="n">workload</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-    <span class="n">ventilator</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">workload</span><span class="p">))</span>
+    <span class="n">workload</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">ventilator</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">workload</span><span class="p">))</span>
 </code></pre></div></div>
 
 <p>Worker:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
 
-<span class="n">ventilator</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">)</span>
-<span class="n">ventilator</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5557'</span><span class="p">)</span>
+<span class="n">ventilator</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PULL</span><span class="p">)</span>
+<span class="n">ventilator</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5557'</span><span class="p">)</span>
 
-<span class="n">sink</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUSH</span><span class="p">)</span>
-<span class="n">sink</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5558'</span><span class="p">)</span>
+<span class="n">sink</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PUSH</span><span class="p">)</span>
+<span class="n">sink</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5558'</span><span class="p">)</span>
 
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
     <span class="c1"># do something
-</span>    <span class="n">recv</span> <span class="o">=</span> <span class="n">ventilator</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="n">sink</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">recv</span><span class="p">)</span>
+</span>    <span class="n">recv</span> <span class="o">=</span> <span class="n">ventilator</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="n">sink</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">recv</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>Sink:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
 
-<span class="n">sink</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">)</span>
-<span class="n">sink</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5558"</span><span class="p">)</span>
+<span class="n">sink</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PULL</span><span class="p">)</span>
+<span class="n">sink</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5558"</span><span class="p">)</span>
 
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="k">print</span> <span class="n">sink</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">sink</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span>
 </code></pre></div></div>
 
 <h3 id="pair">PAIR</h3>
@@ -335,15 +335,15 @@ while True:
 <span class="kn">import</span> <span class="nn">time</span>
 
 <span class="n">port</span> <span class="o">=</span> <span class="s">"5556"</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PAIR</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://*:</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PAIR</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://*:%s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
 
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">"Server message to client3"</span><span class="p">)</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="s">"Server message to client3"</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span>
     <span class="k">print</span> <span class="n">msg</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>Client:</p>
@@ -353,16 +353,16 @@ while True:
 <span class="kn">import</span> <span class="nn">time</span>
 
 <span class="n">port</span> <span class="o">=</span> <span class="s">"5556"</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PAIR</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://localhost:</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PAIR</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://localhost:%s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
 
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span>
     <span class="k">print</span> <span class="n">msg</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">"client message to server1"</span><span class="p">)</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">"client message to server2"</span><span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="s">"client message to server1"</span><span class="p">)</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="s">"client message to server2"</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
 <h2 id="路由">路由</h2>
@@ -391,22 +391,22 @@ while True:
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">XREP</span><span class="p">)</span>
-        <span class="n">frontend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://*:5559'</span><span class="p">)</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">XREP</span><span class="p">)</span>
+        <span class="n">frontend</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://*:5559'</span><span class="p">)</span>
 
-        <span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">XREQ</span><span class="p">)</span>
-        <span class="n">backend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://*:5560'</span><span class="p">)</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">XREQ</span><span class="p">)</span>
+        <span class="n">backend</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://*:5560'</span><span class="p">)</span>
 
-        <span class="n">zmq</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">QUEUE</span><span class="p">,</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+        <span class="n">zmq</span><span class="p">.</span><span class="n">device</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">QUEUE</span><span class="p">,</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
     <span class="k">except</span> <span class="nb">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">print</span> <span class="n">e</span>
         <span class="k">print</span> <span class="s">"bringing down zmq device"</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="k">pass</span>
-        <span class="n">frontend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">backend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">context</span><span class="o">.</span><span class="n">term</span><span class="p">()</span>
+        <span class="n">frontend</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">backend</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">context</span><span class="p">.</span><span class="n">term</span><span class="p">()</span>
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
@@ -418,20 +418,20 @@ while True:
 <span class="kn">import</span> <span class="nn">random</span>
 
 <span class="n">port</span> <span class="o">=</span> <span class="s">'5559'</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
 
 <span class="k">print</span> <span class="s">'Connecting to server...'</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://localhost:</span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">REQ</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://localhost:%s'</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
 
-<span class="n">client_id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
+<span class="n">client_id</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
     <span class="k">print</span> <span class="s">'Sending request '</span><span class="p">,</span> <span class="n">request</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">'Hello from </span><span class="si">%</span><span class="s">s '</span> <span class="o">%</span> <span class="n">client_id</span><span class="p">)</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="s">'Hello from %s '</span> <span class="o">%</span> <span class="n">client_id</span><span class="p">)</span>
 
-    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="k">print</span> <span class="s">'Received reply </span><span class="si">%</span><span class="s">d [</span><span class="si">%</span><span class="s">s]'</span> <span class="o">%</span> <span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">'Received reply %d [%s]'</span> <span class="o">%</span> <span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>Server:</p>
@@ -442,17 +442,17 @@ while True:
 
 <span class="n">port</span> <span class="o">=</span> <span class="s">'5560'</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REP</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://localhost:</span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">REP</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'tcp://localhost:%s'</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
 
-<span class="n">server_id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
+<span class="n">server_id</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
 
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span>
     <span class="k">print</span> <span class="s">'Received request: '</span><span class="p">,</span> <span class="n">message</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">'World from server </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">server_id</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="s">'World from server %s'</span> <span class="o">%</span> <span class="n">server_id</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>如果想查看负载均衡效果，可以运行多个客户端和服务端。客户端的请求会经由中介分配到不同的服务器。</p>
@@ -469,28 +469,28 @@ while True:
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># sub
-</span>        <span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
-        <span class="n">frontend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
+</span>        <span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">SUB</span><span class="p">)</span>
+        <span class="n">frontend</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
 
-        <span class="n">frontend</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s">""</span><span class="p">)</span>
+        <span class="n">frontend</span><span class="p">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s">""</span><span class="p">)</span>
 
         <span class="c1"># pub
-</span>        <span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUB</span><span class="p">)</span>
-        <span class="n">backend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
+</span>        <span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PUB</span><span class="p">)</span>
+        <span class="n">backend</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
 
         <span class="c1"># forwarder
-</span>        <span class="n">zmq</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">FORWARDER</span><span class="p">,</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+</span>        <span class="n">zmq</span><span class="p">.</span><span class="n">device</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">FORWARDER</span><span class="p">,</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
     <span class="k">except</span> <span class="nb">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">print</span> <span class="n">e</span>
         <span class="k">print</span> <span class="s">"bringing down zmq device"</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="k">pass</span>
-        <span class="n">frontend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">backend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">context</span><span class="o">.</span><span class="n">term</span><span class="p">()</span>
+        <span class="n">frontend</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">backend</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">context</span><span class="p">.</span><span class="n">term</span><span class="p">()</span>
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
@@ -502,18 +502,18 @@ while True:
 
 <span class="n">port</span> <span class="o">=</span> <span class="s">"5560"</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">SUB</span><span class="p">)</span>
 
 <span class="k">print</span> <span class="s">"Collecting updates from server..."</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://localhost:</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://localhost:%s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
 
 <span class="n">topicfilter</span> <span class="o">=</span> <span class="s">"9"</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="n">topicfilter</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="n">topicfilter</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">update_nbr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="n">string</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span> <span class="o">=</span> <span class="n">string</span><span class="p">.</span><span class="n">split</span><span class="p">()</span>
     <span class="k">print</span> <span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span>
 </code></pre></div></div>
 
@@ -525,18 +525,18 @@ while True:
 
 <span class="n">port</span> <span class="o">=</span> <span class="s">"5559"</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUB</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://localhost:</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PUB</span><span class="p">)</span>
+<span class="n">socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://localhost:%s"</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
 
-<span class="n">publisher_id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span>
+<span class="n">publisher_id</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span>
 
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="n">topic</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-    <span class="n">messagedata</span> <span class="o">=</span> <span class="s">"server#</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="n">publisher_id</span>
-    <span class="k">print</span> <span class="s">"</span><span class="si">%</span><span class="s">s </span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">)</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">d </span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">topic</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">messagedata</span> <span class="o">=</span> <span class="s">"server#%s"</span> <span class="o">%</span> <span class="n">publisher_id</span>
+    <span class="k">print</span> <span class="s">"%s %s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">)</span>
+    <span class="n">socket</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="s">"%d %s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">messagedata</span><span class="p">))</span>
+    <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
 <h3 id="streamer">Streamer</h3>
@@ -551,26 +551,26 @@ while True:
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
 
         <span class="c1"># pull
-</span>        <span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">)</span>
-        <span class="n">frontend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5559'</span><span class="p">)</span>
+</span>        <span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PULL</span><span class="p">)</span>
+        <span class="n">frontend</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5559'</span><span class="p">)</span>
 
         <span class="c1"># push
-</span>        <span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUSH</span><span class="p">)</span>
-        <span class="n">backend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5560'</span><span class="p">)</span>
+</span>        <span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PUSH</span><span class="p">)</span>
+        <span class="n">backend</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">'tcp://127.0.0.1:5560'</span><span class="p">)</span>
 
         <span class="c1"># streamer
-</span>        <span class="n">zmq</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">STREAMER</span><span class="p">,</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+</span>        <span class="n">zmq</span><span class="p">.</span><span class="n">device</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">STREAMER</span><span class="p">,</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
     <span class="k">except</span> <span class="nb">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">print</span> <span class="n">e</span>
         <span class="k">print</span> <span class="s">'streamer_device'</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="k">pass</span>
-        <span class="n">frontend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">backend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">context</span><span class="o">.</span><span class="n">term</span><span class="p">()</span>
+        <span class="n">frontend</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">backend</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">context</span><span class="p">.</span><span class="n">term</span><span class="p">()</span>
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
@@ -582,14 +582,14 @@ while True:
 <span class="kn">import</span> <span class="nn">zmq</span>
 
 <span class="k">def</span> <span class="nf">producer</span><span class="p">():</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-    <span class="n">zmq_socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUSH</span><span class="p">)</span>
-    <span class="n">zmq_socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
+    <span class="n">zmq_socket</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PUSH</span><span class="p">)</span>
+    <span class="n">zmq_socket</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
     <span class="c1"># push
 </span>    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">20000</span><span class="p">):</span>
         <span class="n">work_message</span> <span class="o">=</span> <span class="p">{</span><span class="s">'num'</span><span class="p">:</span> <span class="n">num</span><span class="p">}</span>
-        <span class="n">zmq_socket</span><span class="o">.</span><span class="n">send_json</span><span class="p">(</span><span class="n">work_message</span><span class="p">)</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">zmq_socket</span><span class="p">.</span><span class="n">send_json</span><span class="p">(</span><span class="n">work_message</span><span class="p">)</span>
+        <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">producer</span><span class="p">()</span>
 </code></pre></div></div>
@@ -600,16 +600,16 @@ while True:
 <span class="kn">import</span> <span class="nn">random</span>
 
 <span class="k">def</span> <span class="nf">consumer</span><span class="p">():</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
     <span class="c1"># pull
-</span>    <span class="n">consumer_receiver</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">)</span>
-    <span class="n">consumer_receiver</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
+</span>    <span class="n">consumer_receiver</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">PULL</span><span class="p">)</span>
+    <span class="n">consumer_receiver</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
 
-    <span class="n">consumer_id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
-    <span class="k">print</span> <span class="s">"I am consumer #</span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">consumer_id</span><span class="p">)</span>
+    <span class="n">consumer_id</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10005</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">"I am consumer #%s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">consumer_id</span><span class="p">)</span>
 
     <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="n">work</span> <span class="o">=</span> <span class="n">consumer_receiver</span><span class="o">.</span><span class="n">recv_json</span><span class="p">()</span>
+        <span class="n">work</span> <span class="o">=</span> <span class="n">consumer_receiver</span><span class="p">.</span><span class="n">recv_json</span><span class="p">()</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">work</span><span class="p">[</span><span class="s">'num'</span><span class="p">]</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s">'consumer'</span><span class="p">:</span> <span class="n">consumer_id</span><span class="p">,</span> <span class="s">'num'</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
         <span class="k">print</span> <span class="n">result</span>
@@ -626,22 +626,22 @@ while True:
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">zmq</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="p">.</span><span class="n">Context</span><span class="p">()</span>
 
     <span class="c1"># Socket facing clients
-</span>    <span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">ROUTER</span><span class="p">)</span>
-    <span class="n">frontend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
+</span>    <span class="n">frontend</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">ROUTER</span><span class="p">)</span>
+    <span class="n">frontend</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5559"</span><span class="p">)</span>
 
     <span class="c1"># Socket facing services
-</span>    <span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">)</span>
-    <span class="n">backend</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
+</span>    <span class="n">backend</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="p">.</span><span class="n">DEALER</span><span class="p">)</span>
+    <span class="n">backend</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">"tcp://127.0.0.1:5560"</span><span class="p">)</span>
 
-    <span class="n">zmq</span><span class="o">.</span><span class="n">proxy</span><span class="p">(</span><span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+    <span class="n">zmq</span><span class="p">.</span><span class="n">proxy</span><span class="p">(</span><span class="n">frontend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
 
     <span class="c1"># We never get here
-</span>    <span class="n">frontend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">backend</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">context</span><span class="o">.</span><span class="n">term</span><span class="p">()</span>
+</span>    <span class="n">frontend</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">backend</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">context</span><span class="p">.</span><span class="n">term</span><span class="p">()</span>
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>

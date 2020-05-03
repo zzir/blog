@@ -273,16 +273,16 @@ end threads...... 8
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span><span class="p">,</span> <span class="n">ctime</span>
 
 
-<span class="n">L</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>    <span class="c1"># 引入锁
+<span class="n">L</span> <span class="o">=</span> <span class="n">threading</span><span class="p">.</span><span class="n">Lock</span><span class="p">()</span>    <span class="c1"># 引入锁
 </span>
 
 <span class="k">def</span> <span class="nf">hi</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="n">L</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>    <span class="c1"># 加锁
+    <span class="n">L</span><span class="p">.</span><span class="n">acquire</span><span class="p">()</span>    <span class="c1"># 加锁
 </span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
         <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">sleep</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="s">"ZzZzzz, sleep: "</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">L</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>    <span class="c1"># 释放锁
+    <span class="n">L</span><span class="p">.</span><span class="n">release</span><span class="p">()</span>    <span class="c1"># 释放锁
 </span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
@@ -291,14 +291,14 @@ end threads...... 8
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
         <span class="n">rands</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">hi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">rands</span><span class="p">,))</span>
-        <span class="n">threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="p">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">hi</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">rands</span><span class="p">,))</span>
+        <span class="n">threads</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-        <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">start</span><span class="p">()</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-        <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="n">threads</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">join</span><span class="p">()</span>
 
     <span class="k">print</span><span class="p">(</span><span class="s">"### Done at: "</span><span class="p">,</span> <span class="n">ctime</span><span class="p">())</span>
 
