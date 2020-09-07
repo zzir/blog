@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zzir">
+    <meta name="description" content="The architect of civilization.">
+    <meta name="keywords" content="zzir,Golang,Python,Docker,K8S">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <link rel="stylesheet" href="/assets/css/github.css">
+
+    <title>PostgreSQL 主从复制之 Docker 方式部署实践 - ZZIR's Note</title>
+</head><body>
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="post-back" id="post-back" style="display: none">
+        <a class="black-link" href="https://zzir.cn">🙄</a>
+    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">
+            PostgreSQL 主从复制之 Docker 方式部署实践
+        </h1>
+        <p class="post-meta">
+            <time class="dt-published" datetime="2020-05-03T00:00:00+08:00" itemprop="datePublished">May 3, 2020
+            </time>・
+            <span itemprop="author" itemscope itemtype="http://schema.org/Person"
+            ><span class="p-author h-card" itemprop="name">zzir</span></span
+            ></p>
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        <div class="paragraph">
+<p>nothing more. todo</p>
+</div>
+<div class="paragraph">
+<p>未完，<a href="mailto:me@zzir.cn">点我催更</a>。</p>
+</div>
+    </div>
+
+    <a class="u-url" href="/2020/postgresql-master-replication-with-docker.html" hidden></a>
+</article>
+
+<div class="post-tags">
+    
+    <a>PostgreSQL</a>
+    
+    <a>Docker</a>
+    
+</div>
+
+<div class="pagination">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2020/golang-tree.html" title="PREV: 数据结构 Tree 的 Golang 实现">
+                ‹ 数据结构 Tree 的 Golang 实现
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+    </div>
+</main><footer>
+    <p class="post-author">© <a href="/">zzir</a></p>
+    <p class="beian">
+        
+        <span>
+            <img src="/assets/imgs/beian.png">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010902002287">浙公网安备33010902002287号</a>
+        </span>
+        ・︎
+        <span><a href="http://beian.miit.gov.cn/">浙ICP备19040093号</a></span>
+        
+    </p>
+</footer>
+<script defer src="/assets/js/katex/katex.min.js" type="text/javascript"></script>
+<script defer src="/assets/js/katex/auto-render.min.js" type="text/javascript"></script>
+<script src="/assets/js/zooming.min.js" type="text/javascript"></script>
+<script src="/assets/js/highlight.pack.js" type="text/javascript"></script>
+<script>
+    // zooming
+    const zooming = new Zooming({
+        customSize: '100%',
+    });
+    zooming.listen('.paragraph img');
+    zooming.listen('.content img');
+    zooming.listen('.post-content img');
+
+    // highlight
+    hljs.initHighlightingOnLoad();
+
+    // katex
+    document.addEventListener("DOMContentLoaded", function () {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "\\[", right: "\\]", display: true}
+            ]
+        });
+    });
+
+    // back display
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() === 0) {
+            document.getElementById("post-back").style.display = "block";
+        }
+    }
+</script>
+
+
+<script>
+    // google analytics
+    window.ga = window.ga || function () {
+        (ga.q = ga.q || []).push(arguments)
+    };
+    ga.l = +new Date;
+    ga('create', 'UA-121779014-1', 'auto');
+    ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+</html>

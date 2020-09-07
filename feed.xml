@@ -1,4 +1,257 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://zzir.cn/feed.xml" rel="self" type="application/atom+xml" /><link href="https://zzir.cn/" rel="alternate" type="text/html" /><updated>2020-09-03T14:05:37+08:00</updated><id>https://zzir.cn/feed.xml</id><title type="html">ZZIR’s Note</title><subtitle>The architect of civilization.</subtitle><author><name>zzir</name></author><entry><title type="html">单链表、双链表的 Golang 实现</title><link href="https://zzir.cn/2020/go-linked-list.html" rel="alternate" type="text/html" title="单链表、双链表的 Golang 实现" /><published>2020-01-05T00:00:00+08:00</published><updated>2020-01-05T00:00:00+08:00</updated><id>https://zzir.cn/2020/go-linked-list</id><content type="html" xml:base="https://zzir.cn/2020/go-linked-list.html">&lt;div class=&quot;sect1&quot;&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://zzir.cn/feed.xml" rel="self" type="application/atom+xml" /><link href="https://zzir.cn/" rel="alternate" type="text/html" /><updated>2020-09-08T01:05:05+08:00</updated><id>https://zzir.cn/feed.xml</id><title type="html">ZZIR’s Note</title><subtitle>The architect of civilization.</subtitle><author><name>zzir</name></author><entry><title type="html">PostgreSQL 主从复制之 Docker 方式部署实践</title><link href="https://zzir.cn/2020/postgresql-master-replication-with-docker.html" rel="alternate" type="text/html" title="PostgreSQL 主从复制之 Docker 方式部署实践" /><published>2020-05-03T00:00:00+08:00</published><updated>2020-05-03T00:00:00+08:00</updated><id>https://zzir.cn/2020/postgresql-master-replication-with-docker</id><content type="html" xml:base="https://zzir.cn/2020/postgresql-master-replication-with-docker.html">&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;nothing more. todo&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;未完，&lt;a href=&quot;mailto:me@zzir.cn&quot;&gt;点我催更&lt;/a&gt;。&lt;/p&gt;
+&lt;/div&gt;</content><author><name>zzir</name></author><category term="PostgreSQL" /><category term="Docker" /><summary type="html">nothing more. todo</summary></entry><entry><title type="html">数据结构 Tree 的 Golang 实现</title><link href="https://zzir.cn/2020/golang-tree.html" rel="alternate" type="text/html" title="数据结构 Tree 的 Golang 实现" /><published>2020-03-23T00:00:00+08:00</published><updated>2020-03-23T00:00:00+08:00</updated><id>https://zzir.cn/2020/golang-tree</id><content type="html" xml:base="https://zzir.cn/2020/golang-tree.html">&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;nothing more. todo&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;未完，&lt;a href=&quot;mailto:me@zzir.cn&quot;&gt;点我催更&lt;/a&gt;。&lt;/p&gt;
+&lt;/div&gt;</content><author><name>zzir</name></author><category term="Tree" /><category term="Golang" /><summary type="html">nothing more. todo</summary></entry><entry><title type="html">Golang 视角 HTTP 协议的浅入深出</title><link href="https://zzir.cn/2020/http-protocol.html" rel="alternate" type="text/html" title="Golang 视角 HTTP 协议的浅入深出" /><published>2020-01-13T00:00:00+08:00</published><updated>2020-01-13T00:00:00+08:00</updated><id>https://zzir.cn/2020/http-protocol</id><content type="html" xml:base="https://zzir.cn/2020/http-protocol.html">&lt;div id=&quot;preamble&quot;&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;环境：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist checklist&quot;&gt;
+&lt;ul class=&quot;checklist&quot;&gt;
+&lt;li&gt;
+&lt;p&gt;&amp;#10063; &lt;mark&gt;MacBook&lt;/mark&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&amp;#10063; &lt;mark&gt;WireShark&lt;/mark&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;先看一段 Goang 实现的 HTTP 服务端程序。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;server.go&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;package main
+
+import (
+	&quot;io&quot;
+	&quot;log&quot;
+	&quot;net/http&quot;
+)
+
+func headers(w http.ResponseWriter, req *http.Request) {
+	log.Println(req.Method, req.Proto, req.Header, req.Body)
+	_, _ = io.WriteString(w, &quot;Hello, world!\n&quot;)
+}
+
+func main() {
+	http.HandleFunc(&quot;/&quot;, headers)
+	log.Fatal(http.ListenAndServe(&quot;:30080&quot;, nil))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;运行 HTTP 服务端：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;shell&quot; class=&quot;language-shell hljs&quot;&gt;go run server.go&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;然后启动 WireShark 命令行 &lt;code&gt;tshark&lt;/code&gt; 程序，监听 &lt;code&gt;30080&lt;/code&gt; 端口，并将抓包结果写入文件：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;shell&quot; class=&quot;language-shell hljs&quot;&gt;tshark -i lo0 -f 'tcp port 30080' -w Downloads/http.pcapng -P&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;打开终端，使用 &lt;code&gt;curl&lt;/code&gt; 命令模拟 HTTP 客户端访问 &lt;a href=&quot;http://127.0.0.1:30080&quot; class=&quot;bare&quot;&gt;http://127.0.0.1:30080&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;shell&quot; class=&quot;language-shell hljs&quot;&gt;curl http://127.0.0.1:30080&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;可以看到 WireShark 命令行程序 &lt;code&gt;tshark&lt;/code&gt; 输出，这便是 HTTP 从建立连接到关闭连接整个过程：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;output&quot; class=&quot;language-output hljs&quot;&gt;Capturing on 'Loopback: lo0'
+    1   0.000000    127.0.0.1 → 127.0.0.1    TCP 68 51930 → 30080 [SYN] Seq=0 Win=65535 Len=0 MSS=16344 WS=64 TSval=274718867 TSecr=0 SACK_PERM=1
+    2   0.000085    127.0.0.1 → 127.0.0.1    TCP 68 30080 → 51930 [SYN, ACK] Seq=0 Ack=1 Win=65535 Len=0 MSS=16344 WS=64 TSval=274718867 TSecr=274718867 SACK_PERM=1
+    3   0.000102    127.0.0.1 → 127.0.0.1    TCP 56 51930 → 30080 [ACK] Seq=1 Ack=1 Win=408256 Len=0 TSval=274718867 TSecr=274718867
+    4   0.000116    127.0.0.1 → 127.0.0.1    TCP 56 [TCP Window Update] 30080 → 51930 [ACK] Seq=1 Ack=1 Win=408256 Len=0 TSval=274718867 TSecr=274718867
+    5   0.000150    127.0.0.1 → 127.0.0.1    HTTP 135 GET / HTTP/1.1
+    6   0.000166    127.0.0.1 → 127.0.0.1    TCP 56 30080 → 51930 [ACK] Seq=1 Ack=80 Win=408192 Len=0 TSval=274718867 TSecr=274718867
+    7   0.000370    127.0.0.1 → 127.0.0.1    HTTP 187 HTTP/1.1 200 OK  (text/plain)
+    8   0.000385    127.0.0.1 → 127.0.0.1    TCP 56 51930 → 30080 [ACK] Seq=80 Ack=132 Win=408128 Len=0 TSval=274718867 TSecr=274718867
+    9   0.000572    127.0.0.1 → 127.0.0.1    TCP 56 51930 → 30080 [FIN, ACK] Seq=80 Ack=132 Win=408128 Len=0 TSval=274718867 TSecr=274718867
+   10   0.000592    127.0.0.1 → 127.0.0.1    TCP 56 30080 → 51930 [ACK] Seq=132 Ack=81 Win=408192 Len=0 TSval=274718867 TSecr=274718867
+   11   0.000627    127.0.0.1 → 127.0.0.1    TCP 56 30080 → 51930 [FIN, ACK] Seq=132 Ack=81 Win=408192 Len=0 TSval=274718867 TSecr=274718867
+   12   0.000652    127.0.0.1 → 127.0.0.1    TCP 56 51930 → 30080 [ACK] Seq=81 Ack=133 Win=408128 Len=0 TSval=274718867 TSecr=274718867&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;将 &lt;code&gt;~/Download/&lt;/code&gt; 目录下 &lt;code&gt;http.pcapng&lt;/code&gt; 文件用 WireShark 打开如下图：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/imgs/202001-wireshark-http.png&quot; alt=&quot;202001 wireshark http&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title&quot;&gt;Figure 1. 源文件：https://1drv.ms/u/s!Anua9d_TpfhPoRs6kCfGKZwpUgZQ&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;整个的连接过程我们首先从 TCP 协议说起。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;tcp-协议&quot;&gt;TCP 协议&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;TCP 协议是 OSI 模型中传输层协议，主要解决数据如何在网络中传输。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;golang-的-tcp-实现&quot;&gt;Golang 的 TCP 实现&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Golang 实现 TCP 的服务端和客户端，代码如下：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;server.go&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;package main
+
+import (
+	&quot;bufio&quot;
+	&quot;fmt&quot;
+	&quot;net&quot;
+	&quot;strings&quot;
+)
+
+func main() {
+	ln, _ := net.Listen(&quot;tcp&quot;, &quot;:30081&quot;)
+	conn, _ := ln.Accept()
+
+	message, _ := bufio.NewReader(conn).ReadString('\n')
+	fmt.Print(&quot;Message Received:&quot;, message)
+	newMessage := strings.ToUpper(message)
+	_, _ = conn.Write([]byte(newMessage + &quot;\n&quot;))
+	_ = conn.Close()
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;client.go&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;package main
+
+import (
+	&quot;bufio&quot;
+	&quot;fmt&quot;
+	&quot;net&quot;
+)
+
+func main() {
+	conn, _ := net.Dial(&quot;tcp&quot;, &quot;127.0.0.1:30081&quot;)
+
+	fmt.Print(&quot;Text to send: &quot;)
+	_, _ = fmt.Fprintf(conn, &quot;hello tcp!\n&quot;)
+	message, _ := bufio.NewReader(conn).ReadString('\n')
+
+	fmt.Print(&quot;Message from server: &quot; + message)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;首先启动抓包程序：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;shell&quot; class=&quot;language-shell hljs&quot;&gt;tshark -i lo0 -f 'tcp port 30081' -w Downloads/tcp.pcapng -P&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;然后先执行 TCP 服务端 &lt;code&gt;server.go&lt;/code&gt;，再执行客户端 &lt;code&gt;client.go&lt;/code&gt;，输出如下：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;output&quot; class=&quot;language-output hljs&quot;&gt;Capturing on 'Loopback: lo0'
+    1 0.000000       127.0.0.1             127.0.0.1             TCP      68     63299 → 30081 [SYN] Seq=0 Win=65535 Len=0 MSS=16344 WS=64 TSval=517670095 TSecr=0 SACK_PERM=1
+    2 0.000124       127.0.0.1             127.0.0.1             TCP      68     30081 → 63299 [SYN, ACK] Seq=0 Ack=1 Win=65535 Len=0 MSS=16344 WS=64 TSval=517670095 TSecr=517670095 SACK_PERM=1
+    3 0.000149       127.0.0.1             127.0.0.1             TCP      56     63299 → 30081 [ACK] Seq=1 Ack=1 Win=408256 Len=0 TSval=517670095 TSecr=517670095
+    4 0.000166       127.0.0.1             127.0.0.1             TCP      56     [TCP Window Update] 30081 → 63299 [ACK] Seq=1 Ack=1 Win=408256 Len=0 TSval=517670095 TSecr=517670095
+    5 0.000292       127.0.0.1             127.0.0.1             TCP      67     63299 → 30081 [PSH, ACK] Seq=1 Ack=1 Win=408256 Len=11 TSval=517670095 TSecr=517670095
+    6 0.000319       127.0.0.1             127.0.0.1             TCP      56     30081 → 63299 [ACK] Seq=1 Ack=12 Win=408256 Len=0 TSval=517670095 TSecr=517670095
+    7 0.000429       127.0.0.1             127.0.0.1             TCP      68     30081 → 63299 [PSH, ACK] Seq=1 Ack=12 Win=408256 Len=12 TSval=517670095 TSecr=517670095
+    8 0.000457       127.0.0.1             127.0.0.1             TCP      56     63299 → 30081 [ACK] Seq=12 Ack=13 Win=408256 Len=0 TSval=517670095 TSecr=517670095
+    9 0.001006       127.0.0.1             127.0.0.1             TCP      56     30081 → 63299 [FIN, ACK] Seq=13 Ack=12 Win=408256 Len=0 TSval=517670096 TSecr=517670095
+   10 0.001040       127.0.0.1             127.0.0.1             TCP      56     63299 → 30081 [ACK] Seq=12 Ack=14 Win=408256 Len=0 TSval=517670096 TSecr=517670096
+   11 0.001058       127.0.0.1             127.0.0.1             TCP      56     63299 → 30081 [FIN, ACK] Seq=12 Ack=14 Win=408256 Len=0 TSval=517670096 TSecr=517670096
+   12 0.001118       127.0.0.1             127.0.0.1             TCP      56     30081 → 63299 [ACK] Seq=14 Ack=13 Win=408256 Len=0 TSval=517670096 TSecr=517670096&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;打开 Wireshark 抓包数据，如下图：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/imgs/202001-wireshark-tcp.png&quot; alt=&quot;202001 wireshark tcp&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title&quot;&gt;Figure 2. 源文件：https://1drv.ms/u/s!Anua9d_TpfhPoUEcI6DxI13ND6sl&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;tcp-三次握手&quot;&gt;TCP 三次握手&lt;/h3&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;tcp-四次挥手&quot;&gt;TCP 四次挥手&lt;/h3&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;http-协议&quot;&gt;HTTP 协议&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;HTTP 协议是 OSI 模型中应用层协议，主要解决数据如何包装。HTTP 协议建立在 TCP 协议之上，
+TCP 协议在传输层负责数据的传输，数据到达应用层后，由 HTTP 协议负责解析数据，再进行之后的处理。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;浏览器是如何工作的：&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;疑问&quot;&gt;疑问&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;为什么是-3-次握手为什么是-4-次挥手&quot;&gt;为什么是 3 次握手，为什么是 4 次挥手？&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;未完，&lt;a href=&quot;mailto:me@zzir.cn&quot;&gt;点我催更&lt;/a&gt;。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://mp.weixin.qq.com/s/xBbb_LXlXsbNtRLa0IDKOQ&quot; class=&quot;bare&quot;&gt;https://mp.weixin.qq.com/s/xBbb_LXlXsbNtRLa0IDKOQ&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://tools.ietf.org/html/rfc2616&quot; class=&quot;bare&quot;&gt;https://tools.ietf.org/html/rfc2616&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://tools.ietf.org/html/rfc793&quot; class=&quot;bare&quot;&gt;https://tools.ietf.org/html/rfc793&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content><author><name>zzir</name></author><category term="HTTP" /><category term="Golang" /><category term="WireShark" /><summary type="html">环境：</summary></entry><entry><title type="html">单链表、双链表的 Golang 实现</title><link href="https://zzir.cn/2020/go-linked-list.html" rel="alternate" type="text/html" title="单链表、双链表的 Golang 实现" /><published>2020-01-05T00:00:00+08:00</published><updated>2020-01-05T00:00:00+08:00</updated><id>https://zzir.cn/2020/go-linked-list</id><content type="html" xml:base="https://zzir.cn/2020/go-linked-list.html">&lt;div class=&quot;sect1&quot;&gt;
 &lt;h2 id=&quot;single-linked-list&quot;&gt;Single Linked List&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;sect2&quot;&gt;
@@ -2291,1645 +2544,4 @@ if __name__ == '__main__':
 &lt;p&gt;https://en.wikipedia.org/wiki/Google_Authenticator  &lt;br /&gt;
 https://blog.seetee.me/post/2011/google-two-step-verification/  &lt;br /&gt;
 https://garbagecollected.org/2014/09/14/how-google-authenticator-works/  &lt;br /&gt;
-https://security.stackexchange.com/questions/35157/how-does-google-authenticator-work&lt;/p&gt;</content><author><name>zzir</name></author><category term="Google" /><category term="2FA" /><category term="Python" /><summary type="html">在线演示</summary></entry><entry><title type="html">Python ZMQ</title><link href="https://zzir.cn/2017/pyhon-zmq.html" rel="alternate" type="text/html" title="Python ZMQ" /><published>2017-08-31T00:00:00+08:00</published><updated>2017-08-31T00:00:00+08:00</updated><id>https://zzir.cn/2017/pyhon-zmq</id><content type="html" xml:base="https://zzir.cn/2017/pyhon-zmq.html">&lt;h2 id=&quot;zmq-allowed-patterns&quot;&gt;ZMQ Allowed Patterns&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;PUB and SUB&lt;/li&gt;
-  &lt;li&gt;REQ and REP&lt;/li&gt;
-  &lt;li&gt;REQ and ROUTER&lt;/li&gt;
-  &lt;li&gt;DEALER and REP&lt;/li&gt;
-  &lt;li&gt;DEALER and ROUTER&lt;/li&gt;
-  &lt;li&gt;DEALER and DEALER&lt;/li&gt;
-  &lt;li&gt;ROUTER and ROUTER&lt;/li&gt;
-  &lt;li&gt;PUSH and PULL&lt;/li&gt;
-  &lt;li&gt;PAIR and PAIR&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;zmq模式&quot;&gt;ZMQ模式&lt;/h2&gt;
-
-&lt;h3 id=&quot;req-rep&quot;&gt;REQ-REP&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/imgs/201708-fig2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;请求-应答：由请求端发起请求，并等待回应端回应请求。从请求端来看，一定是一对对收发配对的；反之，在回应端一定是发收对。请求端和回应端都可以是1：N的模型。通常把1认为是server，N认为是Client。&lt;/p&gt;
-
-&lt;p&gt;注意：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;必须先提问，后回答&lt;/li&gt;
-  &lt;li&gt;对于一个提问，只能回答一次&lt;/li&gt;
-  &lt;li&gt;在没有收到回答前不能再次提问&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;!--more--&gt;
-
-&lt;p&gt;&lt;strong&gt;举个栗子&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Request:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp://127.0.0.1:10000'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;b'hello, i am msg-%s'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Received reply %d [%s]&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Reply:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import zmq
-import time
-
-context = zmq.Context()
-socket = context.socket(zmq.REP)
-socket.bind('tcp://127.0.0.1:10000')
-
-while True:
-    message = socket.recv()
-    print(&quot;Received request: %s &quot; % message)
-    time.sleep(1)
-    socket.send(&quot;yay, it's ok.&quot;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;extended-request-reply&quot;&gt;Extended Request-Reply&lt;/h4&gt;
-
-&lt;p&gt;关于 DEALER 和 ROUTE：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/imgs/201708-fig27.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;DEALER 类似一个异步的 REQ Socket。&lt;/p&gt;
-
-&lt;p&gt;ROUTE 类似一个一部的 REP Socket。&lt;/p&gt;
-
-&lt;p&gt;你依然可以使用REQ，也可以使用DEALER，它们有两个不同：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;The REQ socket always sends an empty delimiter frame before any data frames; the DEALER does not.&lt;/li&gt;
-  &lt;li&gt;The REQ socket will send only one message before it receives a reply; the DEALER is fully asynchronous.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;看一个具体的例子：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/imgs/201708-fig16.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Broker:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ROUTER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp://127.0.0.1:5559'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DEALER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp://127.0.0.1:5560'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# init poll set
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;poller&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Poller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;poller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;register&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;POLLIN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;poller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;register&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;POLLIN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socks&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;poller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;poll&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;POLLIN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv_multipart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send_multipart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;POLLIN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv_multipart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send_multipart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Client:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;#  Prepare our context and sockets
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:5559&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;#  Do 10 requests, waiting each time for a response
-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;b&quot;Hello&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Received reply %s [%s]&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Server:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:5560&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Received request: %s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;b&quot;World&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;客户端和服务端相对透明，唯一的静态节点代理在中间。&lt;/p&gt;
-
-&lt;h3 id=&quot;pub-sub&quot;&gt;PUB-SUB&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/imgs/201708-fig4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;发布-订阅：类似广播。这个模型里，发布端是单向只发送数据的，且不关心是否把全部的信息都发送给订阅者。如果发布端开始发布信息的时候，订阅端尚未连接上，这些信息直接丢弃。不过一旦订阅连接上来，中间会保证没有信息丢失。同样，订阅端则只负责接收，而不能反馈。如果发布端和订阅端需要交互（比如要确认订阅者是否已经连接上），则使用额外的socket采用请求回应模型满足这个需求。&lt;/p&gt;
-
-&lt;p&gt;举个栗子：&lt;/p&gt;
-
-&lt;p&gt;Publisher&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;10001&quot;&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PUB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:%s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9999&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10005&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;messagedata&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;215&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;80&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d %d&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagedata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d %d&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagedata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Subscriber:&lt;/p&gt;
-
-&lt;p&gt;Publisher像广播一样一直在发送，不管Subscriber是否接收得到，当Subscriber连接上Publisher之后，从连上那一刻开始接收KEY为10001的内容，满5次自动断开。Publisher依然会向端口广播消息，不论Subscriber是否连接。&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# Socket to talk to server
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SUB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Collecting updates from weather server...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:10001&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# Subscribe to zipcode, default is NYC, 10001, not port
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;topicfilter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;10001&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setsockopt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SUBSCRIBE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;topicfilter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# Process 5 updates
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;total_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;update_nbr&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagedata&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;total_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;messagedata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'topic: %s  messagedata: %s'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagedata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;&quot;Average value: topic '%s' messagedata %dF&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;topicfilter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;total_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;update_nbr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;push-pull&quot;&gt;PUSH-PULL&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/imgs/201708-fig5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;管道模式。这个模型里，管道是单向的，从PUSH端单向的向PULL端单向的推送数据流。&lt;/p&gt;
-
-&lt;p&gt;举个栗子：&lt;/p&gt;
-
-&lt;p&gt;Ventilator:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;ventilator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PUSH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ventilator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:5557&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# random.seed()
-&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;workload&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ventilator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;workload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Worker:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;ventilator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ventilator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp://127.0.0.1:5557'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;sink&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PUSH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;sink&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp://127.0.0.1:5558'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# do something
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ventilator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;sink&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Sink:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;sink&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;sink&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:5558&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sink&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;pair&quot;&gt;PAIR&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/imgs/201708-pair.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在一个进程中，用于两个线程间的通信。&lt;/p&gt;
-
-&lt;p&gt;Conventional sockets allow:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;only strict one-to-one (two peers)&lt;/li&gt;
-  &lt;li&gt;many-to-one (many clients, one server)&lt;/li&gt;
-  &lt;li&gt;one-to-many (multicast) relationships&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Exclusive pair pattern&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Paired sockets are very similar to regular sockets.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;The communication is bidirectional.&lt;/li&gt;
-  &lt;li&gt;There is no specific state stored within the socket&lt;/li&gt;
-  &lt;li&gt;There can only be one connected peer.&lt;/li&gt;
-  &lt;li&gt;The server listens on a certain port and a client connects to it.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;举个栗子：&lt;/p&gt;
-
-&lt;p&gt;服务端和客户端可以发送任意的消息数量。&lt;/p&gt;
-
-&lt;p&gt;Server:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;5556&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PAIR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://*:%s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Server message to client3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Client:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;5556&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PAIR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://localhost:%s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;client message to server1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;client message to server2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;路由&quot;&gt;路由&lt;/h2&gt;
-
-&lt;p&gt;更复杂的网络模型。ZMQ可以很好的支持路由功能（实现路由功能的组件叫做Device），把1：N扩展为N：M（只需要加入若干路由节点）。从这个模型看，更底层的端点地址是对上层隐藏的。每个请求都隐含回应地址，而应用则不关心它。&lt;/p&gt;
-
-&lt;p&gt;Device 组件有 3 个基本模式：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Queue&lt;/li&gt;
-  &lt;li&gt;Forwarder&lt;/li&gt;
-  &lt;li&gt;Streamer&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;还有新的Proxy()。&lt;/p&gt;
-
-&lt;h3 id=&quot;queue-device&quot;&gt;Queue Device&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/imgs/201708-Queue.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Queue 是位于客户端和服务器之间的中介，将客户端的请求转发给服务端，再将收到的服务端的回应转发给客户端。&lt;/p&gt;
-
-&lt;p&gt;Queue:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;XREP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp://*:5559'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;XREQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp://*:5560'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;device&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;QUEUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Exception&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;bringing down zmq device&quot;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;finally&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;term&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'__main__'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Client:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'5559'&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'Connecting to server...'&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp://localhost:%s'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;client_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10005&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'Sending request '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Hello from %s '&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'Received reply %d [%s]'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Server:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'5560'&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp://localhost:%s'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;server_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10005&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'Received request: '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'World from server %s'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;如果想查看负载均衡效果，可以运行多个客户端和服务端。客户端的请求会经由中介分配到不同的服务器。&lt;/p&gt;
-
-&lt;h3 id=&quot;forwarder&quot;&gt;Forwarder&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/imgs/201708-forwarder.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;如同 QUEUE 的 request-reply 模式。FORWARDER 像 pub-sub 的代理服务器。它允许 publishers 和 subscribers 移动部件，FORWARDER 是中心部件负责连接所有的publishers和subscribers。&lt;/p&gt;
-
-&lt;p&gt;Forwarder:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;c1&quot;&gt;# sub
-&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SUB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:5559&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setsockopt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SUBSCRIBE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;c1&quot;&gt;# pub
-&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PUB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:5560&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;c1&quot;&gt;# forwarder
-&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;device&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FORWARDER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Exception&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;bringing down zmq device&quot;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;finally&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;term&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Client:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;5560&quot;&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SUB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Collecting updates from server...&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://localhost:%s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;topicfilter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;9&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setsockopt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SUBSCRIBE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;topicfilter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;update_nbr&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagedata&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagedata&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Server:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;5559&quot;&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PUB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://localhost:%s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;publisher_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9999&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;messagedata&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;server#%s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;publisher_id&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;%s %s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagedata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d %s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messagedata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;streamer&quot;&gt;Streamer&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/imgs/201708-streamer.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Streamer 用于并行管道消息通信。作为一个代理，从PUSH端收集任务并发放给PULL端。&lt;/p&gt;
-
-&lt;p&gt;Streamer:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-        &lt;span class=&quot;c1&quot;&gt;# pull
-&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp://127.0.0.1:5559'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;c1&quot;&gt;# push
-&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PUSH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp://127.0.0.1:5560'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;c1&quot;&gt;# streamer
-&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;device&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STREAMER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Exception&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'streamer_device'&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;finally&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;term&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'__main__'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;PUSH:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;zmq_socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PUSH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;zmq_socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:5559&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# push
-&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;xrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;work_message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'num'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;zmq_socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send_json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;work_message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;PULL:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;consumer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# pull
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;consumer_receiver&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;consumer_receiver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:5560&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;consumer_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10005&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;I am consumer #%s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;consumer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;work&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;consumer_receiver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recv_json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;work&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'num'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'consumer'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;consumer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'num'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;consumer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;proxy&quot;&gt;Proxy()&lt;/h3&gt;
-
-&lt;p&gt;用于替代Device。&lt;/p&gt;
-
-&lt;p&gt;Show me The Code:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zmq&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;# Socket facing clients
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ROUTER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:5559&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;# Socket facing services
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DEALER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcp://127.0.0.1:5560&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;zmq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;proxy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;# We never get here
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;frontend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;term&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;参考链接：  &lt;br /&gt;
-http://zguide.zeromq.org/py:all  &lt;br /&gt;
-http://pyzmq.readthedocs.io/en/latest/api/  &lt;br /&gt;
-https://learning-0mq-with-pyzmq.readthedocs.io/en/latest/pyzmq/  &lt;br /&gt;
-https://pyzmq.readthedocs.io/en/latest/api/index.html&lt;/p&gt;</content><author><name>zzir</name></author><category term="ZMQ" /><category term="Python" /><summary type="html">ZMQ Allowed Patterns</summary></entry><entry><title type="html">Bitcoin SegWit(Segregated Witness)</title><link href="https://zzir.cn/2017/bitcoin-segwit.html" rel="alternate" type="text/html" title="Bitcoin SegWit(Segregated Witness)" /><published>2017-08-15T00:00:00+08:00</published><updated>2017-08-15T00:00:00+08:00</updated><id>https://zzir.cn/2017/bitcoin-segwit</id><content type="html" xml:base="https://zzir.cn/2017/bitcoin-segwit.html">&lt;p&gt;SegWit 是指通过从比特币交易中移除签名数据来提高区块链上区块大小限制的这一过程。交易的某一部分被移除，可以腾出空间向链中添加更多交易。&lt;/p&gt;
-
-&lt;p&gt;Segregate 指’分离’，Witnesses 指’签名’。因此，Segregated Witness 简言之就是将交易签名数据分开存放。此处可见&lt;a href=&quot;https://bitcoincore.org/zh_CN/2016/01/26/segwit-benefits/&quot;&gt;隔离见证的好处&lt;/a&gt;。&lt;/p&gt;
-
-&lt;!--more--&gt;
-
-&lt;h2 id=&quot;segregated-witness-交易&quot;&gt;Segregated Witness 交易&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;P2WPKH&lt;/code&gt; &lt;em&gt;(pay to witness public key hash)&lt;/em&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;P2WSH&lt;/code&gt;  &lt;em&gt;(pay to witness script hash)&lt;/em&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;P2SH-P2WPKH&lt;/code&gt;  &lt;em&gt;(P2WPKH nested in BIP16 P2SH)&lt;/em&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;P2SH-P2WSH&lt;/code&gt;   &lt;em&gt;(P2WSH nested in BIP16 P2SH)&lt;/em&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;P2WPKH&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;P2WSH&lt;/code&gt; 是 &lt;code class=&quot;highlighter-rouge&quot;&gt;P2PKH&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;P2SH&lt;/code&gt; 的升级。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;P2SH-P2WPKH&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;P2SH-P2WSH&lt;/code&gt; 可以让不支持segwit的老版本也能发送segwit交易。&lt;/p&gt;
-
-&lt;h2 id=&quot;p2pkh-tx-和-p2wpkh-tx-对比&quot;&gt;P2PKH TX 和 P2WPKH TX 对比&lt;/h2&gt;
-
-&lt;p&gt;p2pkh transaction:&lt;/p&gt;
-
-&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;hex&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;02000000015ca5e7bf9d435fbf0faea02a977c4100ec744bcf823202caa8426a785ebd4ceb000000006a4730440220593d0a26baee9780762ce0b4e88cb5167fba06c7db0850e601d54a60145b628402205f7aac3cf48c2c6dff14093bfdec762af99f5c2b6ed2f9d34ec694657ee4d8ab012103c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa743ffffffff0100127a00000000001976a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac00000000&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;txid&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2dcba80fc3e196f1c868ca7a0d21274995d8e24e91e898c6e85bee94494b7d04&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;hash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2dcba80fc3e196f1c868ca7a0d21274995d8e24e91e898c6e85bee94494b7d04&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;191&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;vsize&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;191&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;locktime&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;vin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;txid&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;eb4cbd5e786a42a8ca023282cf4b74ec00417c972aa0ae0fbf5f439dbfe7a55c&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;vout&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;scriptSig&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;asm&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;30440220593d0a26baee9780762ce0b4e88cb5167fba06c7db0850e601d54a60145b628402205f7aac3cf48c2c6dff14093bfdec762af99f5c2b6ed2f9d34ec694657ee4d8ab[ALL] 03c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa743&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;hex&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;4730440220593d0a26baee9780762ce0b4e88cb5167fba06c7db0850e601d54a60145b628402205f7aac3cf48c2c6dff14093bfdec762af99f5c2b6ed2f9d34ec694657ee4d8ab012103c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa743&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;sequence&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4294967295&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;vout&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.08000000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;n&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;scriptPubKey&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;asm&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;OP_DUP OP_HASH160 08a62834a781b38ce5e0cd86eb61efe9a95d57dd OP_EQUALVERIFY OP_CHECKSIG&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;hex&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;76a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;reqSigs&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pubkeyhash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;addresses&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-          &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;mgJgkPB7BMiyL1X3P6Ty4FAcNVTNPm65m1&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;p2wpkh transaction:&lt;/p&gt;
-
-&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;hex&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;01000000000101859f69e79898cba9115a58598a85b66751a9adec0f055145419b0a384f266425553d000000ffffffff019fbb0d0000000000160014ba20f1b78d7e7111283b1f97bd141a03bc94d208024730440220662686732bf79a63a1a655e7ebd889a97af669b1be93f27f5beb0117523c442b0220061dc98470d304f0508b76e9ba9400c5e6ac1046533e006e21cbd89b85ca31fa012103c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa74300000000&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;txid&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a785e06b8db7d0eb7b592ffbe31dac63642b9d6100b1dbad13397e4173e69672&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;hash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;19122b6ee2dc8a0ccc51be42fad5bc92a1e3c27820a51e507a278ea16ec188aa&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;191&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;vsize&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;110&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;locktime&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;vin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;txid&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2564264f380a9b414551050fecada95167b6858a59585a11a9cb9898e7699f85&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;vout&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;15701&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;scriptSig&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;asm&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;hex&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;txinwitness&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;30440220662686732bf79a63a1a655e7ebd889a97af669b1be93f27f5beb0117523c442b0220061dc98470d304f0508b76e9ba9400c5e6ac1046533e006e21cbd89b85ca31fa01&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;03c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa743&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;sequence&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4294967295&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;vout&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.00899999&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;n&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;scriptPubKey&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;asm&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0 ba20f1b78d7e7111283b1f97bd141a03bc94d208&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;hex&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0014ba20f1b78d7e7111283b1f97bd141a03bc94d208&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;witness_v0_keyhash&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;segregated-witness-tx-区别&quot;&gt;Segregated Witness TX 区别&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;/imgs/201708-witnesstx.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;not segwit&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-none&quot;&gt;[nVersion][txins][txouts][nLockTime]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;segwit tx&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-none&quot;&gt;[nVersion][marker][flag][txins][txouts][witness][nLockTime]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;marker&lt;/code&gt; 字段必须是 &lt;code class=&quot;highlighter-rouge&quot;&gt;0x00&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;flag&lt;/code&gt; 必须是1字节的非0值，当前必须是 &lt;code class=&quot;highlighter-rouge&quot;&gt;0x01&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;witness&lt;/code&gt; 是一个交易的所有有&lt;code class=&quot;highlighter-rouge&quot;&gt;witness&lt;/code&gt;数据的序列化。每个&lt;code class=&quot;highlighter-rouge&quot;&gt;txin&lt;/code&gt;关联到一个&lt;code class=&quot;highlighter-rouge&quot;&gt;witness&lt;/code&gt;字段，&lt;code class=&quot;highlighter-rouge&quot;&gt;witness&lt;/code&gt;数据不是脚本也没有520字节的压栈限制。&lt;/p&gt;
-
-&lt;p&gt;一个非&lt;code class=&quot;highlighter-rouge&quot;&gt;witness&lt;/code&gt;的&lt;code class=&quot;highlighter-rouge&quot;&gt;txin&lt;/code&gt;必须关联一个空的&lt;code class=&quot;highlighter-rouge&quot;&gt;witness&lt;/code&gt;字段，表示为&lt;code class=&quot;highlighter-rouge&quot;&gt;0x00&lt;/code&gt;.如果所有的&lt;code class=&quot;highlighter-rouge&quot;&gt;txin&lt;/code&gt;都没有&lt;code class=&quot;highlighter-rouge&quot;&gt;witness&lt;/code&gt;程序，那么交易必须使用旧的格式序列化(例外:coinbase交易)。&lt;/p&gt;
-
-&lt;p&gt;其他区别：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;txid&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;hash&lt;/code&gt; 不同。如果交易没有&lt;code class=&quot;highlighter-rouge&quot;&gt;witness&lt;/code&gt;数据，那么&lt;code class=&quot;highlighter-rouge&quot;&gt;txid&lt;/code&gt;等于&lt;code class=&quot;highlighter-rouge&quot;&gt;hash&lt;/code&gt;。&lt;/li&gt;
-  &lt;li&gt;将原本 &lt;code class=&quot;highlighter-rouge&quot;&gt;txins&lt;/code&gt; 里的 &lt;code class=&quot;highlighter-rouge&quot;&gt;scriptSig&lt;/code&gt; 数据移到新字段 &lt;code class=&quot;highlighter-rouge&quot;&gt;witness&lt;/code&gt; 里。&lt;/li&gt;
-  &lt;li&gt;新的 &lt;code class=&quot;highlighter-rouge&quot;&gt;scriptPubKey&lt;/code&gt; 输出锁定脚本。&lt;/li&gt;
-  &lt;li&gt;新的签名算法，定义在&lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki&quot;&gt;BIP143&lt;/a&gt;。&lt;/li&gt;
-  &lt;li&gt;两个新的支付地址类型，定义在&lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0142.mediawiki&quot;&gt;BIP142&lt;/a&gt;。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;em&gt;hash&lt;/em&gt; 的计算方式是&lt;code class=&quot;highlighter-rouge&quot;&gt;double SHA256([nVersion][marker][flag][txins][txouts][witness][nLockTime])&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;txid&lt;/em&gt; 的计算方式是&lt;code class=&quot;highlighter-rouge&quot;&gt;double SHA256([nVersion][txins][txouts][nLockTime])&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;举个栗子：&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;txid&lt;/code&gt;为 &lt;code class=&quot;highlighter-rouge&quot;&gt;a785e06b8db7d0eb7b592ffbe31dac63642b9d6100b1dbad13397e4173e69672&lt;/code&gt; 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;P2WPKH&lt;/code&gt; 交易。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;import hashlib
-from binascii import hexlify, unhexlify
-
-def bytes_to_hex_str(byte_str):
-    return hexlify(byte_str).decode('ascii')
-
-def hex_str_to_bytes(hex_str):
-    return unhexlify(hex_str.encode('ascii'))
-
-def sha256(s):
-    return hashlib.new('sha256', s).digest()
-
-def ab_to_ba(string):
-    chrl = [string[i:i + 2] for i in range(0, len(string), 2)][::-1]
-    new_chr = ''
-    for i in chrl:
-        new_chr += i
-    return new_chr
-
-witness_hex = '01000000000101859f69e79898cba9115a58598a85b66751a9adec0f055145419b0a384f266425553d000000ffffffff019fbb0d0000000000160014ba20f1b78d7e7111283b1f97bd141a03bc94d208024730440220662686732bf79a63a1a655e7ebd889a97af669b1be93f27f5beb0117523c442b0220061dc98470d304f0508b76e9ba9400c5e6ac1046533e006e21cbd89b85ca31fa012103c466ecd8dae01225f97a51713b401f0daad383f08e8f3f7e1d1b40ee971fa74300000000'
-
-no_witness_hex = '0100000001859f69e79898cba9115a58598a85b66751a9adec0f055145419b0a384f266425553d000000ffffffff019fbb0d0000000000160014ba20f1b78d7e7111283b1f97bd141a03bc94d20800000000'
-
-tx_hash = ab_to_ba(bytes_to_hex_str(sha256(sha256(hex_str_to_bytes(witness_hex)))))
-tx_txid = ab_to_ba(bytes_to_hex_str(sha256(sha256(hex_str_to_bytes(no_witness_hex)))))
-
-print('hash:', tx_hash, '\ntxid:', tx_txid)
-
-# hash: 19122b6ee2dc8a0ccc51be42fad5bc92a1e3c27820a51e507a278ea16ec188aa 
-# txid: a785e06b8db7d0eb7b592ffbe31dac63642b9d6100b1dbad13397e4173e69672
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;其他：&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;Segwit TX Size Calculations:&lt;/em&gt;&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Transaction weight(weight) == Base transaction size * 3 + Total transaction size&lt;/li&gt;
-  &lt;li&gt;Virtual transaction size == Transaction weight / 4&lt;/li&gt;
-  &lt;li&gt;Base transaction size == Total transaction size - Witness data&lt;/li&gt;
-  &lt;li&gt;Total transaction size == Base transaction size + Witness data&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;(ie. Transaction weight same method as calculating Block weight from Base size and Total size)&lt;/p&gt;
-
-&lt;h2 id=&quot;tx-输出脚本&quot;&gt;Tx 输出脚本&lt;/h2&gt;
-
-&lt;h3 id=&quot;p2pkh&quot;&gt;P2PKH&lt;/h3&gt;
-
-&lt;p&gt;最常用，简单的支付给一个单一的公钥。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-None&quot;&gt;scriptPubKey: OP_DUP OP_HASH160 &amp;lt;20-byte-pubkey-hash&amp;gt; OP_EQUALVERIFY OP_CHECKSIG
-              0x76   0xA9       14{20-b-pubkey-hash}  0x88           0xAC
-scriptSig: &amp;lt;sig&amp;gt; &amp;lt;pubkey&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;已知：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&amp;lt;20-byte-pubkey-hash&amp;gt; == RIPEMD160(SHA256(pubkey))&lt;/li&gt;
-  &lt;li&gt;&amp;lt;20-byte-pubkey-hash&amp;gt; == b58check_to_hex(address)&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;所以，p2pkh锁定脚本scriptPubKey的实现:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;def mk_p2pkh_script(addr):
-    return '76a914' + b58check_to_hex(addr) + '88ac'
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;p2sh&quot;&gt;P2SH&lt;/h3&gt;
-
-&lt;p&gt;P2SH定义在&lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki&quot;&gt;BIP16&lt;/a&gt;，它允许付款到任意复杂的脚本用一个修改长度的&lt;code class=&quot;highlighter-rouge&quot;&gt;scriptPubKey&lt;/code&gt;。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-None&quot;&gt;scriptPubKey: OP_HASH160 &amp;lt;20-byte-script-hash&amp;gt; OP_EQUAL
-              0xA9       14{20b-script-hash}   0x87
-redeemScript: OP_1 &amp;lt;pubkey1&amp;gt; &amp;lt;pubkey2&amp;gt; OP_2 OP_CHECKMULTISIG
-              0x51 0x21...   0x21...   0x52 0xae
-scriptSig: &amp;lt;...&amp;gt; &amp;lt;...&amp;gt; &amp;lt;...&amp;gt; &amp;lt;redeemScript&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;已知：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&amp;lt;20-byte-script-hash&amp;gt; == RIPEMD160(SHA256(redeemScript))&lt;/li&gt;
-  &lt;li&gt;&amp;lt;20-byte-script-hash&amp;gt; == P2WPKH:&amp;lt;20-byte-pubkey-hash&amp;gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;所以，p2sh锁定脚本scriptPubKey的实现:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;def mk_p2sh_script(addr):
-    return 'a914' + b58check_to_hex(addr) + '87'
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;p2wpkh&quot;&gt;P2WPKH&lt;/h3&gt;
-
-&lt;p&gt;Pay To Witness Public Key Hash。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-None&quot;&gt;scriptPubKey: OP_0 &amp;lt;20-byte-key-hash&amp;gt;
-              (0x0014{20-byte-key-hash})
-scriptSig:    (empty)
-witness:      &amp;lt;signature&amp;gt; &amp;lt;pubkey&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;已知：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&amp;lt;20-byte-pubkey-hash&amp;gt; == RIPEMD160(SHA256(pubkey))&lt;/li&gt;
-  &lt;li&gt;&amp;lt;20-byte-pubkey-hash&amp;gt; == b58check_to_hex(address)&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;所以，p2wpkh锁定脚本scriptPubKey的实现:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;def mk_p2wpkh_script(addr):
-    return '0014' + b58check_to_hex(addr)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;p2wsh&quot;&gt;P2WSH&lt;/h3&gt;
-
-&lt;p&gt;Pay To Witness Script Hash。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-None&quot;&gt;scriptPubKey: OP_0 &amp;lt;32-byte-hash&amp;gt;
-              (0x0020{32-byte-hash})
-scriptSig:    (empty)
-redeemScript: OP_1 &amp;lt;pubkey1&amp;gt; &amp;lt;pubkey2&amp;gt; OP_2 OP_CHECKMULTISIG
-              0x51 0x21...   0x21...   0x52   0xae
-witness:      0 &amp;lt;signature1&amp;gt; &amp;lt;1 &amp;lt;pubkey1&amp;gt; &amp;lt;pubkey2&amp;gt; 2 CHECKMULTISIG&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;已知：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&amp;lt;32-byte-script-hash&amp;gt; == SHA256(redeemScript)&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;所以，p2wsh锁定脚本scriptPubKey的实现:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;def mk_p2wsh_script():
-    scripthash = bytes_to_hex_str(sha256(hex_str_to_bytes(redeemscript)))
-    pkscript = &quot;0020&quot; + scripthash
-    return pkscript
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;p2sh-p2wpkh&quot;&gt;P2SH-P2WPKH&lt;/h3&gt;
-
-&lt;p&gt;P2WPKH nested in BIP16 P2SH。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-None&quot;&gt;scriptPubKey: HASH160 &amp;lt;20-byte-script-hash&amp;gt; EQUAL
-                  (0xA914{20-byte-script-hash}87)
-scriptSig:    &amp;lt;OP_0 &amp;lt;20-byte-pubkey-hash&amp;gt;&amp;gt;
-              (0x0014{20-byte-pubkey-hash})
-witness:      &amp;lt;signature&amp;gt; &amp;lt;pubkey&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;已知：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;RIPEMD160(SHA256(pubkey)) == &amp;lt;20-byte-pubkey-hash&amp;gt; &amp;amp;&amp;amp;&lt;/li&gt;
-  &lt;li&gt;RIPEMD160(SHA256(0x0014{20-byte-pubkey-hash})) == &amp;lt;20-byte-script-hash&amp;gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;所以，p2sh-p2wpkh锁定脚本scriptPubKey的实现:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;# p2wpkh
-pubkey_20_byte_hash = '0014' + b58check_to_hex(addr)
-# p2sh
-p2sh_script_hash256 = bytes_to_hex_str(
-    sha256(hex_str_to_bytes(pubkey_20_byte_hash))
-)
-p2sh_script_hash160 = bytes_to_hex_str(
-    ripemd160(hex_str_to_bytes(p2sh_script_hash256))
-)
-# print('p2sh-p2wpkh addr&amp;gt;&amp;gt;', hex_to_b58check(p2sh_script_hash160, 196))
-schash = 'a914' + p2sh_script_hash160 + '87'
-return schash
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;p2sh-p2wsh&quot;&gt;P2SH-P2WSH&lt;/h3&gt;
-
-&lt;p&gt;P2WSH nested in BIP16 P2SH。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-None&quot;&gt;scriptPubKey: HASH160 &amp;lt;20-byte-hash&amp;gt; EQUAL
-              (0xA914{20-byte-hash}87)
-scriptSig:    &amp;lt;OP_0 &amp;lt;32-byte-hash&amp;gt;&amp;gt;
-              (0x0020{32-byte-hash})
-witness:      0 &amp;lt;signature1&amp;gt; &amp;lt;1 &amp;lt;pubkey1&amp;gt; &amp;lt;pubkey2&amp;gt; 2 CHECKMULTISIG&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;已知：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;SHA256(redeemScript) == &amp;lt;32-byte-script-hash&amp;gt; &amp;amp;&amp;amp;&lt;/li&gt;
-  &lt;li&gt;RIPEMD160(SHA256(0x0020{32-byte-script-hash})) == &amp;lt;20-byte-script-hash&amp;gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;所以，p2sh-p2wsh锁定脚本scriptPubKey的实现:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;# p2wsh
-scripthash = bytes_to_hex_str(sha256(hex_str_to_bytes(redeemscript)))
-pkscript = &quot;0020&quot; + scripthash
-# p2sh
-p2sh_script_hash256 = bytes_to_hex_str(sha256(hex_str_to_bytes(pkscript)))
-p2sh_script_hash160 = bytes_to_hex_str(
-    ripemd160(hex_str_to_bytes(p2sh_script_hash256))
-)
-schash = 'a914' + p2sh_script_hash160 + '87'
-return schash
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&quot;一个小demo&quot;&gt;一个小DEMO&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#!/usr/bin/env python3
-import decimal
-import hashlib
-from binascii import hexlify, unhexlify
-from bitcoinrpc.authproxy import AuthServiceProxy   # PyPi: python-bitcoinrpc
-from bitcoin.transaction import serialize   # PyPi: bitcoin
-from bitcoin.main import b58check_to_hex, hex_to_b58check
-from pprint import pprint
-
-# testnet5
-p = AuthServiceProxy(&quot;http://%s:%s@127.0.0.1:18554&quot; % ('rpc', '123456'))
-
-address1 = 'mfnCSPtgXEGdt8mJPguvgmhiswfgkqEjAx'
-address2 = 'n3xBmjjCNGDkkt5fdCdV7G7pdx1zxUJXAo'
-address3 = 'mnFMaBdF6YdB1Y6AKtXqfS3Z9U26iHPP1E'
-pubkey1 = p.validateaddress(address1)['pubkey']
-pubkey2 = p.validateaddress(address2)['pubkey']
-pubkey3 = p.validateaddress(address3)['pubkey']
-
-multisigaddress = p.createmultisig(2, [pubkey1, pubkey2, pubkey3])['address']
-redeemscript = p.createmultisig(2, [pubkey1, pubkey2, pubkey3])['redeemScript']
-
-p.addmultisigaddress(2, [pubkey1, pubkey2, pubkey3])
-p.addwitnessaddress(multisigaddress)
-
-print('multisigaddress:', multisigaddress, '\nredeemscript:', redeemscript)
-
-def bytes_to_hex_str(byte_str):
-    return hexlify(byte_str).decode('ascii')
-
-def hex_str_to_bytes(hex_str):
-    return unhexlify(hex_str.encode('ascii'))
-
-def ripemd160(s):
-    return hashlib.new('ripemd160', s).digest()
-
-def sha256(s):
-    return hashlib.new('sha256', s).digest()
-
-def mk_p2wsh_script():
-    &quot;&quot;&quot;生成p2wsh的脚本&quot;&quot;&quot;
-    scripthash = bytes_to_hex_str(sha256(hex_str_to_bytes(redeemscript)))
-    pkscript = &quot;0020&quot; + scripthash
-    return pkscript
-
-def mk_p2sh_script(addr):
-    print('b58check_to_hex(addr)', b58check_to_hex(addr))
-    return 'a914' + b58check_to_hex(addr) + '87'
-
-def mk_p2wpkh_script(addr):
-    return '0014' + b58check_to_hex(addr)
-
-def mk_p2pkh_script(addr):
-    return '76a914' + b58check_to_hex(addr) + '88ac'
-
-def mk_p2wpkh_in_p2sh_script(addr):
-    # p2wpkh
-    pubkey_20_byte_hash = '0014' + b58check_to_hex(addr)
-    # p2sh
-    p2sh_script_hash256 = bytes_to_hex_str(
-        sha256(hex_str_to_bytes(pubkey_20_byte_hash))
-    )
-    p2sh_script_hash160 = bytes_to_hex_str(
-        ripemd160(hex_str_to_bytes(p2sh_script_hash256))
-    )
-    print('p2sh-p2wpkh addr&amp;gt;&amp;gt;', hex_to_b58check(p2sh_script_hash160, 196))  # 5
-    schash = 'a914' + p2sh_script_hash160 + '87'
-    return schash
-
-
-def mk_p2wsh_in_p2sh_script():
-    # p2wsh
-    scripthash = bytes_to_hex_str(sha256(hex_str_to_bytes(redeemscript)))
-    pkscript = &quot;0020&quot; + scripthash
-    # p2sh
-    p2sh_script_hash256 = bytes_to_hex_str(sha256(hex_str_to_bytes(pkscript)))
-    p2sh_script_hash160 = bytes_to_hex_str(
-        ripemd160(hex_str_to_bytes(p2sh_script_hash256))
-    )
-    print('hex_to_b58check', hex_to_b58check(p2sh_script_hash160, 196))     # 5
-    schash = 'a914' + p2sh_script_hash160 + '87'
-    return schash
-
-def select_utxo(amount):
-    &quot;&quot;&quot;
-    :param amount: 总额(加上手续费)
-    :return: [交易的输入，所有输入的总额]
-    &quot;&quot;&quot;
-    ins = []
-    ins_amount = 0
-    
-    # listunspent = p.listunspent()
-
-    listunspent = [
-        {
-            'txid': '224f3c21169e6eeeb7154583dcccf6ffb6ebd7bc73bb5976b6568c82fa7f16bf',
-            'vout': 0, 'amount': 0.0891, 'spendable': True
-        }
-    ]
-
-    for unspent in listunspent:
-        if not unspent['spendable']:
-            continue
-
-        if ins_amount &amp;lt; amount:
-            txin = {
-                'script': '',
-                'outpoint': {
-                    'index': unspent['vout'],
-                    'hash': unspent['txid']
-                },
-                'sequence': 4294967295
-            }
-            ins.append(txin)
-            ins_amount += unspent['amount']
-        else:
-            break
-
-    if ins_amount &amp;lt;= amount:
-        return 0
-
-    return [ins, ins_amount]
-
-def create_tx(send_list, my_fee, change_addr):
-    &quot;&quot;&quot;
-    :param send_list: [{'address':xxx, 'value':0},...]，输出
-    :param my_fee: 单位BTC
-    :param change_addr: 找零地址
-    :return: txid
-    &quot;&quot;&quot;
-    # tx
-    tx = {'version': 1, 'ins': [], 'outs': [], 'locktime': 0}
-
-    # out
-    out_value_sum = 0
-    for out in send_list:
-        out_script = mk_p2pkh_script(out['address'])
-        if out['type'] == 'p2wsh':
-            out_script = mk_p2wsh_script()
-        elif out['type'] == 'p2sh':
-            out_script = mk_p2sh_script(out['address'])
-        elif out['type'] == 'p2wpkh':
-            out_script = mk_p2wpkh_script(out['address'])
-        elif out['type'] == 'p2pkh':
-            out_script = mk_p2pkh_script(out['address'])
-        elif out['type'] == 'p2sh-p2wpkh':
-            out_script = mk_p2wpkh_in_p2sh_script(out['address'])
-        elif out['type'] == 'p2sh-p2wsh':
-            out_script = mk_p2wsh_in_p2sh_script()
-        txout = {
-            'value': int(decimal.Decimal(out['value'] * 10**8)),
-            'script': out_script
-        }
-        tx['outs'].append(txout)
-        out_value_sum += out['value']
-
-    # in
-    select = select_utxo(round(out_value_sum + my_fee, 8))
-    # print(select)
-    if select:
-        ins = select[0]
-        ins_value_sum = select[1]
-    else:
-        return '余额不足'
-
-    tx['ins'] = ins
-
-    # change to myself
-    change_value = float(ins_value_sum) - out_value_sum - my_fee
-    # print(change_value, ins_value_sum, out_value_sum, my_fee)
-
-    if change_addr:
-        txout = {
-            'value': int(decimal.Decimal(change_value * 10**8)),
-            'script': mk_p2pkh_script(change_addr)
-        }
-        tx['outs'].append(txout)
-
-    print('tx:→', tx)
-
-    # serialize
-    raw_tx = serialize(tx)
-
-    # sign
-    sign_raw_tx = p.signrawtransaction(raw_tx)
-
-    pprint(p.decoderawtransaction(sign_raw_tx['hex']))
-
-    return p.sendrawtransaction(sign_raw_tx['hex'], False)
-
-
-if __name__ == '__main__':
-
-    change_address = ''
-    fee = 0.00003
-
-    pay_to = [
-        {'address': 'mfnCSPtgXEGdt8mJPguvgmhiswfgkqEjAx', 'value': 0.01, 'type': 'p2wsh'},
-        {'address': '2N71hQLY9GGbTry3WsLscBnK3jtYVyzLyeM', 'value': 0.01, 'type': 'p2sh'},
-        {'address': 'mfnCSPtgXEGdt8mJPguvgmhiswfgkqEjAx', 'value': 0.01, 'type': 'p2wpkh'},
-        {'address': 'mfnCSPtgXEGdt8mJPguvgmhiswfgkqEjAx', 'value': 0.01, 'type': 'p2pkh'},
-        {'address': 'mjLTwdup9YH9Yq1F3X2mLezEeypLVN6qiW', 'value': 0.01, 'type': 'p2sh-p2wpkh'},
-        {'address': 'mfnCSPtgXEGdt8mJPguvgmhiswfgkqEjAx', 'value': 0.01, 'type': 'p2sh-p2wsh'},
-    ]
-
-    txid = create_tx(pay_to, fee, change_address)
-    print('txid:→', txid)
-
-# txid:→ 6fcafce56db51b2863e27a3786132e3f6ee24686f29d4c9a0752d936a548585a
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&quot;raw-data&quot;&gt;Raw Data&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-None&quot;&gt;p2wsh: 29c147aa8b2b0cdbe10f9ac732ad43487893f73ce330c2c2b70d03ffac4a5978
-p2sh: 906fc3fc397b3818c7d8cb0baa30b675837cdb727da12aa4ce3dbfa809354082
-p2wpkh: f77a6ce8710c9da8e1481d95e1d7a6999303bc5c0064e261afca884baa7793a1
-p2pkh: b7760c28e302fabdd44beb00b60e88c7c674b259503a9d91d036be3fc64296ed
-p2sh-p2wpkh: c04ea4febcd01c2d010f22c9126001747ed58bf632891f779d7acdb8d0cae9e5
-p2sh-p2wsh: 4c4a2864967a8e089a91a20676e85f34f956387639ee1f3459b0509d71c04649
-
-
-P2WSH:
-version:   02000000
-marker:    00
-flag:      01
-txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 0000000000
-sequence:  ffffffff
-txout:     01 a0bb0d0000000000 19 76a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
-witness:   04
-              00
-              48 3045022100f005c6fafd1f0e1b3bc8fa38767f8a19406397608e6d58dfcf003706355dd71f02201d31d88a9619b9a33f99f59fec79c3cd85dd664c66685fe5dc1e8dfb4ad0ed4901
-              48 3045022100a172be2248d88f9fa27ee6d754d87b6325e512d06af199fa3d0c563a53a464ba0220216fe27da49a2383ae183f9430246f65c852583fc2dd778f27d7a209115d9d1f01
-              69 52
-                 21 032ee1c8dbc0fd00d1d75f710e0951baf42749bc7096c903e78ee149ef1715c5b7
-                 21 039fac71ff2a3de5f458e73ac790484fedfdc8ce83e87296c6d42003cadb5c3dad
-                 21 034631171f10da731e952326c8e903e1b11b9b41e109255fd626f30b5b6c4dbf57
-                 53
-                 ae
-locktime:  00000000
-
-
-
-P2SH:
-version:   02000000
-txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 01000000
-scriptSig: fd fe
-              00 00
-              48 30 45022100a058b64de3f82d436c3879c296e5c9a0e75d74f8d62d4f62a933d43c944379520220235cac4ac16109fad9a77fe80616a11408df85fa0825321fbf36f8126123015f0148 
-                 30 45022100ab3ba29fa0c7fe93dcb83d747efef699cbff360ebeed7c33116408c77dd5a1df02202c80b55c92125ac1a4b7fd403fbd13beb630d184fcf597b0d35c3f0b54011c67014c
-              69 52 
-                 21 032ee1c8dbc0fd00d1d75f710e0951baf42749bc7096c903e78ee149ef1715c5b7
-                 21 039fac71ff2a3de5f458e73ac790484fedfdc8ce83e87296c6d42003cadb5c3dad
-                 21 034631171f10da731e952326c8e903e1b11b9b41e109255fd626f30b5b6c4dbf57
-                 53
-                 ae
-sequence:  ffffffff
-txout:     01 a0bb0d0000000000 1976a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
-locktime:  00000000
-
-
-P2WPKH:
-version:   02000000
-marker:    00
-flag:      01
-txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 02000000
-scriptSig: 00
-sequence:  ffffffff
-txout:     01 a0bb0d0000000000 19 76a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
-witness:   02
-              47 30440220151ba0a73a725535e00677942fa59f13bbade793b471c714d7519299e9a3410b022072b845eeeaa9f4a0c93a04f72e08e127d5e256062afb76df7257313c7bcbcdef01
-              21 032ee1c8dbc0fd00d1d75f710e0951baf42749bc7096c903e78ee149ef1715c5b7
-locktime:  00000000
-
-
-P2PKH:
-version:   02000000
-txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 03000000
-scriptSig: 6b
-              48 3045022100c3d5b2ecbb9dcf87750d6671d8f64bffe4184774c807cd6f7de296ce2be892e402204c93a631ee5783ae9274ad3c7401e5200ade86da08c21dd8b355d3c389609d2001
-              21 032ee1c8dbc0fd00d1d75f710e0951baf42749bc7096c903e78ee149ef1715c5b7
-sequence:  ffffffff
-txout:     01 a0bb0d0000000000 19 76a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
-locktime:  00000000
-
-
-P2SH-P2WPKH:
-version:   02000000
-marker:    00
-flag:      01
-txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 04000000
-scriptSig: 17 16 001429e4ad2badfd9ef69597d1cbb703972cdcc7e736
-sequence:  ffffffff
-txout:     01 a0bb0d0000000000 1976a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
-witness:   02
-              47 304402207cbea9b907c805e2bd88728f3a6b7d50e8680bdf0d3ef74b131c8c99e012232d0220424a14f70f840d020709ac3eff0e01adb407f4b1d98e82f8a3a29403b70d0f6501
-              21 03afcc89b1d34b7db1ebcc880606ad30fa4c1a612f7107af0ffa23ff6a7b3b04f5
-locktime:  00000000
-
-
-P2SH-P2WSH:
-version:   02000000
-marker:    00
-flag:      01
-txin:      01 5a5848a536d952079a4c9df28646e26e3f2e1386377ae263281bb56de5fcca6f 05000000
-scriptSig: 23 22 0020bf164d9dbd7f5ec8d957b62bb185dec14852fe4fa5eaf8b1d78fbb743c95a8b4
-sequence:  ffffffff
-txout:     01 a0bb0d0000000000 1976a91408a62834a781b38ce5e0cd86eb61efe9a95d57dd88ac
-witness:   04
-              00
-              47 304402207991d61ca6b2883d97d1c2f26a4fc6b9f31cb68e63cb6172c357a97a7bbd5aa902207bad944ab68f600780ac8ecc701624a44ecc9978a70e2226a71d5a5a6317ba5e01
-              48 3045022100ce5500a7c6d55f71187b4549905242a463239caebca6f373d646cdda7d747aa2022022bb7bac272d6e47dc2d80257970f97d042ce6587bcb3b99c14f7789b54417f301
-              69 52
-                 21 032ee1c8dbc0fd00d1d75f710e0951baf42749bc7096c903e78ee149ef1715c5b7
-                 21 039fac71ff2a3de5f458e73ac790484fedfdc8ce83e87296c6d42003cadb5c3dad
-                 21 034631171f10da731e952326c8e903e1b11b9b41e109255fd626f30b5b6c4dbf57
-                 53
-                 ae
-locktime:  00000000
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;相关链接：&lt;/p&gt;
-
-&lt;p&gt;https://en.bitcoin.it/wiki/Script  &lt;br /&gt;
-https://en.bitcoin.it/wiki/List_of_address_prefixes     &lt;br /&gt;
-https://bitcoincore.org/en/segwit_wallet_dev/  &lt;br /&gt;
-https://github.com/bitcoin/bips/blob/master/bip-0067.mediawiki  &lt;br /&gt;
-https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki  &lt;br /&gt;
-https://github.com/bitcoin/bips/blob/master/bip-0142.mediawiki  &lt;br /&gt;
-https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki  &lt;br /&gt;
-https://github.com/bitcoinbook/bitcoinbook/blob/second_edition/appdx-segwit.asciidoc&lt;/p&gt;</content><author><name>zzir</name></author><category term="Blockchain" /><category term="Bitcoin" /><summary type="html">SegWit 是指通过从比特币交易中移除签名数据来提高区块链上区块大小限制的这一过程。交易的某一部分被移除，可以腾出空间向链中添加更多交易。</summary></entry><entry><title type="html">Python Logging</title><link href="https://zzir.cn/2017/python-logging.html" rel="alternate" type="text/html" title="Python Logging" /><published>2017-07-03T00:00:00+08:00</published><updated>2017-07-03T00:00:00+08:00</updated><id>https://zzir.cn/2017/python-logging</id><content type="html" xml:base="https://zzir.cn/2017/python-logging.html">&lt;p&gt;Python 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;logging&lt;/code&gt; 日志模块用于追踪和记录程序运行时发生的事件。&lt;/p&gt;
-
-&lt;p&gt;一个超级简单的例子：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;import logging
-# logging.basicConfig(filename='out.log',level=30)  # 输出日志到文件
-logging.warning('一条警告消息')  # 打印日志到屏幕
-logging.info('啦啦啦')  # 默认日志级别是warning，所以这条不会显示
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;输出：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-log&quot;&gt;WARNING:root:一条警告消息
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Logging 采用模块化方法，并提供了以下几类组件：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Logger&lt;/strong&gt; - 提供了可直接使用的日志接口。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Handler&lt;/strong&gt; - 日志的处理方式，比如说是打印到屏幕还是记录到文件，或是发送到日志服务器。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Filter&lt;/strong&gt; - 提供更精细的方式确定哪些日志记录需要输出。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Formatter&lt;/strong&gt; - 指定日志记录的输出格式。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;通过调用 Logger 类的实例来执行日志记录。每个实例都有一个名称，它们在概念上以一个命名空间层次结构排列，使用点（.）作为分隔符。默认是&lt;code class=&quot;highlighter-rouge&quot;&gt;root&lt;/code&gt;。&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;logger = logging.getLogger('a.b.c')
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;!--more--&gt;
-
-&lt;h2 id=&quot;日志级别&quot;&gt;日志级别&lt;/h2&gt;
-
-&lt;p&gt;日志记录级别和数值如下，可自定义级别和数值，相同会覆盖预定义。&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Level&lt;/th&gt;
-      &lt;th&gt;Value&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;CRITICAL&lt;/td&gt;
-      &lt;td&gt;50&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;ERROR&lt;/td&gt;
-      &lt;td&gt;40&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;WARNING&lt;/td&gt;
-      &lt;td&gt;30&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;INFO&lt;/td&gt;
-      &lt;td&gt;20&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;DEBUG&lt;/td&gt;
-      &lt;td&gt;10&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;NOTSET&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h2 id=&quot;logger&quot;&gt;Logger&lt;/h2&gt;
-
-&lt;p&gt;Logger 对象有三重工作。首先，程序调用Logger对象，以便应用程序可以在运行时记录消息。第二，Logger对象根据 Filter 对象和 formater 对象过滤确定要执行的日志消息。第三，Logger 对象将相关日志消息传递给所有相关 Handler。&lt;/p&gt;
-
-&lt;p&gt;Logger 对象中使用最广泛的方法分为两类：配置和消息发送。&lt;/p&gt;
-
-&lt;p&gt;这些是最常用的配置方法：&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.setLevel()&lt;/code&gt; 指定将处理的最低严重性级别的日志消息，其中 debug 是最低内置严重性级别， critical 是最高的内置严重性。例如，如果严重性级别为INFO，则 Logger 将仅处理INFO，WARNING，ERROR 和 CRITICAL 消息，并将忽略DEBUG消息。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.addHandler()&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.removeHandler()&lt;/code&gt; 从 Logger 对象中添加和删除 Handler对象。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.addFilter()&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.removeFilter()&lt;/code&gt; 从 Logger 对象中添加和删除 Filter 对象。&lt;/p&gt;
-
-&lt;p&gt;配置 Logger 对象后，以下方法创建日志消息：&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.debug()&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.info()&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.warning()&lt;/code&gt;， &lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.error()&lt;/code&gt;，和&lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.critical()&lt;/code&gt;用于创建对应级别的日志记录。该消息实际上是一个格式串，其可以包含的标准字符串替换语法&lt;code class=&quot;highlighter-rouge&quot;&gt;%s&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;%d&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;%f&lt;/code&gt;，等。其余的参数是与消息中的替换字段对应的对象列表。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.exception()&lt;/code&gt; 创建类似于&lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.error()&lt;/code&gt;的日志消息。仅从异常处理程序调用此方法。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Logger.log()&lt;/code&gt; 将日志级别作为显式参数。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;getLogger()&lt;/code&gt; 如果提供了指定的名称，则返回对具有指定名称的 Logger 实例的引用，否则返回&lt;code class=&quot;highlighter-rouge&quot;&gt;root&lt;/code&gt;。&lt;/p&gt;
-
-&lt;h2 id=&quot;handler&quot;&gt;Handler&lt;/h2&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Handler&lt;/code&gt; 对象负责将适当的日志消息（基于日志级别）分派到指定目的地。可使用&lt;code class=&quot;highlighter-rouge&quot;&gt;addHandler()&lt;/code&gt;方法向其自身添加零个或多个Handler对象。&lt;/p&gt;
-
-&lt;p&gt;常用配置方法：&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;setLevel()&lt;/code&gt;设置输出到指定Handler的日志级别。
-&lt;code class=&quot;highlighter-rouge&quot;&gt;setFormatter()&lt;/code&gt;设置日志格式。
-&lt;code class=&quot;highlighter-rouge&quot;&gt;addFilter()&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;removeFilter()&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Handler种类&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;StreamHandler&lt;/li&gt;
-  &lt;li&gt;FileHandler&lt;/li&gt;
-  &lt;li&gt;NullHandler&lt;/li&gt;
-  &lt;li&gt;WatchedFileHandler&lt;/li&gt;
-  &lt;li&gt;BaseRotatingHandler&lt;/li&gt;
-  &lt;li&gt;RotatingFileHandler&lt;/li&gt;
-  &lt;li&gt;TimedRotatingFileHandler&lt;/li&gt;
-  &lt;li&gt;SocketHandler&lt;/li&gt;
-  &lt;li&gt;DatagramHandler&lt;/li&gt;
-  &lt;li&gt;SysLogHandler&lt;/li&gt;
-  &lt;li&gt;NTEventLogHandler&lt;/li&gt;
-  &lt;li&gt;SMTPHandler&lt;/li&gt;
-  &lt;li&gt;MemoryHandler&lt;/li&gt;
-  &lt;li&gt;HTTPHandler&lt;/li&gt;
-  &lt;li&gt;QueueHandler&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;感兴趣可以查看&lt;a href=&quot;https://docs.python.org/3/library/logging.handlers.html&quot;&gt;更详细信息&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;formater&quot;&gt;Formater&lt;/h2&gt;
-
-&lt;p&gt;用于格式化日志输出。&lt;/p&gt;
-
-&lt;p&gt;例如：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;所有&lt;a href=&quot;https://docs.python.org/3/library/logging.html#logrecord-attributes&quot;&gt;内置属性&lt;/a&gt;：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;属性名称&lt;/th&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;格式&lt;/th&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;说明&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;asctime&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(asctime)s&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;时间&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;created&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(created)f&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;日志创建时间戳&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;filename&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(filename)s&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;文件名称&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;funcName&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(funcName)s&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;函数名称&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;levelname&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(levelname)s&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;级别&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;levelno&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(levelno)s&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;级别(值)&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;lineno&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(lineno)d&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;所在行&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;module&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(module)s&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;模块名称&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;msecs&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(msecs)d&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;毫秒部分&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;message&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(message)s&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;日志消息&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;name&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(name)s&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;日志名称&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;pathname&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(pathname)s&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;路径&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;process&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(process)d&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;进程ID&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;processName&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(processName)s&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;进程名称&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;relativeCreated&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(relativeCreated)d&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;日志创建毫秒数&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;thread&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(thread)d&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;线程ID&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;threadName&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;%(threadName)s&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;线程名称&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h2 id=&quot;简单的例子&quot;&gt;简单的例子&lt;/h2&gt;
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;import logging
-
-logger = logging.getLogger('simple_example')
-logger.setLevel(logging.DEBUG)
-
-# create file handler which logs even debug messages
-fh = logging.FileHandler('spam.log')
-fh.setLevel(logging.DEBUG)
-
-# create console handler with a higher log level
-ch = logging.StreamHandler()
-ch.setLevel(logging.ERROR)
-
-# create formatter and add it to the handlers
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-fh.setFormatter(formatter)
-
-# add the handlers to logger
-logger.addHandler(ch)
-logger.addHandler(fh)
-
-# 'application' code
-logger.debug('debug message')
-logger.info('info message')
-logger.warn('warn message')
-logger.error('error message')
-logger.critical('critical message')
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;输出：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-log&quot;&gt;2017-07-03 15:21:34,586 - simple_example - ERROR - error message
-2017-07-03 15:21:34,587 - simple_example - CRITICAL - critical message
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&quot;稍微复杂的例子&quot;&gt;稍微复杂的例子&lt;/h2&gt;
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;import logging
-import auxiliary_module
-
-# create logger with 'spam_application'
-logger = logging.getLogger('spam_application')
-logger.setLevel(logging.DEBUG)
-
-# create file handler which logs even debug messages
-fh = logging.FileHandler('spam.log')
-fh.setLevel(logging.DEBUG)
-
-# create console handler with a higher log level
-ch = logging.StreamHandler()
-ch.setLevel(logging.ERROR)
-
-# create formatter and add it to the handlers
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-ch.setFormatter(formatter)
-
-# add the handlers to the logger
-logger.addHandler(fh)
-logger.addHandler(ch)
-
-logger.info('creating an instance of auxiliary_module.Auxiliary')
-a = auxiliary_module.Auxiliary()
-logger.info('created an instance of auxiliary_module.Auxiliary')
-
-logger.info('calling auxiliary_module.Auxiliary.do_something')
-a.do_something()
-logger.info('finished auxiliary_module.Auxiliary.do_something')
-
-logger.info('calling auxiliary_module.some_function()')
-auxiliary_module.some_function()
-logger.info('done with auxiliary_module.some_function()')
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;auxiliary_module&lt;/code&gt;文件：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;import logging
-
-# create logger
-module_logger = logging.getLogger('spam_application.auxiliary')
-
-
-class Auxiliary:
-    def __init__(self):
-        self.logger = logging.getLogger('spam_application.auxiliary.Auxiliary')
-        self.logger.info('creating an instance of Auxiliary')
-
-    def do_something(self):
-        self.logger.info('doing something')
-        a = 1 + 1
-        self.logger.info('done doing something')
-
-
-def some_function():
-    module_logger.info('received a call to &quot;some_function&quot;')
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;spam.log的内容：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-log&quot;&gt;2017-07-03 15:28:41,109 - spam_application - INFO - creating an instance of auxiliary_module.Auxiliary
-2017-07-03 15:28:41,109 - spam_application.auxiliary.Auxiliary - INFO - creating an instance of Auxiliary
-2017-07-03 15:28:41,109 - spam_application - INFO - created an instance of auxiliary_module.Auxiliary
-2017-07-03 15:28:41,109 - spam_application - INFO - calling auxiliary_module.Auxiliary.do_something
-2017-07-03 15:28:41,110 - spam_application.auxiliary.Auxiliary - INFO - doing something
-2017-07-03 15:28:41,110 - spam_application.auxiliary.Auxiliary - INFO - done doing something
-2017-07-03 15:28:41,110 - spam_application - INFO - finished auxiliary_module.Auxiliary.do_something
-2017-07-03 15:28:41,110 - spam_application - INFO - calling auxiliary_module.some_function()
-2017-07-03 15:28:41,110 - spam_application.auxiliary - INFO - received a call to &quot;some_function&quot;
-2017-07-03 15:28:41,110 - spam_application - INFO - done with auxiliary_module.some_function()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;参考&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;https://docs.python.org/3/howto/logging.html  &lt;br /&gt;
-https://docs.python.org/3/library/logging.html  &lt;br /&gt;
-https://docs.python.org/3.6/howto/logging-cookbook.html&lt;/p&gt;</content><author><name>zzir</name></author><category term="Logging" /><category term="Python" /><summary type="html">Python 的 logging 日志模块用于追踪和记录程序运行时发生的事件。</summary></entry></feed>
+https://security.stackexchange.com/questions/35157/how-does-google-authenticator-work&lt;/p&gt;</content><author><name>zzir</name></author><category term="Google" /><category term="2FA" /><category term="Python" /><summary type="html">在线演示</summary></entry></feed>

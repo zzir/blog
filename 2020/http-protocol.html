@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="zzir">
+    <meta name="description" content="The architect of civilization.">
+    <meta name="keywords" content="zzir,Golang,Python,Docker,K8S">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Caveat&display=swap" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <link rel="stylesheet" href="/assets/css/github.css">
+
+    <title>Golang 视角 HTTP 协议的浅入深出 - ZZIR's Note</title>
+</head><body>
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="post-back" id="post-back" style="display: none">
+        <a class="black-link" href="https://zzir.cn">🙄</a>
+    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">
+            Golang 视角 HTTP 协议的浅入深出
+        </h1>
+        <p class="post-meta">
+            <time class="dt-published" datetime="2020-01-13T00:00:00+08:00" itemprop="datePublished">Jan 13, 2020
+            </time>・
+            <span itemprop="author" itemscope itemtype="http://schema.org/Person"
+            ><span class="p-author h-card" itemprop="name">zzir</span></span
+            ></p>
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>环境：</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10063; <mark>MacBook</mark></p>
+</li>
+<li>
+<p>&#10063; <mark>WireShark</mark></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>先看一段 Goang 实现的 HTTP 服务端程序。</p>
+</div>
+<div class="listingblock">
+<div class="title">server.go</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">package main
+
+import (
+	"io"
+	"log"
+	"net/http"
+)
+
+func headers(w http.ResponseWriter, req *http.Request) {
+	log.Println(req.Method, req.Proto, req.Header, req.Body)
+	_, _ = io.WriteString(w, "Hello, world!\n")
+}
+
+func main() {
+	http.HandleFunc("/", headers)
+	log.Fatal(http.ListenAndServe(":30080", nil))
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>运行 HTTP 服务端：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">go run server.go</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>然后启动 WireShark 命令行 <code>tshark</code> 程序，监听 <code>30080</code> 端口，并将抓包结果写入文件：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">tshark -i lo0 -f 'tcp port 30080' -w Downloads/http.pcapng -P</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>打开终端，使用 <code>curl</code> 命令模拟 HTTP 客户端访问 <a href="http://127.0.0.1:30080" class="bare">http://127.0.0.1:30080</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">curl http://127.0.0.1:30080</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>可以看到 WireShark 命令行程序 <code>tshark</code> 输出，这便是 HTTP 从建立连接到关闭连接整个过程：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="output" class="language-output hljs">Capturing on 'Loopback: lo0'
+    1   0.000000    127.0.0.1 → 127.0.0.1    TCP 68 51930 → 30080 [SYN] Seq=0 Win=65535 Len=0 MSS=16344 WS=64 TSval=274718867 TSecr=0 SACK_PERM=1
+    2   0.000085    127.0.0.1 → 127.0.0.1    TCP 68 30080 → 51930 [SYN, ACK] Seq=0 Ack=1 Win=65535 Len=0 MSS=16344 WS=64 TSval=274718867 TSecr=274718867 SACK_PERM=1
+    3   0.000102    127.0.0.1 → 127.0.0.1    TCP 56 51930 → 30080 [ACK] Seq=1 Ack=1 Win=408256 Len=0 TSval=274718867 TSecr=274718867
+    4   0.000116    127.0.0.1 → 127.0.0.1    TCP 56 [TCP Window Update] 30080 → 51930 [ACK] Seq=1 Ack=1 Win=408256 Len=0 TSval=274718867 TSecr=274718867
+    5   0.000150    127.0.0.1 → 127.0.0.1    HTTP 135 GET / HTTP/1.1
+    6   0.000166    127.0.0.1 → 127.0.0.1    TCP 56 30080 → 51930 [ACK] Seq=1 Ack=80 Win=408192 Len=0 TSval=274718867 TSecr=274718867
+    7   0.000370    127.0.0.1 → 127.0.0.1    HTTP 187 HTTP/1.1 200 OK  (text/plain)
+    8   0.000385    127.0.0.1 → 127.0.0.1    TCP 56 51930 → 30080 [ACK] Seq=80 Ack=132 Win=408128 Len=0 TSval=274718867 TSecr=274718867
+    9   0.000572    127.0.0.1 → 127.0.0.1    TCP 56 51930 → 30080 [FIN, ACK] Seq=80 Ack=132 Win=408128 Len=0 TSval=274718867 TSecr=274718867
+   10   0.000592    127.0.0.1 → 127.0.0.1    TCP 56 30080 → 51930 [ACK] Seq=132 Ack=81 Win=408192 Len=0 TSval=274718867 TSecr=274718867
+   11   0.000627    127.0.0.1 → 127.0.0.1    TCP 56 30080 → 51930 [FIN, ACK] Seq=132 Ack=81 Win=408192 Len=0 TSval=274718867 TSecr=274718867
+   12   0.000652    127.0.0.1 → 127.0.0.1    TCP 56 51930 → 30080 [ACK] Seq=81 Ack=133 Win=408128 Len=0 TSval=274718867 TSecr=274718867</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>将 <code>~/Download/</code> 目录下 <code>http.pcapng</code> 文件用 WireShark 打开如下图：</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/imgs/202001-wireshark-http.png" alt="202001 wireshark http">
+</div>
+<div class="title">Figure 1. 源文件：https://1drv.ms/u/s!Anua9d_TpfhPoRs6kCfGKZwpUgZQ</div>
+</div>
+<div class="paragraph">
+<p>整个的连接过程我们首先从 TCP 协议说起。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tcp-协议">TCP 协议</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TCP 协议是 OSI 模型中传输层协议，主要解决数据如何在网络中传输。</p>
+</div>
+<div class="sect2">
+<h3 id="golang-的-tcp-实现">Golang 的 TCP 实现</h3>
+<div class="paragraph">
+<p>Golang 实现 TCP 的服务端和客户端，代码如下：</p>
+</div>
+<div class="listingblock">
+<div class="title">server.go</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">package main
+
+import (
+	"bufio"
+	"fmt"
+	"net"
+	"strings"
+)
+
+func main() {
+	ln, _ := net.Listen("tcp", ":30081")
+	conn, _ := ln.Accept()
+
+	message, _ := bufio.NewReader(conn).ReadString('\n')
+	fmt.Print("Message Received:", message)
+	newMessage := strings.ToUpper(message)
+	_, _ = conn.Write([]byte(newMessage + "\n"))
+	_ = conn.Close()
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">client.go</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">package main
+
+import (
+	"bufio"
+	"fmt"
+	"net"
+)
+
+func main() {
+	conn, _ := net.Dial("tcp", "127.0.0.1:30081")
+
+	fmt.Print("Text to send: ")
+	_, _ = fmt.Fprintf(conn, "hello tcp!\n")
+	message, _ := bufio.NewReader(conn).ReadString('\n')
+
+	fmt.Print("Message from server: " + message)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>首先启动抓包程序：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">tshark -i lo0 -f 'tcp port 30081' -w Downloads/tcp.pcapng -P</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>然后先执行 TCP 服务端 <code>server.go</code>，再执行客户端 <code>client.go</code>，输出如下：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="output" class="language-output hljs">Capturing on 'Loopback: lo0'
+    1 0.000000       127.0.0.1             127.0.0.1             TCP      68     63299 → 30081 [SYN] Seq=0 Win=65535 Len=0 MSS=16344 WS=64 TSval=517670095 TSecr=0 SACK_PERM=1
+    2 0.000124       127.0.0.1             127.0.0.1             TCP      68     30081 → 63299 [SYN, ACK] Seq=0 Ack=1 Win=65535 Len=0 MSS=16344 WS=64 TSval=517670095 TSecr=517670095 SACK_PERM=1
+    3 0.000149       127.0.0.1             127.0.0.1             TCP      56     63299 → 30081 [ACK] Seq=1 Ack=1 Win=408256 Len=0 TSval=517670095 TSecr=517670095
+    4 0.000166       127.0.0.1             127.0.0.1             TCP      56     [TCP Window Update] 30081 → 63299 [ACK] Seq=1 Ack=1 Win=408256 Len=0 TSval=517670095 TSecr=517670095
+    5 0.000292       127.0.0.1             127.0.0.1             TCP      67     63299 → 30081 [PSH, ACK] Seq=1 Ack=1 Win=408256 Len=11 TSval=517670095 TSecr=517670095
+    6 0.000319       127.0.0.1             127.0.0.1             TCP      56     30081 → 63299 [ACK] Seq=1 Ack=12 Win=408256 Len=0 TSval=517670095 TSecr=517670095
+    7 0.000429       127.0.0.1             127.0.0.1             TCP      68     30081 → 63299 [PSH, ACK] Seq=1 Ack=12 Win=408256 Len=12 TSval=517670095 TSecr=517670095
+    8 0.000457       127.0.0.1             127.0.0.1             TCP      56     63299 → 30081 [ACK] Seq=12 Ack=13 Win=408256 Len=0 TSval=517670095 TSecr=517670095
+    9 0.001006       127.0.0.1             127.0.0.1             TCP      56     30081 → 63299 [FIN, ACK] Seq=13 Ack=12 Win=408256 Len=0 TSval=517670096 TSecr=517670095
+   10 0.001040       127.0.0.1             127.0.0.1             TCP      56     63299 → 30081 [ACK] Seq=12 Ack=14 Win=408256 Len=0 TSval=517670096 TSecr=517670096
+   11 0.001058       127.0.0.1             127.0.0.1             TCP      56     63299 → 30081 [FIN, ACK] Seq=12 Ack=14 Win=408256 Len=0 TSval=517670096 TSecr=517670096
+   12 0.001118       127.0.0.1             127.0.0.1             TCP      56     30081 → 63299 [ACK] Seq=14 Ack=13 Win=408256 Len=0 TSval=517670096 TSecr=517670096</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>打开 Wireshark 抓包数据，如下图：</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/imgs/202001-wireshark-tcp.png" alt="202001 wireshark tcp">
+</div>
+<div class="title">Figure 2. 源文件：https://1drv.ms/u/s!Anua9d_TpfhPoUEcI6DxI13ND6sl</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tcp-三次握手">TCP 三次握手</h3>
+
+</div>
+<div class="sect2">
+<h3 id="tcp-四次挥手">TCP 四次挥手</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="http-协议">HTTP 协议</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>HTTP 协议是 OSI 模型中应用层协议，主要解决数据如何包装。HTTP 协议建立在 TCP 协议之上，
+TCP 协议在传输层负责数据的传输，数据到达应用层后，由 HTTP 协议负责解析数据，再进行之后的处理。</p>
+</div>
+<div class="paragraph">
+<p>浏览器是如何工作的：</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="疑问">疑问</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="为什么是-3-次握手为什么是-4-次挥手">为什么是 3 次握手，为什么是 4 次挥手？</h3>
+<div class="paragraph">
+<p>未完，<a href="mailto:me@zzir.cn">点我催更</a>。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="参考">参考</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://mp.weixin.qq.com/s/xBbb_LXlXsbNtRLa0IDKOQ" class="bare">https://mp.weixin.qq.com/s/xBbb_LXlXsbNtRLa0IDKOQ</a></p>
+</li>
+<li>
+<p><a href="https://tools.ietf.org/html/rfc2616" class="bare">https://tools.ietf.org/html/rfc2616</a></p>
+</li>
+<li>
+<p><a href="https://tools.ietf.org/html/rfc793" class="bare">https://tools.ietf.org/html/rfc793</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+    </div>
+
+    <a class="u-url" href="/2020/http-protocol.html" hidden></a>
+</article>
+
+<div class="post-tags">
+    
+    <a>HTTP</a>
+    
+    <a>Golang</a>
+    
+    <a>WireShark</a>
+    
+</div>
+
+<div class="pagination">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2020/go-linked-list.html" title="PREV: 单链表、双链表的 Golang 实现">
+                ‹ 单链表、双链表的 Golang 实现
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2020/golang-tree.html" title="NEXT: 数据结构 Tree 的 Golang 实现">
+                › 数据结构 Tree 的 Golang 实现
+            </a>
+        </li>
+        
+    </ul>
+</div>
+    </div>
+</main><footer>
+    <p class="post-author">© <a href="/">zzir</a></p>
+    <p class="beian">
+        
+        <span>
+            <img src="/assets/imgs/beian.png">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010902002287">浙公网安备33010902002287号</a>
+        </span>
+        ・︎
+        <span><a href="http://beian.miit.gov.cn/">浙ICP备19040093号</a></span>
+        
+    </p>
+</footer>
+<script defer src="/assets/js/katex/katex.min.js" type="text/javascript"></script>
+<script defer src="/assets/js/katex/auto-render.min.js" type="text/javascript"></script>
+<script src="/assets/js/zooming.min.js" type="text/javascript"></script>
+<script src="/assets/js/highlight.pack.js" type="text/javascript"></script>
+<script>
+    // zooming
+    const zooming = new Zooming({
+        customSize: '100%',
+    });
+    zooming.listen('.paragraph img');
+    zooming.listen('.content img');
+    zooming.listen('.post-content img');
+
+    // highlight
+    hljs.initHighlightingOnLoad();
+
+    // katex
+    document.addEventListener("DOMContentLoaded", function () {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "\\[", right: "\\]", display: true}
+            ]
+        });
+    });
+
+    // back display
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() === 0) {
+            document.getElementById("post-back").style.display = "block";
+        }
+    }
+</script>
+
+
+<script>
+    // google analytics
+    window.ga = window.ga || function () {
+        (ga.q = ga.q || []).push(arguments)
+    };
+    ga.l = +new Date;
+    ga('create', 'UA-121779014-1', 'auto');
+    ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+</html>
