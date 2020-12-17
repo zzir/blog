@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://zzir.cn/feed.xml" rel="self" type="application/atom+xml" /><link href="https://zzir.cn/" rel="alternate" type="text/html" /><updated>2020-09-09T23:38:04+08:00</updated><id>https://zzir.cn/feed.xml</id><title type="html">ZZIR’s Note</title><subtitle>hello world</subtitle><author><name>ZZIR</name></author><entry><title type="html">PostgreSQL 主从复制之 Docker 方式部署实践</title><link href="https://zzir.cn/2020/postgresql-master-replication-with-docker.html" rel="alternate" type="text/html" title="PostgreSQL 主从复制之 Docker 方式部署实践" /><published>2020-05-03T00:00:00+08:00</published><updated>2020-05-03T00:00:00+08:00</updated><id>https://zzir.cn/2020/postgresql-master-replication-with-docker</id><content type="html" xml:base="https://zzir.cn/2020/postgresql-master-replication-with-docker.html">&lt;div class=&quot;paragraph&quot;&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://zzir.cn/feed.xml" rel="self" type="application/atom+xml" /><link href="https://zzir.cn/" rel="alternate" type="text/html" /><updated>2020-12-17T20:19:51+08:00</updated><id>https://zzir.cn/feed.xml</id><title type="html">ZZIR’s Note</title><subtitle>hello world</subtitle><author><name>ZZIR</name></author><entry><title type="html">PostgreSQL 主从复制之 Docker 方式部署实践</title><link href="https://zzir.cn/2020/postgresql-master-replication-with-docker.html" rel="alternate" type="text/html" title="PostgreSQL 主从复制之 Docker 方式部署实践" /><published>2020-05-03T00:00:00+08:00</published><updated>2020-05-03T00:00:00+08:00</updated><id>https://zzir.cn/2020/postgresql-master-replication-with-docker</id><content type="html" xml:base="https://zzir.cn/2020/postgresql-master-replication-with-docker.html">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;nothing more. todo&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -29,7 +29,7 @@
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;title&quot;&gt;server.go&lt;/div&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;package main
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;package main
 
 import (
 	&quot;io&quot;
@@ -53,7 +53,7 @@ func main() {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;shell&quot; class=&quot;language-shell hljs&quot;&gt;go run server.go&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-shell hljs&quot; data-lang=&quot;shell&quot;&gt;go run server.go&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -61,7 +61,7 @@ func main() {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;shell&quot; class=&quot;language-shell hljs&quot;&gt;tshark -i lo0 -f 'tcp port 30080' -w Downloads/http.pcapng -P&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-shell hljs&quot; data-lang=&quot;shell&quot;&gt;tshark -i lo0 -f 'tcp port 30080' -w Downloads/http.pcapng -P&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -69,7 +69,7 @@ func main() {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;shell&quot; class=&quot;language-shell hljs&quot;&gt;curl http://127.0.0.1:30080&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-shell hljs&quot; data-lang=&quot;shell&quot;&gt;curl http://127.0.0.1:30080&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -77,7 +77,7 @@ func main() {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;output&quot; class=&quot;language-output hljs&quot;&gt;Capturing on 'Loopback: lo0'
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-output hljs&quot; data-lang=&quot;output&quot;&gt;Capturing on 'Loopback: lo0'
     1   0.000000    127.0.0.1 → 127.0.0.1    TCP 68 51930 → 30080 [SYN] Seq=0 Win=65535 Len=0 MSS=16344 WS=64 TSval=274718867 TSecr=0 SACK_PERM=1
     2   0.000085    127.0.0.1 → 127.0.0.1    TCP 68 30080 → 51930 [SYN, ACK] Seq=0 Ack=1 Win=65535 Len=0 MSS=16344 WS=64 TSval=274718867 TSecr=274718867 SACK_PERM=1
     3   0.000102    127.0.0.1 → 127.0.0.1    TCP 56 51930 → 30080 [ACK] Seq=1 Ack=1 Win=408256 Len=0 TSval=274718867 TSecr=274718867
@@ -120,7 +120,7 @@ func main() {
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;title&quot;&gt;server.go&lt;/div&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;package main
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;package main
 
 import (
 	&quot;bufio&quot;
@@ -144,7 +144,7 @@ func main() {
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;title&quot;&gt;client.go&lt;/div&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;package main
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;package main
 
 import (
 	&quot;bufio&quot;
@@ -168,7 +168,7 @@ func main() {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;shell&quot; class=&quot;language-shell hljs&quot;&gt;tshark -i lo0 -f 'tcp port 30081' -w Downloads/tcp.pcapng -P&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-shell hljs&quot; data-lang=&quot;shell&quot;&gt;tshark -i lo0 -f 'tcp port 30081' -w Downloads/tcp.pcapng -P&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -176,7 +176,7 @@ func main() {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;output&quot; class=&quot;language-output hljs&quot;&gt;Capturing on 'Loopback: lo0'
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-output hljs&quot; data-lang=&quot;output&quot;&gt;Capturing on 'Loopback: lo0'
     1 0.000000       127.0.0.1             127.0.0.1             TCP      68     63299 → 30081 [SYN] Seq=0 Win=65535 Len=0 MSS=16344 WS=64 TSval=517670095 TSecr=0 SACK_PERM=1
     2 0.000124       127.0.0.1             127.0.0.1             TCP      68     30081 → 63299 [SYN, ACK] Seq=0 Ack=1 Win=65535 Len=0 MSS=16344 WS=64 TSval=517670095 TSecr=517670095 SACK_PERM=1
     3 0.000149       127.0.0.1             127.0.0.1             TCP      56     63299 → 30081 [ACK] Seq=1 Ack=1 Win=408256 Len=0 TSval=517670095 TSecr=517670095
@@ -262,7 +262,7 @@ TCP 协议在传输层负责数据的传输，数据到达应用层后，由 HTT
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;type Node struct {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;type Node struct {
 	value interface{}
 	next  *Node
 }
@@ -282,7 +282,7 @@ type List struct {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;type SingleLinkedList interface {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;type SingleLinkedList interface {
 	Init()
 	Len() int
 	PushFront(v interface{})
@@ -304,7 +304,7 @@ type List struct {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) Init() {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;func (l *List) Init() {
 	l.len = 0
 	l.head = nil
 	l.tail = nil
@@ -316,7 +316,7 @@ type List struct {
 &lt;h3 id=&quot;链表长度&quot;&gt;链表长度&lt;/h3&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) Len() int {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;func (l *List) Len() int {
 	return l.len
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -329,7 +329,7 @@ type List struct {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;// 从链表头部插入一个新节点
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;// 从链表头部插入一个新节点
 func (l *List) PushFront(v interface{}) {
 	node := &amp;amp;Node{
 		value: v,
@@ -395,7 +395,7 @@ func (l *List) Insert(v interface{}, index int) error {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;// 移除头部节点
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;// 移除头部节点
 func (l *List) RemoveFront() interface{} {
 	if l.len == 0 {
 		return nil
@@ -448,7 +448,7 @@ func (l *List) Remove(index int) interface{} {
 &lt;h3 id=&quot;获取节点&quot;&gt;获取节点&lt;/h3&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;// 获取头部节点
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;// 获取头部节点
 func (l *List) GetHead() *Node {
 	return l.head
 }
@@ -481,7 +481,7 @@ func (l *List) Get(index int) interface{} {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func main() {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;func main() {
 	var sl SingleLinkedList = &amp;amp;List{}
 	sl.Init()
 	sl.PushFront(6)
@@ -527,7 +527,7 @@ func (l *List) Get(index int) interface{} {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;type Node struct {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;type Node struct {
 	value interface{}
 	next  *Node
 	prev  *Node // add prev
@@ -542,7 +542,7 @@ func (l *List) Get(index int) interface{} {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;type DoubleLinkedList interface {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;type DoubleLinkedList interface {
 	Init()
 	Len() int
 	PushFront(v interface{})
@@ -562,7 +562,7 @@ func (l *List) Get(index int) interface{} {
 &lt;h3 id=&quot;插入操作&quot;&gt;插入操作&lt;/h3&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) PushFront(v interface{}) {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;func (l *List) PushFront(v interface{}) {
 	node := &amp;amp;Node{
 		value: v,
 		next:  nil,
@@ -602,7 +602,7 @@ func (l *List) PushBack(v interface{}) {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) Insert(v interface{}, index int) error {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;func (l *List) Insert(v interface{}, index int) error {
 	// new
 	if index &amp;gt;= l.len {
 		return errors.New(&quot;index error&quot;)
@@ -659,7 +659,7 @@ func (l *List) PushBack(v interface{}) {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) RemoveFront() interface{} {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;func (l *List) RemoveFront() interface{} {
 	if l.len == 0 {
 		return nil
 	}
@@ -690,7 +690,7 @@ func (l *List) RemoveBack() interface{} {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func (l *List) Remove(index int) interface{} {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;func (l *List) Remove(index int) interface{} {
 	// new
 	if l.len == 0 {
 		return nil
@@ -736,7 +736,7 @@ func (l *List) RemoveBack() interface{} {
 &lt;h3 id=&quot;获取节点-2&quot;&gt;获取节点&lt;/h3&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;// 获取尾部节点，可用于从尾部往前遍历
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;// 获取尾部节点，可用于从尾部往前遍历
 // add
 func (l *List) GetTail() *Node {
 	return l.tail
@@ -782,7 +782,7 @@ func (l *List) Get(index int) interface{} {
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code data-lang=&quot;go&quot; class=&quot;language-go hljs&quot;&gt;func main() {
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;func main() {
 	var dl DoubleLinkedList = &amp;amp;List{}
 	dl.Init()
 	dl.PushFront(1)
@@ -915,16 +915,16 @@ vim Dockerfile
 
 &lt;p&gt;然后新增 &lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; 文件，内容如下：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-Dockerfile&quot;&gt;FROM golang:alpine as builder
-ADD . /workspace
-WORKDIR /workspace
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o web-server .
+&lt;div class=&quot;language-Dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; golang:alpine as builder&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; . /workspace&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;WORKDIR&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; /workspace&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;CGO_ENABLED&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 &lt;span class=&quot;nv&quot;&gt;GOOS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;linux &lt;span class=&quot;nv&quot;&gt;GOARCH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;amd64 go build &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; web-server .
 
-FROM scratch
-COPY --from=builder /workspace/web-server /web-server
-EXPOSE 8080
-CMD [&quot;/web-server&quot;]
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; scratch&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=builder /workspace/web-server /web-server&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;EXPOSE&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; 8080&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CMD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;/web-server&quot;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;上面的 &lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; 使用了多阶段构建(Multi Stage)，构建过程分成了 2 个阶段，第 1 阶段使用预装 &lt;code class=&quot;highlighter-rouge&quot;&gt;Go&lt;/code&gt; 的 Alpine 镜像编译程序，第 2 阶段使用一个空镜像 &lt;code class=&quot;highlighter-rouge&quot;&gt;scratch&lt;/code&gt; ，将第一阶段编译的二进制文件文件 &lt;code class=&quot;highlighter-rouge&quot;&gt;web-server&lt;/code&gt; 复制到根目录，定义镜像开放端口并执行。&lt;/p&gt;
 
@@ -940,67 +940,67 @@ curl 127.0.0.1:8080/docker-and-compos
 
 &lt;h3 id=&quot;完整-dockerfile-指令说明&quot;&gt;完整 &lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; 指令说明&lt;/h3&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-Dockerfile&quot;&gt;# 指定基础镜像，并添加别名
-FROM golang:alpine as builder
+&lt;div class=&quot;language-Dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 指定基础镜像，并添加别名&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; golang:alpine as builder&lt;/span&gt;
 
-# 标识 image 作者
-MAINTAINER zzir
+&lt;span class=&quot;c&quot;&gt;# 标识 image 作者&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;MAINTAINER&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; zzir&lt;/span&gt;
 
-# 将当前目录下文件添加到容器 /workspace
-ADD . /workspace
+&lt;span class=&quot;c&quot;&gt;# 将当前目录下文件添加到容器 /workspace&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; . /workspace&lt;/span&gt;
 
-# 指定当前工作目录
-WORKDIR /workspace
+&lt;span class=&quot;c&quot;&gt;# 指定当前工作目录&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;WORKDIR&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; /workspace&lt;/span&gt;
 
-# 执行命令，编译 Go 项目
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o web-server .
+&lt;span class=&quot;c&quot;&gt;# 执行命令，编译 Go 项目&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;CGO_ENABLED&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 &lt;span class=&quot;nv&quot;&gt;GOOS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;linux &lt;span class=&quot;nv&quot;&gt;GOARCH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;amd64 go build &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; web-server .
 
 
-# 第二阶段构建 ---------- ---------- ---------- ---------- ----------
-FROM alpine
+&lt;span class=&quot;c&quot;&gt;# 第二阶段构建 ---------- ---------- ---------- ---------- ----------&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine&lt;/span&gt;
 
-# 添加标签
-LABEL version=&quot;1.0&quot; description=&quot;test&quot;
+&lt;span class=&quot;c&quot;&gt;# 添加标签&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;LABEL&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; version=&quot;1.0&quot; description=&quot;test&quot;&lt;/span&gt;
 
-# 定义构建参数，可在构建时通过 --build-arg 改变
-ARG key=default_value
+&lt;span class=&quot;c&quot;&gt;# 定义构建参数，可在构建时通过 --build-arg 改变&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ARG&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; key=default_value&lt;/span&gt;
 
-# 将上一阶段编译的文件拷贝到当前镜像
-COPY --from=builder /workspace/web-server /usr/local/bin/
+&lt;span class=&quot;c&quot;&gt;# 将上一阶段编译的文件拷贝到当前镜像&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=builder /workspace/web-server /usr/local/bin/&lt;/span&gt;
 
-# 设置环境变量
-ENV key value
+&lt;span class=&quot;c&quot;&gt;# 设置环境变量&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; key value&lt;/span&gt;
 
-# 执行命令，添加用户
-RUN adduser -S -D -H -h /home/app app
+&lt;span class=&quot;c&quot;&gt;# 执行命令，添加用户&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;adduser &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; /home/app app
 
-# 指定用户
-USER app
+&lt;span class=&quot;c&quot;&gt;# 指定用户&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;USER&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; app&lt;/span&gt;
 
-# 声明端口
-EXPOSE 8080
+&lt;span class=&quot;c&quot;&gt;# 声明端口&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;EXPOSE&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; 8080&lt;/span&gt;
 
-# 定义挂载点
-VOLUME [&quot;/data&quot;]
+&lt;span class=&quot;c&quot;&gt;# 定义挂载点&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;VOLUME&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;/data&quot;]&lt;/span&gt;
 
-# ENTRYPOINT 指令存在时，CMD 都是 ENTRYPOINT 的参数
-# ENTRYPOINT [&quot;web-server&quot;]
+&lt;span class=&quot;c&quot;&gt;# ENTRYPOINT 指令存在时，CMD 都是 ENTRYPOINT 的参数&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# ENTRYPOINT [&quot;web-server&quot;]&lt;/span&gt;
 
-# 指定容器启动时执行的命令
-CMD [&quot;web-server&quot;]
+&lt;span class=&quot;c&quot;&gt;# 指定容器启动时执行的命令&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CMD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;web-server&quot;]&lt;/span&gt;
 
-# 指定默认 SHELL
-SHELL [&quot;/bin/sh&quot;, &quot;-c&quot;]
+&lt;span class=&quot;c&quot;&gt;# 指定默认 SHELL&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;SHELL&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;/bin/sh&quot;, &quot;-c&quot;]&lt;/span&gt;
 
-# 其它镜像以当前镜像为基础镜像时触发 
-ONBUILD ADD . /tmp/
+&lt;span class=&quot;c&quot;&gt;# 其它镜像以当前镜像为基础镜像时触发 &lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ONBUILD&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; . /tmp/&lt;/span&gt;
 
-# 指定退出的信号值
-STOPSIGNAL SIGKILL
+&lt;span class=&quot;c&quot;&gt;# 指定退出的信号值&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;STOPSIGNAL&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; SIGKILL&lt;/span&gt;
 
-# 配置健康检查
-HEALTHCHECK --interval=1m --timeout=10s --start-period=10s --retries=3  CMD curl -f http://127.0.0.1:8080/ || exit 1
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class=&quot;c&quot;&gt;# 配置健康检查&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;HEALTHCHECK&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --interval=1m --timeout=10s --start-period=10s --retries=3  CMD curl -f http://127.0.0.1:8080/ || exit 1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;由于 alpine 基础镜像默认没有安装 curl，&lt;code class=&quot;highlighter-rouge&quot;&gt;docker ps&lt;/code&gt; 查看容器健康检测会显示 &lt;code class=&quot;highlighter-rouge&quot;&gt;unhealthy&lt;/code&gt;。解决方法：&lt;/p&gt;
 
@@ -1013,10 +1013,10 @@ HEALTHCHECK --interval=1m --timeout=10s --start-period=10s --retries=3  CMD curl
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ENTRYPOINT&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;CMD&lt;/code&gt; 构建阶段都会被忽略，而是在启动时执行。多数情况下它们应该是单独使用的，有一种例外是 &lt;code class=&quot;highlighter-rouge&quot;&gt;CMD&lt;/code&gt; 为 &lt;code class=&quot;highlighter-rouge&quot;&gt;ENTRYPOINT&lt;/code&gt; 提供默认可选参数，比如：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-Dockerfile&quot;&gt;...
-ENTRYPOINT [&quot;ls&quot;, &quot;/&quot;]
-CMD [&quot;-a&quot;, &quot;-l&quot;]
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;language-Dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;...
+&lt;span class=&quot;k&quot;&gt;ENTRYPOINT&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;ls&quot;, &quot;/&quot;]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CMD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;-a&quot;, &quot;-l&quot;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;这种情况下容器启动时执行的是 &lt;code class=&quot;highlighter-rouge&quot;&gt;ls / -a -l&lt;/code&gt; 。但也可以启动时覆盖：&lt;/p&gt;
 
@@ -1033,16 +1033,16 @@ CMD [&quot;-a&quot;, &quot;-l&quot;]
 
 &lt;p&gt;我们还使用最开始的 &lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-Dockerfile&quot;&gt;FROM golang:alpine as builder
-ADD . /workspace
-WORKDIR /workspace
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o web-server .
+&lt;div class=&quot;language-Dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; golang:alpine as builder&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; . /workspace&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;WORKDIR&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; /workspace&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;CGO_ENABLED&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 &lt;span class=&quot;nv&quot;&gt;GOOS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;linux &lt;span class=&quot;nv&quot;&gt;GOARCH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;amd64 go build &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; web-server .
 
-FROM scratch
-COPY --from=builder /workspace/web-server /web-server
-EXPOSE 8080
-CMD [&quot;/web-server&quot;]
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; scratch&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=builder /workspace/web-server /web-server&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;EXPOSE&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; 8080&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CMD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;/web-server&quot;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;并重新编译镜像：&lt;/p&gt;
 

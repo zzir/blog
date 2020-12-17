@@ -105,16 +105,16 @@ vim Dockerfile
 
 <p>然后新增 <code class="highlighter-rouge">Dockerfile</code> 文件，内容如下：</p>
 
-<pre><code class="language-Dockerfile">FROM golang:alpine as builder
-ADD . /workspace
-WORKDIR /workspace
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o web-server .
+<div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> golang:alpine as builder</span>
+<span class="k">ADD</span><span class="s"> . /workspace</span>
+<span class="k">WORKDIR</span><span class="s"> /workspace</span>
+<span class="k">RUN </span><span class="nv">CGO_ENABLED</span><span class="o">=</span>0 <span class="nv">GOOS</span><span class="o">=</span>linux <span class="nv">GOARCH</span><span class="o">=</span>amd64 go build <span class="nt">-o</span> web-server .
 
-FROM scratch
-COPY --from=builder /workspace/web-server /web-server
-EXPOSE 8080
-CMD ["/web-server"]
-</code></pre>
+<span class="k">FROM</span><span class="s"> scratch</span>
+<span class="k">COPY</span><span class="s"> --from=builder /workspace/web-server /web-server</span>
+<span class="k">EXPOSE</span><span class="s"> 8080</span>
+<span class="k">CMD</span><span class="s"> ["/web-server"]</span>
+</code></pre></div></div>
 
 <p>上面的 <code class="highlighter-rouge">Dockerfile</code> 使用了多阶段构建(Multi Stage)，构建过程分成了 2 个阶段，第 1 阶段使用预装 <code class="highlighter-rouge">Go</code> 的 Alpine 镜像编译程序，第 2 阶段使用一个空镜像 <code class="highlighter-rouge">scratch</code> ，将第一阶段编译的二进制文件文件 <code class="highlighter-rouge">web-server</code> 复制到根目录，定义镜像开放端口并执行。</p>
 
@@ -130,67 +130,67 @@ curl 127.0.0.1:8080/docker-and-compos
 
 <h3 id="完整-dockerfile-指令说明">完整 <code class="highlighter-rouge">Dockerfile</code> 指令说明</h3>
 
-<pre><code class="language-Dockerfile"># 指定基础镜像，并添加别名
-FROM golang:alpine as builder
+<div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 指定基础镜像，并添加别名</span>
+<span class="k">FROM</span><span class="s"> golang:alpine as builder</span>
 
-# 标识 image 作者
-MAINTAINER zzir
+<span class="c"># 标识 image 作者</span>
+<span class="k">MAINTAINER</span><span class="s"> zzir</span>
 
-# 将当前目录下文件添加到容器 /workspace
-ADD . /workspace
+<span class="c"># 将当前目录下文件添加到容器 /workspace</span>
+<span class="k">ADD</span><span class="s"> . /workspace</span>
 
-# 指定当前工作目录
-WORKDIR /workspace
+<span class="c"># 指定当前工作目录</span>
+<span class="k">WORKDIR</span><span class="s"> /workspace</span>
 
-# 执行命令，编译 Go 项目
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o web-server .
+<span class="c"># 执行命令，编译 Go 项目</span>
+<span class="k">RUN </span><span class="nv">CGO_ENABLED</span><span class="o">=</span>0 <span class="nv">GOOS</span><span class="o">=</span>linux <span class="nv">GOARCH</span><span class="o">=</span>amd64 go build <span class="nt">-o</span> web-server .
 
 
-# 第二阶段构建 ---------- ---------- ---------- ---------- ----------
-FROM alpine
+<span class="c"># 第二阶段构建 ---------- ---------- ---------- ---------- ----------</span>
+<span class="k">FROM</span><span class="s"> alpine</span>
 
-# 添加标签
-LABEL version="1.0" description="test"
+<span class="c"># 添加标签</span>
+<span class="k">LABEL</span><span class="s"> version="1.0" description="test"</span>
 
-# 定义构建参数，可在构建时通过 --build-arg 改变
-ARG key=default_value
+<span class="c"># 定义构建参数，可在构建时通过 --build-arg 改变</span>
+<span class="k">ARG</span><span class="s"> key=default_value</span>
 
-# 将上一阶段编译的文件拷贝到当前镜像
-COPY --from=builder /workspace/web-server /usr/local/bin/
+<span class="c"># 将上一阶段编译的文件拷贝到当前镜像</span>
+<span class="k">COPY</span><span class="s"> --from=builder /workspace/web-server /usr/local/bin/</span>
 
-# 设置环境变量
-ENV key value
+<span class="c"># 设置环境变量</span>
+<span class="k">ENV</span><span class="s"> key value</span>
 
-# 执行命令，添加用户
-RUN adduser -S -D -H -h /home/app app
+<span class="c"># 执行命令，添加用户</span>
+<span class="k">RUN </span>adduser <span class="nt">-S</span> <span class="nt">-D</span> <span class="nt">-H</span> <span class="nt">-h</span> /home/app app
 
-# 指定用户
-USER app
+<span class="c"># 指定用户</span>
+<span class="k">USER</span><span class="s"> app</span>
 
-# 声明端口
-EXPOSE 8080
+<span class="c"># 声明端口</span>
+<span class="k">EXPOSE</span><span class="s"> 8080</span>
 
-# 定义挂载点
-VOLUME ["/data"]
+<span class="c"># 定义挂载点</span>
+<span class="k">VOLUME</span><span class="s"> ["/data"]</span>
 
-# ENTRYPOINT 指令存在时，CMD 都是 ENTRYPOINT 的参数
-# ENTRYPOINT ["web-server"]
+<span class="c"># ENTRYPOINT 指令存在时，CMD 都是 ENTRYPOINT 的参数</span>
+<span class="c"># ENTRYPOINT ["web-server"]</span>
 
-# 指定容器启动时执行的命令
-CMD ["web-server"]
+<span class="c"># 指定容器启动时执行的命令</span>
+<span class="k">CMD</span><span class="s"> ["web-server"]</span>
 
-# 指定默认 SHELL
-SHELL ["/bin/sh", "-c"]
+<span class="c"># 指定默认 SHELL</span>
+<span class="k">SHELL</span><span class="s"> ["/bin/sh", "-c"]</span>
 
-# 其它镜像以当前镜像为基础镜像时触发 
-ONBUILD ADD . /tmp/
+<span class="c"># 其它镜像以当前镜像为基础镜像时触发 </span>
+<span class="k">ONBUILD</span><span class="w"> </span><span class="k">ADD</span><span class="s"> . /tmp/</span>
 
-# 指定退出的信号值
-STOPSIGNAL SIGKILL
+<span class="c"># 指定退出的信号值</span>
+<span class="k">STOPSIGNAL</span><span class="s"> SIGKILL</span>
 
-# 配置健康检查
-HEALTHCHECK --interval=1m --timeout=10s --start-period=10s --retries=3  CMD curl -f http://127.0.0.1:8080/ || exit 1
-</code></pre>
+<span class="c"># 配置健康检查</span>
+<span class="k">HEALTHCHECK</span><span class="s"> --interval=1m --timeout=10s --start-period=10s --retries=3  CMD curl -f http://127.0.0.1:8080/ || exit 1</span>
+</code></pre></div></div>
 
 <p>由于 alpine 基础镜像默认没有安装 curl，<code class="highlighter-rouge">docker ps</code> 查看容器健康检测会显示 <code class="highlighter-rouge">unhealthy</code>。解决方法：</p>
 
@@ -203,10 +203,10 @@ HEALTHCHECK --interval=1m --timeout=10s --start-period=10s --retries=3  CMD curl
 
 <p><code class="highlighter-rouge">ENTRYPOINT</code> 和 <code class="highlighter-rouge">CMD</code> 构建阶段都会被忽略，而是在启动时执行。多数情况下它们应该是单独使用的，有一种例外是 <code class="highlighter-rouge">CMD</code> 为 <code class="highlighter-rouge">ENTRYPOINT</code> 提供默认可选参数，比如：</p>
 
-<pre><code class="language-Dockerfile">...
-ENTRYPOINT ["ls", "/"]
-CMD ["-a", "-l"]
-</code></pre>
+<div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
+<span class="k">ENTRYPOINT</span><span class="s"> ["ls", "/"]</span>
+<span class="k">CMD</span><span class="s"> ["-a", "-l"]</span>
+</code></pre></div></div>
 
 <p>这种情况下容器启动时执行的是 <code class="highlighter-rouge">ls / -a -l</code> 。但也可以启动时覆盖：</p>
 
@@ -223,16 +223,16 @@ CMD ["-a", "-l"]
 
 <p>我们还使用最开始的 <code class="highlighter-rouge">Dockerfile</code>：</p>
 
-<pre><code class="language-Dockerfile">FROM golang:alpine as builder
-ADD . /workspace
-WORKDIR /workspace
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o web-server .
+<div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> golang:alpine as builder</span>
+<span class="k">ADD</span><span class="s"> . /workspace</span>
+<span class="k">WORKDIR</span><span class="s"> /workspace</span>
+<span class="k">RUN </span><span class="nv">CGO_ENABLED</span><span class="o">=</span>0 <span class="nv">GOOS</span><span class="o">=</span>linux <span class="nv">GOARCH</span><span class="o">=</span>amd64 go build <span class="nt">-o</span> web-server .
 
-FROM scratch
-COPY --from=builder /workspace/web-server /web-server
-EXPOSE 8080
-CMD ["/web-server"]
-</code></pre>
+<span class="k">FROM</span><span class="s"> scratch</span>
+<span class="k">COPY</span><span class="s"> --from=builder /workspace/web-server /web-server</span>
+<span class="k">EXPOSE</span><span class="s"> 8080</span>
+<span class="k">CMD</span><span class="s"> ["/web-server"]</span>
+</code></pre></div></div>
 
 <p>并重新编译镜像：</p>
 

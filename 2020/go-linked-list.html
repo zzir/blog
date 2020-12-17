@@ -48,7 +48,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">type Node struct {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">type Node struct {
 	value interface{}
 	next  *Node
 }
@@ -68,7 +68,7 @@ type List struct {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">type SingleLinkedList interface {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">type SingleLinkedList interface {
 	Init()
 	Len() int
 	PushFront(v interface{})
@@ -90,7 +90,7 @@ type List struct {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) Init() {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">func (l *List) Init() {
 	l.len = 0
 	l.head = nil
 	l.tail = nil
@@ -102,7 +102,7 @@ type List struct {
 <h3 id="链表长度">链表长度</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) Len() int {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">func (l *List) Len() int {
 	return l.len
 }</code></pre>
 </div>
@@ -115,7 +115,7 @@ type List struct {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">// 从链表头部插入一个新节点
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">// 从链表头部插入一个新节点
 func (l *List) PushFront(v interface{}) {
 	node := &amp;Node{
 		value: v,
@@ -181,7 +181,7 @@ func (l *List) Insert(v interface{}, index int) error {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">// 移除头部节点
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">// 移除头部节点
 func (l *List) RemoveFront() interface{} {
 	if l.len == 0 {
 		return nil
@@ -234,7 +234,7 @@ func (l *List) Remove(index int) interface{} {
 <h3 id="获取节点">获取节点</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">// 获取头部节点
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">// 获取头部节点
 func (l *List) GetHead() *Node {
 	return l.head
 }
@@ -267,7 +267,7 @@ func (l *List) Get(index int) interface{} {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func main() {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">func main() {
 	var sl SingleLinkedList = &amp;List{}
 	sl.Init()
 	sl.PushFront(6)
@@ -313,7 +313,7 @@ func (l *List) Get(index int) interface{} {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">type Node struct {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">type Node struct {
 	value interface{}
 	next  *Node
 	prev  *Node // add prev
@@ -328,7 +328,7 @@ func (l *List) Get(index int) interface{} {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">type DoubleLinkedList interface {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">type DoubleLinkedList interface {
 	Init()
 	Len() int
 	PushFront(v interface{})
@@ -348,7 +348,7 @@ func (l *List) Get(index int) interface{} {
 <h3 id="插入操作">插入操作</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) PushFront(v interface{}) {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">func (l *List) PushFront(v interface{}) {
 	node := &amp;Node{
 		value: v,
 		next:  nil,
@@ -388,7 +388,7 @@ func (l *List) PushBack(v interface{}) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) Insert(v interface{}, index int) error {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">func (l *List) Insert(v interface{}, index int) error {
 	// new
 	if index &gt;= l.len {
 		return errors.New("index error")
@@ -445,7 +445,7 @@ func (l *List) PushBack(v interface{}) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) RemoveFront() interface{} {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">func (l *List) RemoveFront() interface{} {
 	if l.len == 0 {
 		return nil
 	}
@@ -476,7 +476,7 @@ func (l *List) RemoveBack() interface{} {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func (l *List) Remove(index int) interface{} {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">func (l *List) Remove(index int) interface{} {
 	// new
 	if l.len == 0 {
 		return nil
@@ -522,7 +522,7 @@ func (l *List) RemoveBack() interface{} {
 <h3 id="获取节点-2">获取节点</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">// 获取尾部节点，可用于从尾部往前遍历
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">// 获取尾部节点，可用于从尾部往前遍历
 // add
 func (l *List) GetTail() *Node {
 	return l.tail
@@ -568,7 +568,7 @@ func (l *List) Get(index int) interface{} {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="go" class="language-go hljs">func main() {
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">func main() {
 	var dl DoubleLinkedList = &amp;List{}
 	dl.Init()
 	dl.PushFront(1)
