@@ -1,4 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://zzir.cn/feed.xml" rel="self" type="application/atom+xml" /><link href="https://zzir.cn/" rel="alternate" type="text/html" /><updated>2020-12-17T20:19:51+08:00</updated><id>https://zzir.cn/feed.xml</id><title type="html">ZZIR’s Note</title><subtitle>hello world</subtitle><author><name>ZZIR</name></author><entry><title type="html">PostgreSQL 主从复制之 Docker 方式部署实践</title><link href="https://zzir.cn/2020/postgresql-master-replication-with-docker.html" rel="alternate" type="text/html" title="PostgreSQL 主从复制之 Docker 方式部署实践" /><published>2020-05-03T00:00:00+08:00</published><updated>2020-05-03T00:00:00+08:00</updated><id>https://zzir.cn/2020/postgresql-master-replication-with-docker</id><content type="html" xml:base="https://zzir.cn/2020/postgresql-master-replication-with-docker.html">&lt;div class=&quot;paragraph&quot;&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://zzir.cn/feed.xml" rel="self" type="application/atom+xml" /><link href="https://zzir.cn/" rel="alternate" type="text/html" /><updated>2021-01-05T17:12:03+08:00</updated><id>https://zzir.cn/feed.xml</id><title type="html">ZZIR’s Note</title><subtitle>hello world</subtitle><author><name>ZZIR</name></author><entry><title type="html">Converting from CentOS Linux to CentOS Stream</title><link href="https://zzir.cn/2021/converting-from-centos-linux-to-centos-stream.html" rel="alternate" type="text/html" title="Converting from CentOS Linux to CentOS Stream" /><published>2021-01-05T00:00:00+08:00</published><updated>2021-01-05T00:00:00+08:00</updated><id>https://zzir.cn/2021/converting-from-centos-linux-to-centos-stream</id><content type="html" xml:base="https://zzir.cn/2021/converting-from-centos-linux-to-centos-stream.html">&lt;div id=&quot;preamble&quot;&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;CentOS 8 End-of-life: &lt;mark&gt;31 December 2021&lt;/mark&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;converting-to-centos-stream&quot;&gt;Converting to CentOS Stream&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-bash hljs&quot; data-lang=&quot;bash&quot;&gt;dnf install centos-release-stream -y
+dnf swap centos-{linux,stream}-repos -y
+dnf distro-sync -y
+cat /etc/centos-release&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;centos-stream-download&quot;&gt;CentOS Stream Download&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;http://isoredirect.centos.org/centos/8-stream/isos/x86_64/&quot;&gt;x86_64&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;http://isoredirect.centos.org/centos/8-stream/isos/aarch64/&quot;&gt;ARM64 (aarch64)&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;http://isoredirect.centos.org/centos/8-stream/isos/ppc64le/&quot;&gt;IBM Power (ppc64le)&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;reference&quot;&gt;Reference&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.centos.org/download/&quot; class=&quot;bare&quot;&gt;https://www.centos.org/download/&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content><author><name>zzir</name></author><category term="CentOS" /><category term="Stream" /><summary type="html">CentOS 8 End-of-life: 31 December 2021</summary></entry><entry><title type="html">PostgreSQL 主从复制之 Docker 方式部署实践</title><link href="https://zzir.cn/2020/postgresql-master-replication-with-docker.html" rel="alternate" type="text/html" title="PostgreSQL 主从复制之 Docker 方式部署实践" /><published>2020-05-03T00:00:00+08:00</published><updated>2020-05-03T00:00:00+08:00</updated><id>https://zzir.cn/2020/postgresql-master-replication-with-docker</id><content type="html" xml:base="https://zzir.cn/2020/postgresql-master-replication-with-docker.html">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;nothing more. todo&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -2414,134 +2463,4 @@ ratelimit methods rate burst unit {
 
 &lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
 &lt;p&gt;https://caddyserver.com/docs/http.ratelimit  &lt;br /&gt;
-https://github.com/xuqingfeng/caddy-rate-limit&lt;/p&gt;</content><author><name>ZZIR</name></author><category term="Caddy" /><category term="ratelimit" /><summary type="html">Caddy Server 访问频率限制，请求多次将返回 429 状态码。实现此功能需要安装 http.ratelimit 插件，可以在下载页下载时选择此插件。</summary></entry><entry><title type="html">Google Authentication (2FA)</title><link href="https://zzir.cn/2017/google-authentication.html" rel="alternate" type="text/html" title="Google Authentication (2FA)" /><published>2017-09-14T00:00:00+08:00</published><updated>2017-09-14T00:00:00+08:00</updated><id>https://zzir.cn/2017/google-authentication</id><content type="html" xml:base="https://zzir.cn/2017/google-authentication.html">&lt;p&gt;&lt;a href=&quot;https://daplie.github.io/browser-authenticator/&quot;&gt;在线演示&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/google/google-authenticator&quot;&gt;Google Authentication&lt;/a&gt; 支持 &lt;a href=&quot;http://en.wikipedia.org/wiki/HMAC-based_One-time_Password_Algorithm&quot;&gt;HOTP&lt;/a&gt; 和 &lt;a href=&quot;http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm&quot;&gt;TOTP&lt;/a&gt; 算法生成二次验证(2FA. two-factor authentication)密码。&lt;/p&gt;
-
-&lt;h2 id=&quot;hotphmac-base-one-time-passowrd&quot;&gt;HOTP(HMAC-base One-Time Passowrd)&lt;/h2&gt;
-
-&lt;p&gt;HMAC就是 Hash-based Message Authentication Code 的意思。&lt;/p&gt;
-
-&lt;p&gt;客户端和服务器事先协商好一个密钥，用于一次性密码的生成过程，此密钥不被任何第三方所知道。&lt;/p&gt;
-
-&lt;p&gt;此外，客户端和服务器各有一个计数器，并且事先将计数值同步。计算完成之后客户端计数器计数值加1。&lt;/p&gt;
-
-&lt;p&gt;用户将这一组十进制数输入并且提交之后，服务器端同样的计算，并且与用户提交的数值比较，如果相同，则验证通过，服务器端将计数值增加1。如果不相同，则验证失败。&lt;/p&gt;
-
-&lt;h2 id=&quot;totptime-base-one-time-password&quot;&gt;TOTP(Time-base One-Time Password)&lt;/h2&gt;
-
-&lt;p&gt;理解了上面的HOTP，那TOTP只是将时间戳代替了计数器。于是就随时间戳变化生成不同密码。&lt;/p&gt;
-
-&lt;!--more--&gt;
-
-&lt;h2 id=&quot;working&quot;&gt;Working&lt;/h2&gt;
-
-&lt;p&gt;而实际上 Google Authentication 使用 TOTP。核心由三个部分组成。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;共享密钥&lt;/li&gt;
-  &lt;li&gt;输入(时间戳)&lt;/li&gt;
-  &lt;li&gt;签名&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;共享密钥&quot;&gt;共享密钥&lt;/h3&gt;
-
-&lt;p&gt;共享密钥用于在其它客户端获得密码，可以手动输入，可以通过链接或者二维码获得。&lt;/p&gt;
-
-&lt;p&gt;注意密钥会被Base32编码，所以要去除空格并转换成大写。然后 保证处理后的密钥位数是8的倍数。&lt;/p&gt;
-
-&lt;p&gt;Google 服务使用4位8组共32位的密钥。其它使用 Google Authentication 的不尽相同，像 GitHub 则是16位的密钥。&lt;/p&gt;
-
-&lt;p&gt;密钥将URL转换成二维码方便手机或其它设备使用时候遵循以下格式：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;otpauth://TYPE/LABEL?PARAMETERS
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;比如这样：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&amp;amp;issuer=Example
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;详细内容可以参考&lt;a href=&quot;https://github.com/google/google-authenticator/wiki/Key-Uri-Format&quot;&gt;Key Uri Format&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;输入时间戳&quot;&gt;输入(时间戳)&lt;/h3&gt;
-
-&lt;p&gt;TOTP 采用时间戳作为变量，不需要与服务器交互就可以得到密码。那么该如何选取呢？&lt;/p&gt;
-
-&lt;p&gt;因为时间每时每刻都在变化，如果选择一个变化太快的 input（例如从某一时间点开始的秒数），那么用户来不及输入密码。如果选择一个变化太慢的 input（例如从某一时间点开始的小时数），那么第三方攻击者就有充足的时间去尝试所有可能的一次性密码（试想6位数字的一次性密码仅仅有10\^6种组合），降低了密码的安全性。&lt;/p&gt;
-
-&lt;p&gt;除此之外，变化太慢的 input 还会导致另一个问题。如果用户需要在短时间内两次登录账户，由于密码是一次性的不可重用，用户必须等到下一个一次性密码被生成时才能登录，这意味着最多需要等待59分59秒！这显然不可接受。&lt;/p&gt;
-
-&lt;p&gt;综合以上考虑，Google选择了30秒作为时间片，时间戳输入的数值为从Unix epoch（1970年1月1日 00:00:00）来经历的30秒的个数。&lt;/p&gt;
-
-&lt;p&gt;还有一个问题是，由于网络延时，用户输入延迟等因素，可能当服务器端接收到一次性密码时，input的数值已经改变，这样就会导致服务器计算的一次性密码值与用户输入的不同，验证失败。解决这个问题个一个方法是，服务器计算当前时间片以及前面的n个时间片内的一次性密码值，只要其中有一个与用户输入的密码相同，则验证通过。当然，n不能太大，否则会降低安全性。&lt;/p&gt;
-
-&lt;h3 id=&quot;签名&quot;&gt;签名&lt;/h3&gt;
-
-&lt;p&gt;签名使用 HMAC-SHA1 算法。以一个密钥和一个消息为输入，生成一个消息摘要作为输出。&lt;/p&gt;
-
-&lt;p&gt;因为算法是单向散列加密，结果不可逆，这样在保证密钥不被第三者知道的情况下，只有使用相同密钥和输入(时间戳)才会得到相同结果，服务端才能判断客户端是合法登录。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;h = hmac.new(key, msg, hashlib.sha1).digest()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;algorithm&quot;&gt;Algorithm&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;/imgs/201709-3WpWR.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;伪代码：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;function GoogleAuthenticatorCode(string secret)
-    key := base32decode(secret)
-    message := floor(current Unix time / 30)
-    hash := HMAC-SHA1(key, message)
-    offset := last nibble of hash
-    truncatedHash := hash[offset..offset+3]  //4 bytes starting at the offset
-    Set the first bit of truncatedHash to zero  //remove the most significant bit
-    code := truncatedHash mod 1000000
-    pad code with 0 until length of code is 6
-    return code
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Python 实现:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;import hmac
-import base64
-import struct
-import hashlib
-import time
-import sys
-
-def get_hotp_token(secret, intervals_no):
-    key = base64.b32decode(secret)
-    msg = struct.pack(&quot;&amp;gt;Q&quot;, intervals_no)
-    h = hmac.new(key, msg, hashlib.sha1).digest()
-    o = h[len(h)-1] &amp;amp; 0x0f
-    h = (struct.unpack(&quot;&amp;gt;I&quot;, h[o:o + 4])[0] &amp;amp; 0x7fffffff) % 1000000
-    return h
-
-def get_totp_token(secret):
-    intervals_no = int(time.time()) // 30
-    totp_token = get_hotp_token(secret, intervals_no)
-    return totp_token
-
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print('Must specify key to use.')
-        exit(1)
-    Sec = sys.argv[1]
-    Sec = Sec.replace(' ', '').upper()
-    if len(Sec) % 8 != 0:
-        print('Illegal base32 data at input byte %d' % ((len(Sec)//8+1)*8))
-        exit(1)
-    validation_code = get_totp_token(Sec)
-    print('Code: %06d  (%02d second(s) remaining.)' %
-          (validation_code, 30 - int(time.time()) % 30))
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;这里还有一个Go的实现，&lt;a href=&quot;https://gist.github.com/zzir/4346340d9f4122227d2031068a28248e&quot;&gt;点我传送&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;see-also&quot;&gt;See Also&lt;/h2&gt;
-&lt;p&gt;https://en.wikipedia.org/wiki/Google_Authenticator  &lt;br /&gt;
-https://blog.seetee.me/post/2011/google-two-step-verification/  &lt;br /&gt;
-https://garbagecollected.org/2014/09/14/how-google-authenticator-works/  &lt;br /&gt;
-https://security.stackexchange.com/questions/35157/how-does-google-authenticator-work&lt;/p&gt;</content><author><name>ZZIR</name></author><category term="Google" /><category term="2FA" /><category term="Python" /><summary type="html">在线演示</summary></entry></feed>
+https://github.com/xuqingfeng/caddy-rate-limit&lt;/p&gt;</content><author><name>ZZIR</name></author><category term="Caddy" /><category term="ratelimit" /><summary type="html">Caddy Server 访问频率限制，请求多次将返回 429 状态码。实现此功能需要安装 http.ratelimit 插件，可以在下载页下载时选择此插件。</summary></entry></feed>

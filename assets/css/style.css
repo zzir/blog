@@ -219,7 +219,7 @@ footer {
     font-size: .7em;
     clear: both;
     user-select: none;
-    opacity: 0.2;
+    /* opacity: 0.2; */
 }
 
 .beian:hover {
