@@ -187,6 +187,14 @@ li p {
     color: #404040;
 }
 
+.post-year {
+    color: grey;
+    opacity: .5;
+    border-right-style: solid;
+    border-right-color: #f6f6f6;
+    border-right-width: .5em;
+}
+
 .pagination {
     padding-top: 2em;
     display: block;
@@ -219,12 +227,12 @@ footer {
     font-size: .7em;
     clear: both;
     user-select: none;
-    /* opacity: 0.2; */
+    opacity: .5;
 }
 
 .beian:hover {
     color: grey;
-    opacity: .8;
+    opacity: .9;
 }
 
 .beian a {
@@ -296,7 +304,7 @@ footer {
 }
 
 .home-sub-heading {
-    font-size: 1 em;
+    font-size: 1em;
     color: #f0f0f0;
     font-family: monospace;
     user-select: none;
