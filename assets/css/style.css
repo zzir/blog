@@ -306,7 +306,7 @@ footer {
 .home-sub-heading {
     font-size: 1em;
     color: #f0f0f0;
-    font-family: monospace;
+    font-family: "Major Mono Display", 'Lora', 'Noto Serif SC', serif;
     user-select: none;
 }
 
