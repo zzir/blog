@@ -1,4 +1,333 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://zzir.cn/feed.xml" rel="self" type="application/atom+xml" /><link href="https://zzir.cn/" rel="alternate" type="text/html" /><updated>2021-03-02T00:24:51+08:00</updated><id>https://zzir.cn/feed.xml</id><title type="html">ZZIR’s Note</title><subtitle>FUN~</subtitle><author><name>ZZIR</name></author><entry><title type="html">Converting from CentOS Linux to CentOS Stream</title><link href="https://zzir.cn/2021/converting-from-centos-linux-to-centos-stream.html" rel="alternate" type="text/html" title="Converting from CentOS Linux to CentOS Stream" /><published>2021-01-05T00:00:00+08:00</published><updated>2021-01-05T00:00:00+08:00</updated><id>https://zzir.cn/2021/converting-from-centos-linux-to-centos-stream</id><content type="html" xml:base="https://zzir.cn/2021/converting-from-centos-linux-to-centos-stream.html">&lt;div id=&quot;preamble&quot;&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://zzir.cn/feed.xml" rel="self" type="application/atom+xml" /><link href="https://zzir.cn/" rel="alternate" type="text/html" /><updated>2021-03-02T18:47:24+08:00</updated><id>https://zzir.cn/feed.xml</id><title type="html">ZZIR’s Note</title><subtitle>FUN~</subtitle><author><name>ZZIR</name></author><entry><title type="html">NSQ 简单测试</title><link href="https://zzir.cn/2021/nsq-first.html" rel="alternate" type="text/html" title="NSQ 简单测试" /><published>2021-03-02T00:00:00+08:00</published><updated>2021-03-02T00:00:00+08:00</updated><id>https://zzir.cn/2021/nsq-first</id><content type="html" xml:base="https://zzir.cn/2021/nsq-first.html">&lt;div id=&quot;preamble&quot;&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;NSQ 是一个 Go 实现的实时分布式消息平台。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;文档：https://nsq.io/&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;源码：https://github.com/nsqio/nsq&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;特性&quot;&gt;特性&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;support distributed topologies with no SPOF&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;horizontally scalable (no brokers, seamlessly add more nodes to the cluster)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;low-latency push based message delivery (&lt;a href=&quot;https://nsq.io/overview/performance.html&quot;&gt;performance&lt;/a&gt;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;combination load-balanced &lt;strong&gt;and&lt;/strong&gt; multicast style message routing&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;excel at both streaming (high-throughput) and job oriented (low-throughput) workloads&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;primarily in-memory (beyond a high-water mark messages are transparently kept on disk)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;runtime discovery service for consumers to find producers (&lt;a href=&quot;https://github.com/nsqio/nsq/tree/master/nsqlookupd/README.md&quot;&gt;nsqlookupd&lt;/a&gt;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;transport layer security (TLS)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;data format agnostic&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;few dependencies (easy to deploy) and a sane, bounded, default configuration&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;simple TCP protocol supporting client libraries in any language&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;HTTP interface for stats, admin actions, and producers (&lt;strong&gt;no client library needed to publish&lt;/strong&gt;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;integrates with &lt;a href=&quot;https://github.com/etsy/statsd/&quot;&gt;statsd&lt;/a&gt; for realtime instrumentation&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;robust cluster administration interface (&lt;a href=&quot;https://github.com/nsqio/nsq/tree/master/nsqadmin/README.md&quot;&gt;nsqadmin&lt;/a&gt;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;和-kafka-对比&quot;&gt;和 Kafka 对比&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;缺点：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;消息投递方式只支持最少一次&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;消息不保证有序&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;节点不保存消息副本&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;消息只有 PUSH 模式&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;优点：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;配置和部署简单，资源消耗少&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;轻量，没有依赖，Debug 方便&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;支持水平扩展&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;支持 SPOF 的分布式拓扑&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;组件&quot;&gt;组件&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;nsqd&lt;/code&gt; ：守护进程，它接收、排队并将消息传递给客户端。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;nsqlookupd&lt;/code&gt; ：管理拓扑信息的守护进程，它有两个接口：nsqd 使用它的 TCP 接口广播，客户端使用它的 HTTP 接口发现和管理。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;psqadmin&lt;/code&gt; ：一个用于实时查看聚合集群统计数据并执行各种管理任务的 Web UI。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;它还包含一组辅助工具：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://nsq.io/components/utilities.html#nsq_stat&quot;&gt;nsq_stat&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://nsq.io/components/utilities.html#nsq_tail&quot;&gt;nsq_tail&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://nsq.io/components/utilities.html#nsq_to_file&quot;&gt;nsq_to_file&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://nsq.io/components/utilities.html#nsq_to_http&quot;&gt;nsq_to_http&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://nsq.io/components/utilities.html#nsq_to_nsq&quot;&gt;nsq_to_nsq&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://nsq.io/components/utilities.html#to_nsq&quot;&gt;to_nsq&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;容器部署&quot;&gt;容器部署&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;使用 Docker 部署测试，使用 &lt;code&gt;nsq_to_file&lt;/code&gt; 将 &lt;code&gt;topic=test&lt;/code&gt; 的消息持久化到本地，忽略空白文件，并将持久化的数据压缩。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;docker-compose.yml&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-yaml hljs&quot; data-lang=&quot;yaml&quot;&gt;version: '3'
+services:
+  nsqlookupd:
+    image: nsqio/nsq
+    command: /nsqlookupd
+    ports:
+      - &quot;4160:4160&quot;
+      - &quot;4161:4161&quot;
+  nsqd:
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+    depends_on:
+      - nsqlookupd
+    ports:
+      - &quot;4150:4150&quot;
+      - &quot;4151:4151&quot;
+  nsqadmin:
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    depends_on:
+      - nsqlookupd
+    ports:
+      - &quot;4171:4171&quot;
+  nsq_to_file:
+    image: nsqio/nsq
+    command: /nsq_to_file --gzip --lookupd-http-address=nsqlookupd:4161 --output-dir=/data --skip-empty-files --topic=test
+    volumes:
+      - ./nsq-data:/data
+    depends_on:
+      - nsqlookupd&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;生产者&quot;&gt;生产者&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;producer.go&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;package main
+
+import (
+	&quot;fmt&quot;
+	&quot;log&quot;
+
+	&quot;github.com/nsqio/go-nsq&quot;
+)
+
+func main() {
+	config := nsq.NewConfig()
+
+	producer, err := nsq.NewProducer(&quot;127.0.0.1:4150&quot;, config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	messageBody := []byte(&quot;hello&quot;)
+	topicName := &quot;test&quot;
+
+	i := 10
+	for i &amp;gt; 0 {
+		i--
+		fmt.Println(&quot;&amp;gt;&quot;, i)
+		// 异步发送消息
+		_ = producer.PublishAsync(topicName, []byte(fmt.Sprintf(&quot;%s %d&quot;, messageBody, i)), nil)
+	}
+
+	producer.Stop()
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;producer 提供了 6 个方法用户发布消息：&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Publish&lt;/code&gt;：同步发送消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;PublishAsync&lt;/code&gt;：异步发送消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;MultiPublish&lt;/code&gt;：一次发送多个同步消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;MultiPublishAsync&lt;/code&gt;：一次发送多个异步消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;DeferredPublish&lt;/code&gt;：同步延迟发送消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;DeferredPublishAsync&lt;/code&gt;：异步延迟发送消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;消费者&quot;&gt;消费者&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;consumer.go&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-go hljs&quot; data-lang=&quot;go&quot;&gt;package main
+
+import (
+	&quot;fmt&quot;
+	&quot;log&quot;
+	&quot;time&quot;
+
+	&quot;github.com/nsqio/go-nsq&quot;
+)
+
+type myMessageHandler struct{}
+
+func (h *myMessageHandler) HandleMessage(m *nsq.Message) error {
+	if len(m.Body) == 0 {
+		return nil
+	}
+
+	fmt.Printf(&quot;&amp;gt;&amp;gt; %s, %s\n&quot;, m.ID, m.Body)
+
+	return nil
+}
+
+func main() {
+	config := nsq.NewConfig()
+	config.MaxInFlight = 10 // 限流 客户端接收消息数量
+
+	consumer, err := nsq.NewConsumer(&quot;test&quot;, &quot;channel&quot;, config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	consumer.AddConcurrentHandlers(&amp;amp;myMessageHandler{}, 5) // 并发处理消息数量
+
+	err = consumer.ConnectToNSQD(&quot;127.0.0.1:4150&quot;)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	time.Sleep(time.Hour)
+	consumer.Stop()
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;NSQ 消息只支持 &lt;code&gt;PUSH&lt;/code&gt; 模式，当上游突发流量时，consumer 可以通过配置 &lt;code&gt;MaxInFlight&lt;/code&gt; 值来达到限流的目的。同时消费端也支持并发接收消息。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;参考&quot;&gt;参考：&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/nsqio/nsq&quot; class=&quot;bare&quot;&gt;https://github.com/nsqio/nsq&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://nsq.io/&quot; class=&quot;bare&quot;&gt;https://nsq.io/&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.cnblogs.com/JoZSM/p/12443544.html&quot; class=&quot;bare&quot;&gt;https://www.cnblogs.com/JoZSM/p/12443544.html&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content><author><name>zzir</name></author><category term="Go" /><category term="NSQ" /><summary type="html">NSQ 是一个 Go 实现的实时分布式消息平台。</summary></entry><entry><title type="html">Converting from CentOS Linux to CentOS Stream</title><link href="https://zzir.cn/2021/converting-from-centos-linux-to-centos-stream.html" rel="alternate" type="text/html" title="Converting from CentOS Linux to CentOS Stream" /><published>2021-01-05T00:00:00+08:00</published><updated>2021-01-05T00:00:00+08:00</updated><id>https://zzir.cn/2021/converting-from-centos-linux-to-centos-stream</id><content type="html" xml:base="https://zzir.cn/2021/converting-from-centos-linux-to-centos-stream.html">&lt;div id=&quot;preamble&quot;&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;CentOS 8 End-of-life: &lt;mark&gt;31 December 2021&lt;/mark&gt;&lt;/p&gt;
@@ -2408,59 +2737,4 @@ Little-Endian: |78|56|34|12|
   &lt;li&gt;http://learnmeabitcoin.com/glossary/varint&lt;/li&gt;
   &lt;li&gt;http://yogh.io/#mine:last&lt;/li&gt;
   &lt;li&gt;http://royalforkblog.github.io/2014/11/20/txn-demo/&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>ZZIR</name></author><category term="Blockchain" /><category term="Bitcoin" /><summary type="html"></summary></entry><entry><title type="html">Caddy Server 访问频率限制</title><link href="https://zzir.cn/2018/caddy-server-ratelimit.html" rel="alternate" type="text/html" title="Caddy Server 访问频率限制" /><published>2018-07-08T00:00:00+08:00</published><updated>2018-07-08T00:00:00+08:00</updated><id>https://zzir.cn/2018/caddy-server-ratelimit</id><content type="html" xml:base="https://zzir.cn/2018/caddy-server-ratelimit.html">&lt;p&gt;Caddy Server 访问频率限制，请求多次将返回 429 状态码。实现此功能需要安装 &lt;code class=&quot;highlighter-rouge&quot;&gt;http.ratelimit&lt;/code&gt; 插件，可以在&lt;a href=&quot;https://caddyserver.com/download&quot;&gt;下载页&lt;/a&gt;下载时选择此插件。&lt;/p&gt;
-
-&lt;h2 id=&quot;举例&quot;&gt;举例&lt;/h2&gt;
-
-&lt;h3 id=&quot;语法&quot;&gt;语法：&lt;/h3&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ratelimit methods path rate burst unit
-...or...
-ratelimit methods rate burst unit {
-    whitelist CIDR
-    resources
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;methods&lt;/code&gt; 请求方法，例如 get（多个方法 &lt;code class=&quot;highlighter-rouge&quot;&gt;,&lt;/code&gt; 隔开，可以  &lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt; 表示所有方法）&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;path&lt;/code&gt; 路径，例如 &lt;code class=&quot;highlighter-rouge&quot;&gt;/&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;/api&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rate&lt;/code&gt; 单位时间请求次数&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;burst&lt;/code&gt; 客户端可超过的最大次数，不能小于单位时间请求次数&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;unit&lt;/code&gt; 单位时间（当前支持：second，minute，hour，day，week）&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;whitelist&lt;/code&gt; 白名单&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;resources&lt;/code&gt; 目录或文件路径，每行一个&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;!--more--&gt;
-
-&lt;h3 id=&quot;例如&quot;&gt;例如：&lt;/h3&gt;
-&lt;p&gt;单个资源：&lt;/p&gt;
-&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;m&quot;&gt;127&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;8080&lt;/span&gt; {
-    &lt;span class=&quot;n&quot;&gt;proxy&lt;/span&gt; / &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;222&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;8080&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;gzip&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; /&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;caddy&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;test&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ratelimit&lt;/span&gt; * / &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;second&lt;/span&gt;
-    &lt;span class=&quot;c&quot;&gt;# 表示所有方法，所有路径，每秒最多请求1次
-&lt;/span&gt;}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;多个资源的表示：&lt;/p&gt;
-&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;m&quot;&gt;127&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;8080&lt;/span&gt; {
-    &lt;span class=&quot;n&quot;&gt;proxy&lt;/span&gt; / &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;222&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;8080&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;gzip&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; /&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;caddy&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;test&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ratelimit&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;post&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;second&lt;/span&gt; {
-        &lt;span class=&quot;n&quot;&gt;whitelist&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;127&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;32&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;whitelist&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;16&lt;/span&gt;
-        /&lt;span class=&quot;n&quot;&gt;api&lt;/span&gt;/
-        ^/&lt;span class=&quot;n&quot;&gt;dist&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;
-    }
-    &lt;span class=&quot;c&quot;&gt;# get、post方法
-&lt;/span&gt;    &lt;span class=&quot;c&quot;&gt;# 每秒最多请求1次，白名单除外，路径 ^/dist/path 除外
-&lt;/span&gt;    &lt;span class=&quot;c&quot;&gt;# 注意！想要限制 /api/，同时排除 ^/api/stats 不会生效
-&lt;/span&gt;}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-&lt;p&gt;https://caddyserver.com/docs/http.ratelimit  &lt;br /&gt;
-https://github.com/xuqingfeng/caddy-rate-limit&lt;/p&gt;</content><author><name>ZZIR</name></author><category term="Caddy" /><category term="ratelimit" /><summary type="html">Caddy Server 访问频率限制，请求多次将返回 429 状态码。实现此功能需要安装 http.ratelimit 插件，可以在下载页下载时选择此插件。</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>ZZIR</name></author><category term="Blockchain" /><category term="Bitcoin" /><summary type="html"></summary></entry></feed>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="ZZIR">
+    <meta name="description" content="FUN~">
+    <meta name="keywords" content="zzir,Golang,Python,Docker,K8S">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.11.1/katex.min.css">
+    <link rel="stylesheet" href="/assets/css/github.css">
+
+    <title>NSQ 简单测试 - ZZIR's Note</title>
+</head><body>
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="post-back" id="post-back" style="display: none">
+        <a class="black-link" href="https://zzir.cn">🙄</a>
+    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">
+            NSQ 简单测试
+        </h1>
+        <p class="post-meta">
+            <time class="dt-published" datetime="2021-03-02T00:00:00+08:00" itemprop="datePublished">Mar 2, 2021
+            </time>・
+            <span itemprop="author" itemscope itemtype="http://schema.org/Person"
+            ><span class="p-author h-card" itemprop="name">zzir</span></span
+            ></p>
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>NSQ 是一个 Go 实现的实时分布式消息平台。</p>
+</div>
+<div class="paragraph">
+<p>文档：https://nsq.io/</p>
+</div>
+<div class="paragraph">
+<p>源码：https://github.com/nsqio/nsq</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="特性">特性</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>support distributed topologies with no SPOF</p>
+</li>
+<li>
+<p>horizontally scalable (no brokers, seamlessly add more nodes to the cluster)</p>
+</li>
+<li>
+<p>low-latency push based message delivery (<a href="https://nsq.io/overview/performance.html">performance</a>)</p>
+</li>
+<li>
+<p>combination load-balanced <strong>and</strong> multicast style message routing</p>
+</li>
+<li>
+<p>excel at both streaming (high-throughput) and job oriented (low-throughput) workloads</p>
+</li>
+<li>
+<p>primarily in-memory (beyond a high-water mark messages are transparently kept on disk)</p>
+</li>
+<li>
+<p>runtime discovery service for consumers to find producers (<a href="https://github.com/nsqio/nsq/tree/master/nsqlookupd/README.md">nsqlookupd</a>)</p>
+</li>
+<li>
+<p>transport layer security (TLS)</p>
+</li>
+<li>
+<p>data format agnostic</p>
+</li>
+<li>
+<p>few dependencies (easy to deploy) and a sane, bounded, default configuration</p>
+</li>
+<li>
+<p>simple TCP protocol supporting client libraries in any language</p>
+</li>
+<li>
+<p>HTTP interface for stats, admin actions, and producers (<strong>no client library needed to publish</strong>)</p>
+</li>
+<li>
+<p>integrates with <a href="https://github.com/etsy/statsd/">statsd</a> for realtime instrumentation</p>
+</li>
+<li>
+<p>robust cluster administration interface (<a href="https://github.com/nsqio/nsq/tree/master/nsqadmin/README.md">nsqadmin</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="和-kafka-对比">和 Kafka 对比</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>缺点：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>消息投递方式只支持最少一次</p>
+</li>
+<li>
+<p>消息不保证有序</p>
+</li>
+<li>
+<p>节点不保存消息副本</p>
+</li>
+<li>
+<p>消息只有 PUSH 模式</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>优点：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>配置和部署简单，资源消耗少</p>
+</li>
+<li>
+<p>轻量，没有依赖，Debug 方便</p>
+</li>
+<li>
+<p>支持水平扩展</p>
+</li>
+<li>
+<p>支持 SPOF 的分布式拓扑</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="组件">组件</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><code>nsqd</code> ：守护进程，它接收、排队并将消息传递给客户端。</p>
+</li>
+<li>
+<p><code>nsqlookupd</code> ：管理拓扑信息的守护进程，它有两个接口：nsqd 使用它的 TCP 接口广播，客户端使用它的 HTTP 接口发现和管理。</p>
+</li>
+<li>
+<p><code>psqadmin</code> ：一个用于实时查看聚合集群统计数据并执行各种管理任务的 Web UI。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>它还包含一组辅助工具：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://nsq.io/components/utilities.html#nsq_stat">nsq_stat</a></p>
+</li>
+<li>
+<p><a href="https://nsq.io/components/utilities.html#nsq_tail">nsq_tail</a></p>
+</li>
+<li>
+<p><a href="https://nsq.io/components/utilities.html#nsq_to_file">nsq_to_file</a></p>
+</li>
+<li>
+<p><a href="https://nsq.io/components/utilities.html#nsq_to_http">nsq_to_http</a></p>
+</li>
+<li>
+<p><a href="https://nsq.io/components/utilities.html#nsq_to_nsq">nsq_to_nsq</a></p>
+</li>
+<li>
+<p><a href="https://nsq.io/components/utilities.html#to_nsq">to_nsq</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="容器部署">容器部署</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>使用 Docker 部署测试，使用 <code>nsq_to_file</code> 将 <code>topic=test</code> 的消息持久化到本地，忽略空白文件，并将持久化的数据压缩。</p>
+</div>
+<div class="listingblock">
+<div class="title">docker-compose.yml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">version: '3'
+services:
+  nsqlookupd:
+    image: nsqio/nsq
+    command: /nsqlookupd
+    ports:
+      - "4160:4160"
+      - "4161:4161"
+  nsqd:
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+    depends_on:
+      - nsqlookupd
+    ports:
+      - "4150:4150"
+      - "4151:4151"
+  nsqadmin:
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    depends_on:
+      - nsqlookupd
+    ports:
+      - "4171:4171"
+  nsq_to_file:
+    image: nsqio/nsq
+    command: /nsq_to_file --gzip --lookupd-http-address=nsqlookupd:4161 --output-dir=/data --skip-empty-files --topic=test
+    volumes:
+      - ./nsq-data:/data
+    depends_on:
+      - nsqlookupd</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="生产者">生产者</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">producer.go</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/nsqio/go-nsq"
+)
+
+func main() {
+	config := nsq.NewConfig()
+
+	producer, err := nsq.NewProducer("127.0.0.1:4150", config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	messageBody := []byte("hello")
+	topicName := "test"
+
+	i := 10
+	for i &gt; 0 {
+		i--
+		fmt.Println("&gt;", i)
+		// 异步发送消息
+		_ = producer.PublishAsync(topicName, []byte(fmt.Sprintf("%s %d", messageBody, i)), nil)
+	}
+
+	producer.Stop()
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>producer 提供了 6 个方法用户发布消息：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Publish</code>：同步发送消息。</p>
+</li>
+<li>
+<p><code>PublishAsync</code>：异步发送消息。</p>
+</li>
+<li>
+<p><code>MultiPublish</code>：一次发送多个同步消息。</p>
+</li>
+<li>
+<p><code>MultiPublishAsync</code>：一次发送多个异步消息。</p>
+</li>
+<li>
+<p><code>DeferredPublish</code>：同步延迟发送消息。</p>
+</li>
+<li>
+<p><code>DeferredPublishAsync</code>：异步延迟发送消息。</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="消费者">消费者</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">consumer.go</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-go hljs" data-lang="go">package main
+
+import (
+	"fmt"
+	"log"
+	"time"
+
+	"github.com/nsqio/go-nsq"
+)
+
+type myMessageHandler struct{}
+
+func (h *myMessageHandler) HandleMessage(m *nsq.Message) error {
+	if len(m.Body) == 0 {
+		return nil
+	}
+
+	fmt.Printf("&gt;&gt; %s, %s\n", m.ID, m.Body)
+
+	return nil
+}
+
+func main() {
+	config := nsq.NewConfig()
+	config.MaxInFlight = 10 // 限流 客户端接收消息数量
+
+	consumer, err := nsq.NewConsumer("test", "channel", config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	consumer.AddConcurrentHandlers(&amp;myMessageHandler{}, 5) // 并发处理消息数量
+
+	err = consumer.ConnectToNSQD("127.0.0.1:4150")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	time.Sleep(time.Hour)
+	consumer.Stop()
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>NSQ 消息只支持 <code>PUSH</code> 模式，当上游突发流量时，consumer 可以通过配置 <code>MaxInFlight</code> 值来达到限流的目的。同时消费端也支持并发接收消息。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="参考">参考：</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/nsqio/nsq" class="bare">https://github.com/nsqio/nsq</a></p>
+</li>
+<li>
+<p><a href="https://nsq.io/" class="bare">https://nsq.io/</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/JoZSM/p/12443544.html" class="bare">https://www.cnblogs.com/JoZSM/p/12443544.html</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+    </div>
+
+    <a class="u-url" href="/2021/nsq-first.html" hidden></a>
+</article>
+
+<div class="post-tags">
+    
+    <a>Go</a>
+    
+    <a>NSQ</a>
+    
+</div>
+
+<div class="pagination">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2021/converting-from-centos-linux-to-centos-stream.html" title="PREV: Converting from CentOS Linux to CentOS Stream">
+                ‹ Converting from CentOS Linux to CentOS Stream
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+    </div>
+</main><footer>
+    <p class="post-author"><a href="/">ZZIR</a></p>
+</footer>
+<script defer src="/assets/js/katex/katex.min.js" type="text/javascript"></script>
+<script defer src="/assets/js/katex/auto-render.min.js" type="text/javascript"></script>
+<script src="/assets/js/zooming.min.js" type="text/javascript"></script>
+<script src="/assets/js/highlight.pack.js" type="text/javascript"></script>
+<script>
+    // zooming
+    const zooming = new Zooming({
+        customSize: '100%',
+    });
+    zooming.listen('.paragraph img');
+    zooming.listen('.content img');
+    zooming.listen('.post-content img');
+
+    // highlight
+    hljs.initHighlightingOnLoad();
+
+    // katex
+    document.addEventListener("DOMContentLoaded", function () {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "\\[", right: "\\]", display: true}
+            ]
+        });
+    });
+
+    // back display
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() === 0) {
+            document.getElementById("post-back").style.display = "block";
+        }
+    }
+</script>
+
+
+<script>
+    // google analytics
+    window.ga = window.ga || function () {
+        (ga.q = ga.q || []).push(arguments)
+    };
+    ga.l = +new Date;
+    ga('create', 'UA-121779014-1', 'auto');
+    ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</body>
+</html>
