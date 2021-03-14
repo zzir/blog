@@ -256,12 +256,12 @@ footer {
     display: block;
 }
 
-.home ul {
+.post-list ul {
     padding: 0;
     margin: 0;
 }
 
-.home li {
+.post-list li {
     padding: 0 0 1em 2em;
     line-height: 2;
     list-style-type: none;
@@ -269,7 +269,7 @@ footer {
     display: inline-block;
 }
 
-.home li span {
+.post-list li span {
     float: left;
     width: 20%;
     max-width: 20%;
@@ -277,7 +277,7 @@ footer {
     font-size: 16px;
 }
 
-.home li a {
+.post-list li a {
     float: left;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -310,37 +310,9 @@ footer {
     user-select: none;
 }
 
-.site-nav a {
-    display: inline;
-    margin-right: 1.2em;
-    font-size: 14px;
-    user-select: none;
-}
-
-.site-nav a:link, .site-nav a:visited {
-    color: #404040;
-    text-decoration: none;
-}
-
-.site-nav a:hover {
-    color: white;
-    text-decoration: none;
-    background: #37a;
-}
-
-.site-nav a:active {
-    color: white;
-    text-decoration: none;
-    background: #FF9933;
-}
-
 @media screen and (max-width: 800px) {
     main, footer {
         width: 100%;
-    }
-
-    .site-nav .trigger {
-        text-align: center;
     }
 
     .home-title {
@@ -351,22 +323,22 @@ footer {
         text-align: center;
     }
 
-    .home ul {
+    .post-list ul {
         margin: 1em;
     }
 
-    .home li {
+    .post-list li {
         display: inline-block;
         padding: 0;
         margin: 0;
         width: 100%;
     }
 
-    .home li span {
+    .post-list li span {
         display: none;
     }
 
-    .home li a {
+    .post-list li a {
         max-width: 100%;
     }
 
