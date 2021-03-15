@@ -256,6 +256,11 @@ footer {
     display: block;
 }
 
+.post-list, .post-list ul {
+    padding: 0;
+    margin: 0;
+}
+
 .post-list ul {
     padding: 0;
     margin: 0;
