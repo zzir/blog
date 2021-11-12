@@ -1,6 +1,6 @@
 
 body {
-    font-family: serif;
+    font-family: charter, Georgia, Cambria, "Times New Roman", Times, serif;
     font-size: 16px;
     color: #404040;
 }
@@ -266,7 +266,7 @@ footer {
 
 .post-list li {
     padding: 0 0 1em 2em;
-    line-height: 1;
+    line-height: 1.2;
     list-style-type: none;
     width: 100%;
     display: inline-block;
